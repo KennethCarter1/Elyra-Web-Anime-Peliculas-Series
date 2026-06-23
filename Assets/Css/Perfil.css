@@ -1,0 +1,164 @@
+/* =========================
+   PERFIL
+========================= */
+.header-perfil {
+    margin-bottom: 22px;
+}
+
+.header-perfil h1 {
+    font-size: 28px;
+    color: #1f1f2e;
+    margin-bottom: 6px;
+}
+
+.header-perfil p {
+    color: #666;
+    font-size: 14px;
+}
+
+.usuario-perfil {
+    max-width: 760px;
+    margin-bottom: 20px;
+    padding: 26px 30px;
+    border: 1px solid rgba(31,31,46,0.08);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(18px) saturate(175%);
+    -webkit-backdrop-filter: blur(18px) saturate(175%);
+    box-shadow: 0 12px 28px rgba(31,31,46,0.08);
+}
+
+.logo-Perfil {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.logo-usuario-Perfil {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-acento);
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 800;
+    box-shadow: none;
+    flex: 0 0 88px;
+}
+
+.datos-usuario-perfil {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.datos-usuario-perfil h3 {
+    color: #1f1f2e;
+    font-size: 22px;
+    line-height: 1.15;
+    margin-bottom: 6px;
+}
+
+.datos-usuario-perfil p {
+    color: var(--color-acento);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.informacion-Perfil {
+    max-width: 760px;
+    padding: 22px 26px 10px;
+    border: 1px solid rgba(255,255,255,0.58);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.64);
+    backdrop-filter: blur(18px) saturate(175%);
+    -webkit-backdrop-filter: blur(18px) saturate(175%);
+    box-shadow: 0 16px 34px var(--color-acento-sombra);
+}
+
+.informacion-Perfil h2 {
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-acento);
+}
+
+.fila-informacion {
+    display: grid;
+    grid-template-columns: 24px minmax(150px, 230px) 1fr;
+    align-items: center;
+    gap: 14px;
+    min-height: 58px;
+    border-bottom: 1px solid rgba(31,31,46,0.1);
+}
+
+.fila-informacion:last-child {
+    border-bottom: 0;
+}
+
+.fila-informacion i {
+    color: var(--color-acento-icono);
+    font-size: 14px;
+    text-align: center;
+}
+
+.fila-informacion span {
+    color: #555667;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.fila-informacion strong {
+    color: #2c2c3a;
+    font-size: 12px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+body.dark .header-perfil h1,
+body.dark .datos-usuario-perfil h3 {
+    color: #f3f3ff;
+}
+
+body.dark .header-perfil p,
+body.dark .datos-usuario-perfil p {
+    color: rgba(243,243,255,0.72);
+}
+
+body.dark .usuario-perfil,
+body.dark .informacion-Perfil {
+    background: rgba(24,24,36,0.72);
+    border-color: rgba(255,255,255,0.12);
+    box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+}
+
+body.dark .logo-usuario-Perfil {
+    background: var(--color-acento);
+    color: #fff;
+    box-shadow: none;
+}
+
+body.dark .datos-usuario-perfil p {
+    color: var(--color-acento-claro);
+}
+
+body.dark .fila-informacion {
+    border-bottom-color: rgba(255,255,255,0.1);
+}
+
+body.dark .fila-informacion i,
+body.dark .informacion-Perfil h2 {
+    color: var(--color-acento-claro);
+}
+
+body.dark .fila-informacion span {
+    color: rgba(243,243,255,0.7);
+}
+
+body.dark .fila-informacion strong {
+    color: #f3f3ff;
+}

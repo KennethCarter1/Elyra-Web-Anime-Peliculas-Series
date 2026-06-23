@@ -1,0 +1,18 @@
+:root {
+    --color-acento: #6A5ACD;
+    --color-acento-hover: #4b3bb3;
+    --color-acento-claro: #d0d0ff;
+    --color-acento-claro-hover: #b8b8ff;
+    --color-acento-borde: #b8a7ff;
+    --color-acento-suave: rgba(106, 90, 205, 0.12);
+    --color-acento-suave-2: rgba(106, 90, 205, 0.14);
+    --color-acento-suave-3: rgba(106, 90, 205, 0.08);
+    --color-acento-sombra: rgba(106, 90, 205, 0.12);
+    --color-acento-sombra-2: rgba(106, 90, 205, 0.36);
+    --color-acento-icono: rgba(106, 90, 205, 0.82);
+    --color-acento-oscuro-suave: rgba(208, 208, 255, 0.14);
+    --color-acento-oscuro-suave-2: rgba(208, 208, 255, 0.12);
+    --color-acento-oscuro-suave-3: rgba(208, 208, 255, 0.2);
+    --color-acento-oscuro-sombra: rgba(208, 208, 255, 0.32);
+    --color-acento-oscuro-outline: rgba(208, 208, 255, 0.44);
+}

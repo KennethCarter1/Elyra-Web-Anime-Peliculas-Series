@@ -4,29 +4,7 @@ class Preferencia {
 
     public function __construct($conexion) {
         $this->conexion = $conexion;
-    }
-
-
-    public function agregar($idUsuario, $idGenero) {
-        $stmt = $this->conexion->prepare(
-            "CALL sp_agregar_preferencia(:idUsuario, :idGenero)"
-        );
-        $stmt->bindParam(':idUsuario', $idUsuario);
-        $stmt->bindParam(':idGenero', $idGenero);
-        $stmt->execute();
-    }
-
-
-    public function eliminar($idUsuario, $idGenero) {
-        $stmt = $this->conexion->prepare(
-            "CALL sp_eliminar_preferencia(:idUsuario, :idGenero)"
-        );
-        $stmt->bindParam(':idUsuario', $idUsuario);
-        $stmt->bindParam(':idGenero', $idGenero);
-        $stmt->execute();
-    }
-
-  
+    }  
     public function listar($idUsuario) {
         $stmt = $this->conexion->prepare(
             "CALL sp_listar_preferencias(:idUsuario)"
@@ -34,5 +12,32 @@ class Preferencia {
         $stmt->bindParam(':idUsuario', $idUsuario);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function actualizarPorUsuario($usuario, $generos) {
+        if (is_array($generos)) {
+            $generos = implode(',', $generos);
+        }
+
+        $stmt = $this->conexion->prepare(
+            "CALL sp_actualizar_preferencias_usuario(:usuario, :generos)"
+        );
+        $stmt->execute([
+            ':usuario' => $usuario,
+            ':generos' => $generos
+        ]);
+
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if ($resultado) {
+            return $resultado;
+        }
+
+        return [
+            'exito' => 0,
+            'mensaje' => 'No se pudieron actualizar las preferencias',
+            'total' => 0
+        ];
     }
 }

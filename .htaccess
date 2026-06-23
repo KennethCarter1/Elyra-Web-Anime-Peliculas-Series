@@ -1,0 +1,4 @@
+Options -Indexes
+
+ErrorDocument 403 /Elyra-Web-Anime-Peliculas-Series/Views/Errores/Error404.php
+ErrorDocument 404 /Elyra-Web-Anime-Peliculas-Series/Views/Errores/Error404.php

@@ -1,0 +1,1690 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ServicioElyra"
+             targetNamespace="http://elyra-web-anime-pelicula/api/soap"
+             xmlns:tns="http://elyra-web-anime-pelicula/api/soap"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <!-- Tipos de datos -->
+    <types>
+        <xsd:schema targetNamespace="http://elyra-web-anime-pelicula/api/soap">
+            <xsd:element name="listarGenerosSolicitud"/>
+            <xsd:element name="listarGenerosRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="genero" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarGenerosGestionSolicitud"/>
+            <xsd:element name="listarGenerosGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="genero" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idGenero" type="xsd:int"/>
+                                    <xsd:element name="nombreGenero" type="xsd:string"/>
+                                    <xsd:element name="activo" type="xsd:int"/>
+                                    <xsd:element name="totalContenido" type="xsd:int"/>
+                                    <xsd:element name="totalPreferencias" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="crearGeneroSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="nombreGenero" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="crearGeneroRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarGeneroSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                        <xsd:element name="nombreGenero" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarGeneroRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="desactivarGeneroSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="desactivarGeneroRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="activarGeneroSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="activarGeneroRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="registrarUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="correo" type="xsd:string"/>
+                        <xsd:element name="contrasena" type="xsd:string"/>
+                        <xsd:element name="fechaNacimiento" type="xsd:string"/>
+                        <xsd:element name="generos" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="registrarUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="loginUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="contrasena" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="loginUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="rol" type="xsd:string"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarPreferenciasUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="generos" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarPreferenciasUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="total" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuarioActual" type="xsd:string"/>
+                        <xsd:element name="nombre" type="xsd:string"/>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="correo" type="xsd:string"/>
+                        <xsd:element name="fechaNacimiento" type="xsd:string"/>
+                        <xsd:element name="genero" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="cambiarContrasenaUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="contrasenaActual" type="xsd:string"/>
+                        <xsd:element name="nuevaContrasena" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="cambiarContrasenaUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="resumenGestionUsuariosSolicitud"/>
+
+            <xsd:element name="resumenGestionUsuariosRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuariosTotales" type="xsd:int"/>
+                        <xsd:element name="administradores" type="xsd:int"/>
+                        <xsd:element name="usuariosNormales" type="xsd:int"/>
+                        <xsd:element name="nuevosUsuarios" type="xsd:int"/>
+                        <xsd:element name="preferenciasGuardadas" type="xsd:int"/>
+                        <xsd:element name="usuariosDesactivados" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarUsuariosGestionSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="busqueda" type="xsd:string"/>
+                        <xsd:element name="rol" type="xsd:string"/>
+                        <xsd:element name="genero" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarUsuariosGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuarioGestion" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idUsuario" type="xsd:int"/>
+                                    <xsd:element name="nombre" type="xsd:string"/>
+                                    <xsd:element name="usuario" type="xsd:string"/>
+                                    <xsd:element name="correo" type="xsd:string"/>
+                                    <xsd:element name="genero" type="xsd:string"/>
+                                    <xsd:element name="rol" type="xsd:string"/>
+                                    <xsd:element name="fechaCreacion" type="xsd:string"/>
+                                    <xsd:element name="activo" type="xsd:int"/>
+                                    <xsd:element name="totalPreferencias" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="obtenerDetalleUsuarioGestionSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="obtenerDetalleUsuarioGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                        <xsd:element name="nombre" type="xsd:string"/>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="correo" type="xsd:string"/>
+                        <xsd:element name="fechaNacimiento" type="xsd:string"/>
+                        <xsd:element name="genero" type="xsd:string"/>
+                        <xsd:element name="rol" type="xsd:string"/>
+                        <xsd:element name="activo" type="xsd:int"/>
+                        <xsd:element name="fechaCreacion" type="xsd:string"/>
+                        <xsd:element name="preferencias" type="xsd:string"/>
+                        <xsd:element name="totalPreferencias" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarRolUsuarioGestionSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                        <xsd:element name="rol" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarRolUsuarioGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="desactivarUsuarioGestionSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="desactivarUsuarioGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="activarUsuarioGestionSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="activarUsuarioGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idUsuario" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="resumenReportesEstadisticasSolicitud"/>
+
+            <xsd:element name="resumenReportesEstadisticasRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuariosTotales" type="xsd:int"/>
+                        <xsd:element name="usuariosActivos" type="xsd:int"/>
+                        <xsd:element name="cuentasBloqueadas" type="xsd:int"/>
+                        <xsd:element name="peliculasTotales" type="xsd:int"/>
+                        <xsd:element name="seriesTotales" type="xsd:int"/>
+                        <xsd:element name="generosTotales" type="xsd:int"/>
+                        <xsd:element name="contenidosPublicados" type="xsd:int"/>
+                        <xsd:element name="contenidosDesactivados" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="ultimosUsuariosReportesSolicitud"/>
+
+            <xsd:element name="ultimosUsuariosReportesRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuarioReporte" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idUsuario" type="xsd:int"/>
+                                    <xsd:element name="nombre" type="xsd:string"/>
+                                    <xsd:element name="usuario" type="xsd:string"/>
+                                    <xsd:element name="correo" type="xsd:string"/>
+                                    <xsd:element name="genero" type="xsd:string"/>
+                                    <xsd:element name="rol" type="xsd:string"/>
+                                    <xsd:element name="activo" type="xsd:int"/>
+                                    <xsd:element name="fechaCreacion" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="ultimoContenidoReportesSolicitud"/>
+
+            <xsd:element name="ultimoContenidoReportesRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenidoReporte" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                                    <xsd:element name="titulo" type="xsd:string"/>
+                                    <xsd:element name="tipo" type="xsd:string"/>
+                                    <xsd:element name="imagen" type="xsd:string"/>
+                                    <xsd:element name="generos" type="xsd:string"/>
+                                    <xsd:element name="fecha" type="xsd:string"/>
+                                    <xsd:element name="estado" type="xsd:string"/>
+                                    <xsd:element name="activo" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="generosMasElegidosReportesSolicitud"/>
+
+            <xsd:element name="generosMasElegidosReportesRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="generoReporte" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idGenero" type="xsd:int"/>
+                                    <xsd:element name="nombreGenero" type="xsd:string"/>
+                                    <xsd:element name="totalUsuarios" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="contenidoPorGeneroReportesSolicitud"/>
+
+            <xsd:element name="contenidoPorGeneroReportesRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="generoReporte" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idGenero" type="xsd:int"/>
+                                    <xsd:element name="nombreGenero" type="xsd:string"/>
+                                    <xsd:element name="totalContenido" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="distribucionContenidoReportesSolicitud"/>
+
+            <xsd:element name="distribucionContenidoReportesRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="datoReporte" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="etiqueta" type="xsd:string"/>
+                                    <xsd:element name="total" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="estadoContenidoReportesSolicitud"/>
+
+            <xsd:element name="estadoContenidoReportesRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="datoReporte" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="etiqueta" type="xsd:string"/>
+                                    <xsd:element name="total" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="resumenPanelAdministradorSolicitud"/>
+
+            <xsd:element name="resumenPanelAdministradorRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuariosTotales" type="xsd:int"/>
+                        <xsd:element name="peliculasSeriesTotales" type="xsd:int"/>
+                        <xsd:element name="generosTotales" type="xsd:int"/>
+                        <xsd:element name="favoritosTotales" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actividadRecientePanelSolicitud"/>
+
+            <xsd:element name="actividadRecientePanelRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="actividad" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="tipoActividad" type="xsd:string"/>
+                                    <xsd:element name="accion" type="xsd:string"/>
+                                    <xsd:element name="referencia" type="xsd:string"/>
+                                    <xsd:element name="imagen" type="xsd:string"/>
+                                    <xsd:element name="fechaActividad" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="ultimoContenidoAgregadoPanelSolicitud"/>
+
+            <xsd:element name="ultimoContenidoAgregadoPanelRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenido" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                                    <xsd:element name="titulo" type="xsd:string"/>
+                                    <xsd:element name="tipo" type="xsd:string"/>
+                                    <xsd:element name="imagen" type="xsd:string"/>
+                                    <xsd:element name="generos" type="xsd:string"/>
+                                    <xsd:element name="fecha" type="xsd:string"/>
+                                    <xsd:element name="estado" type="xsd:string"/>
+                                    <xsd:element name="activo" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="resumenGestionPeliculasSeriesSolicitud"/>
+
+            <xsd:element name="resumenGestionPeliculasSeriesRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="totalContenido" type="xsd:int"/>
+                        <xsd:element name="totalPeliculas" type="xsd:int"/>
+                        <xsd:element name="totalSeries" type="xsd:int"/>
+                        <xsd:element name="totalPublicados" type="xsd:int"/>
+                        <xsd:element name="totalDesactivados" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarPeliculasSeriesGestionSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="busqueda" type="xsd:string"/>
+                        <xsd:element name="tipo" type="xsd:string"/>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                        <xsd:element name="estado" type="xsd:string"/>
+                        <xsd:element name="anio" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarPeliculasSeriesGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenido" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                                    <xsd:element name="titulo" type="xsd:string"/>
+                                    <xsd:element name="tituloOriginal" type="xsd:string"/>
+                                    <xsd:element name="imagen" type="xsd:string"/>
+                                    <xsd:element name="tipo" type="xsd:string"/>
+                                    <xsd:element name="generos" type="xsd:string"/>
+                                    <xsd:element name="anio" type="xsd:int"/>
+                                    <xsd:element name="estado" type="xsd:string"/>
+                                    <xsd:element name="trailerUrl" type="xsd:string"/>
+                                    <xsd:element name="activo" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="obtenerDetallePeliculaSerieSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="obtenerDetallePeliculaSerieRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                        <xsd:element name="titulo" type="xsd:string"/>
+                        <xsd:element name="tituloOriginal" type="xsd:string"/>
+                        <xsd:element name="descripcion" type="xsd:string"/>
+                        <xsd:element name="tipo" type="xsd:string"/>
+                        <xsd:element name="estado" type="xsd:string"/>
+                        <xsd:element name="estadoEmision" type="xsd:string"/>
+                        <xsd:element name="anioLanzamiento" type="xsd:int"/>
+                        <xsd:element name="fechaEstreno" type="xsd:string"/>
+                        <xsd:element name="duracionMinutos" type="xsd:int"/>
+                        <xsd:element name="temporadas" type="xsd:int"/>
+                        <xsd:element name="episodios" type="xsd:int"/>
+                        <xsd:element name="imagenPortada" type="xsd:string"/>
+                        <xsd:element name="imagenBanner" type="xsd:string"/>
+                        <xsd:element name="trailerUrl" type="xsd:string"/>
+                        <xsd:element name="destacado" type="xsd:int"/>
+                        <xsd:element name="activo" type="xsd:int"/>
+                        <xsd:element name="fechaCreacion" type="xsd:string"/>
+                        <xsd:element name="fechaActualizacion" type="xsd:string"/>
+                        <xsd:element name="generos" type="xsd:string"/>
+                        <xsd:element name="idsGeneros" type="xsd:string"/>
+                        <xsd:element name="seriePadreId" type="xsd:int"/>
+                        <xsd:element name="numeroTemporada" type="xsd:int"/>
+                        <xsd:element name="tipoRelacion" type="xsd:string"/>
+                        <xsd:element name="padreTitulo" type="xsd:string"/>
+                        <xsd:element name="padreImagenPortada" type="xsd:string"/>
+                        <xsd:element name="padreAnioLanzamiento" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="crearPeliculaSerieSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="titulo" type="xsd:string"/>
+                        <xsd:element name="tituloOriginal" type="xsd:string"/>
+                        <xsd:element name="descripcion" type="xsd:string"/>
+                        <xsd:element name="tipo" type="xsd:string"/>
+                        <xsd:element name="estado" type="xsd:string"/>
+                        <xsd:element name="estadoEmision" type="xsd:string"/>
+                        <xsd:element name="anioLanzamiento" type="xsd:int"/>
+                        <xsd:element name="fechaEstreno" type="xsd:string"/>
+                        <xsd:element name="duracionMinutos" type="xsd:int"/>
+                        <xsd:element name="temporadas" type="xsd:int"/>
+                        <xsd:element name="episodios" type="xsd:int"/>
+                        <xsd:element name="imagenPortada" type="xsd:string"/>
+                        <xsd:element name="imagenBanner" type="xsd:string"/>
+                        <xsd:element name="trailerUrl" type="xsd:string"/>
+                        <xsd:element name="generos" type="xsd:string"/>
+                        <xsd:element name="destacado" type="xsd:int"/>
+                        <xsd:element name="seriePadreId" type="xsd:int"/>
+                        <xsd:element name="numeroTemporada" type="xsd:int"/>
+                        <xsd:element name="tipoRelacion" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="crearPeliculaSerieRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarPeliculaSerieSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                        <xsd:element name="titulo" type="xsd:string"/>
+                        <xsd:element name="tituloOriginal" type="xsd:string"/>
+                        <xsd:element name="descripcion" type="xsd:string"/>
+                        <xsd:element name="tipo" type="xsd:string"/>
+                        <xsd:element name="estado" type="xsd:string"/>
+                        <xsd:element name="estadoEmision" type="xsd:string"/>
+                        <xsd:element name="anioLanzamiento" type="xsd:int"/>
+                        <xsd:element name="fechaEstreno" type="xsd:string"/>
+                        <xsd:element name="duracionMinutos" type="xsd:int"/>
+                        <xsd:element name="temporadas" type="xsd:int"/>
+                        <xsd:element name="episodios" type="xsd:int"/>
+                        <xsd:element name="imagenPortada" type="xsd:string"/>
+                        <xsd:element name="imagenBanner" type="xsd:string"/>
+                        <xsd:element name="trailerUrl" type="xsd:string"/>
+                        <xsd:element name="generos" type="xsd:string"/>
+                        <xsd:element name="destacado" type="xsd:int"/>
+                        <xsd:element name="seriePadreId" type="xsd:int"/>
+                        <xsd:element name="numeroTemporada" type="xsd:int"/>
+                        <xsd:element name="tipoRelacion" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarPeliculaSerieRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="desactivarPeliculaSerieSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="desactivarPeliculaSerieRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="activarPeliculaSerieSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="activarPeliculaSerieRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="contenidoInicioTipo">
+                <xsd:sequence>
+                    <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    <xsd:element name="titulo" type="xsd:string"/>
+                    <xsd:element name="tituloOriginal" type="xsd:string"/>
+                    <xsd:element name="descripcion" type="xsd:string"/>
+                    <xsd:element name="tipo" type="xsd:string"/>
+                    <xsd:element name="generos" type="xsd:string"/>
+                    <xsd:element name="imagenPortada" type="xsd:string"/>
+                    <xsd:element name="imagenBanner" type="xsd:string"/>
+                    <xsd:element name="trailerUrl" type="xsd:string"/>
+                    <xsd:element name="anioLanzamiento" type="xsd:int"/>
+                    <xsd:element name="duracionMinutos" type="xsd:int"/>
+                    <xsd:element name="temporadas" type="xsd:int"/>
+                    <xsd:element name="episodios" type="xsd:int"/>
+                    <xsd:element name="estado" type="xsd:string"/>
+                    <xsd:element name="estadoEmision" type="xsd:string"/>
+                    <xsd:element name="activo" type="xsd:int"/>
+                    <xsd:element name="destacado" type="xsd:int"/>
+                    <xsd:element name="favorito" type="xsd:int"/>
+                    <xsd:element name="seriePadreId" type="xsd:int"/>
+                    <xsd:element name="numeroTemporada" type="xsd:int"/>
+                    <xsd:element name="tipoRelacion" type="xsd:string"/>
+                    <xsd:element name="padreTitulo" type="xsd:string"/>
+                    <xsd:element name="padreImagenPortada" type="xsd:string"/>
+                    <xsd:element name="padreAnioLanzamiento" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="generoInicioTipo">
+                <xsd:sequence>
+                    <xsd:element name="idGenero" type="xsd:int"/>
+                    <xsd:element name="nombreGenero" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:element name="datosInicioUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="datosInicioUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="destacado" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                        <xsd:element name="recomendado" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                        <xsd:element name="ultimo" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                        <xsd:element name="genero" type="tns:generoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="detalleContenidoUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="detalleContenidoUsuarioRespuesta" type="tns:contenidoInicioTipo"/>
+
+            <xsd:element name="buscarContenidoUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="busqueda" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="buscarContenidoUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenido" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="explorarContenidoUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="busqueda" type="xsd:string"/>
+                        <xsd:element name="tipo" type="xsd:string"/>
+                        <xsd:element name="genero" type="xsd:string"/>
+                        <xsd:element name="anio" type="xsd:int"/>
+                        <xsd:element name="orden" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="explorarContenidoUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenido" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="contenidoPorGeneroUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="idGenero" type="xsd:int"/>
+                        <xsd:element name="tipo" type="xsd:string"/>
+                        <xsd:element name="anio" type="xsd:int"/>
+                        <xsd:element name="orden" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="contenidoPorGeneroUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenido" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="favoritosUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="tipo" type="xsd:string"/>
+                        <xsd:element name="anio" type="xsd:int"/>
+                        <xsd:element name="orden" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="favoritosUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenido" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="alternarFavoritoUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="alternarFavoritoUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="favorito" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarSeriesPadreSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="excluirId" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarSeriesPadreRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="seriePadre" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                                    <xsd:element name="titulo" type="xsd:string"/>
+                                    <xsd:element name="anioLanzamiento" type="xsd:int"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="obtenerHijosPeliculaSerieSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="obtenerHijosPeliculaSerieRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="hijo" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                                    <xsd:element name="titulo" type="xsd:string"/>
+                                    <xsd:element name="imagenPortada" type="xsd:string"/>
+                                    <xsd:element name="anioLanzamiento" type="xsd:int"/>
+                                    <xsd:element name="numeroTemporada" type="xsd:int"/>
+                                    <xsd:element name="tipoRelacion" type="xsd:string"/>
+                                    <xsd:element name="tipo" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+
+    <!-- Mensajes -->
+    <message name="listarGenerosSolicitudMsg">
+        <part name="parametros" element="tns:listarGenerosSolicitud"/>
+    </message>
+    <message name="listarGenerosRespuestaMsg">
+        <part name="parametros" element="tns:listarGenerosRespuesta"/>
+    </message>
+
+    <message name="listarGenerosGestionSolicitudMsg">
+        <part name="parametros" element="tns:listarGenerosGestionSolicitud"/>
+    </message>
+
+    <message name="listarGenerosGestionRespuestaMsg">
+        <part name="parametros" element="tns:listarGenerosGestionRespuesta"/>
+    </message>
+
+    <message name="crearGeneroSolicitudMsg">
+        <part name="parametros" element="tns:crearGeneroSolicitud"/>
+    </message>
+
+    <message name="crearGeneroRespuestaMsg">
+        <part name="parametros" element="tns:crearGeneroRespuesta"/>
+    </message>
+
+    <message name="actualizarGeneroSolicitudMsg">
+        <part name="parametros" element="tns:actualizarGeneroSolicitud"/>
+    </message>
+
+    <message name="actualizarGeneroRespuestaMsg">
+        <part name="parametros" element="tns:actualizarGeneroRespuesta"/>
+    </message>
+
+    <message name="desactivarGeneroSolicitudMsg">
+        <part name="parametros" element="tns:desactivarGeneroSolicitud"/>
+    </message>
+
+    <message name="desactivarGeneroRespuestaMsg">
+        <part name="parametros" element="tns:desactivarGeneroRespuesta"/>
+    </message>
+
+    <message name="activarGeneroSolicitudMsg">
+        <part name="parametros" element="tns:activarGeneroSolicitud"/>
+    </message>
+
+    <message name="activarGeneroRespuestaMsg">
+        <part name="parametros" element="tns:activarGeneroRespuesta"/>
+    </message>
+
+    <message name="registrarUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:registrarUsuarioSolicitud"/>
+    </message>
+
+    <message name="registrarUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:registrarUsuarioRespuesta"/>
+    </message>
+
+    <message name="loginUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:loginUsuarioSolicitud"/>
+    </message>
+
+    <message name="loginUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:loginUsuarioRespuesta"/>
+    </message>
+
+    <message name="actualizarPreferenciasUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:actualizarPreferenciasUsuarioSolicitud"/>
+    </message>
+
+    <message name="actualizarPreferenciasUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:actualizarPreferenciasUsuarioRespuesta"/>
+    </message>
+
+    <message name="actualizarUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:actualizarUsuarioSolicitud"/>
+    </message>
+
+    <message name="actualizarUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:actualizarUsuarioRespuesta"/>
+    </message>
+
+    <message name="cambiarContrasenaUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:cambiarContrasenaUsuarioSolicitud"/>
+    </message>
+
+    <message name="cambiarContrasenaUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:cambiarContrasenaUsuarioRespuesta"/>
+    </message>
+
+    <message name="resumenGestionUsuariosSolicitudMsg">
+        <part name="parametros" element="tns:resumenGestionUsuariosSolicitud"/>
+    </message>
+
+    <message name="resumenGestionUsuariosRespuestaMsg">
+        <part name="parametros" element="tns:resumenGestionUsuariosRespuesta"/>
+    </message>
+
+    <message name="listarUsuariosGestionSolicitudMsg">
+        <part name="parametros" element="tns:listarUsuariosGestionSolicitud"/>
+    </message>
+
+    <message name="listarUsuariosGestionRespuestaMsg">
+        <part name="parametros" element="tns:listarUsuariosGestionRespuesta"/>
+    </message>
+
+    <message name="obtenerDetalleUsuarioGestionSolicitudMsg">
+        <part name="parametros" element="tns:obtenerDetalleUsuarioGestionSolicitud"/>
+    </message>
+
+    <message name="obtenerDetalleUsuarioGestionRespuestaMsg">
+        <part name="parametros" element="tns:obtenerDetalleUsuarioGestionRespuesta"/>
+    </message>
+
+    <message name="actualizarRolUsuarioGestionSolicitudMsg">
+        <part name="parametros" element="tns:actualizarRolUsuarioGestionSolicitud"/>
+    </message>
+
+    <message name="actualizarRolUsuarioGestionRespuestaMsg">
+        <part name="parametros" element="tns:actualizarRolUsuarioGestionRespuesta"/>
+    </message>
+
+    <message name="desactivarUsuarioGestionSolicitudMsg">
+        <part name="parametros" element="tns:desactivarUsuarioGestionSolicitud"/>
+    </message>
+
+    <message name="desactivarUsuarioGestionRespuestaMsg">
+        <part name="parametros" element="tns:desactivarUsuarioGestionRespuesta"/>
+    </message>
+
+    <message name="activarUsuarioGestionSolicitudMsg">
+        <part name="parametros" element="tns:activarUsuarioGestionSolicitud"/>
+    </message>
+
+    <message name="activarUsuarioGestionRespuestaMsg">
+        <part name="parametros" element="tns:activarUsuarioGestionRespuesta"/>
+    </message>
+
+    <message name="resumenReportesEstadisticasSolicitudMsg">
+        <part name="parametros" element="tns:resumenReportesEstadisticasSolicitud"/>
+    </message>
+
+    <message name="resumenReportesEstadisticasRespuestaMsg">
+        <part name="parametros" element="tns:resumenReportesEstadisticasRespuesta"/>
+    </message>
+
+    <message name="ultimosUsuariosReportesSolicitudMsg">
+        <part name="parametros" element="tns:ultimosUsuariosReportesSolicitud"/>
+    </message>
+
+    <message name="ultimosUsuariosReportesRespuestaMsg">
+        <part name="parametros" element="tns:ultimosUsuariosReportesRespuesta"/>
+    </message>
+
+    <message name="ultimoContenidoReportesSolicitudMsg">
+        <part name="parametros" element="tns:ultimoContenidoReportesSolicitud"/>
+    </message>
+
+    <message name="ultimoContenidoReportesRespuestaMsg">
+        <part name="parametros" element="tns:ultimoContenidoReportesRespuesta"/>
+    </message>
+
+    <message name="generosMasElegidosReportesSolicitudMsg">
+        <part name="parametros" element="tns:generosMasElegidosReportesSolicitud"/>
+    </message>
+
+    <message name="generosMasElegidosReportesRespuestaMsg">
+        <part name="parametros" element="tns:generosMasElegidosReportesRespuesta"/>
+    </message>
+
+    <message name="contenidoPorGeneroReportesSolicitudMsg">
+        <part name="parametros" element="tns:contenidoPorGeneroReportesSolicitud"/>
+    </message>
+
+    <message name="contenidoPorGeneroReportesRespuestaMsg">
+        <part name="parametros" element="tns:contenidoPorGeneroReportesRespuesta"/>
+    </message>
+
+    <message name="distribucionContenidoReportesSolicitudMsg">
+        <part name="parametros" element="tns:distribucionContenidoReportesSolicitud"/>
+    </message>
+
+    <message name="distribucionContenidoReportesRespuestaMsg">
+        <part name="parametros" element="tns:distribucionContenidoReportesRespuesta"/>
+    </message>
+
+    <message name="estadoContenidoReportesSolicitudMsg">
+        <part name="parametros" element="tns:estadoContenidoReportesSolicitud"/>
+    </message>
+
+    <message name="estadoContenidoReportesRespuestaMsg">
+        <part name="parametros" element="tns:estadoContenidoReportesRespuesta"/>
+    </message>
+
+    <message name="resumenPanelAdministradorSolicitudMsg">
+        <part name="parametros" element="tns:resumenPanelAdministradorSolicitud"/>
+    </message>
+
+    <message name="resumenPanelAdministradorRespuestaMsg">
+        <part name="parametros" element="tns:resumenPanelAdministradorRespuesta"/>
+    </message>
+
+    <message name="actividadRecientePanelSolicitudMsg">
+        <part name="parametros" element="tns:actividadRecientePanelSolicitud"/>
+    </message>
+
+    <message name="actividadRecientePanelRespuestaMsg">
+        <part name="parametros" element="tns:actividadRecientePanelRespuesta"/>
+    </message>
+
+    <message name="ultimoContenidoAgregadoPanelSolicitudMsg">
+        <part name="parametros" element="tns:ultimoContenidoAgregadoPanelSolicitud"/>
+    </message>
+
+    <message name="ultimoContenidoAgregadoPanelRespuestaMsg">
+        <part name="parametros" element="tns:ultimoContenidoAgregadoPanelRespuesta"/>
+    </message>
+
+    <message name="resumenGestionPeliculasSeriesSolicitudMsg">
+        <part name="parametros" element="tns:resumenGestionPeliculasSeriesSolicitud"/>
+    </message>
+
+    <message name="resumenGestionPeliculasSeriesRespuestaMsg">
+        <part name="parametros" element="tns:resumenGestionPeliculasSeriesRespuesta"/>
+    </message>
+
+    <message name="listarPeliculasSeriesGestionSolicitudMsg">
+        <part name="parametros" element="tns:listarPeliculasSeriesGestionSolicitud"/>
+    </message>
+
+    <message name="listarPeliculasSeriesGestionRespuestaMsg">
+        <part name="parametros" element="tns:listarPeliculasSeriesGestionRespuesta"/>
+    </message>
+
+    <message name="obtenerDetallePeliculaSerieSolicitudMsg">
+        <part name="parametros" element="tns:obtenerDetallePeliculaSerieSolicitud"/>
+    </message>
+
+    <message name="obtenerDetallePeliculaSerieRespuestaMsg">
+        <part name="parametros" element="tns:obtenerDetallePeliculaSerieRespuesta"/>
+    </message>
+
+    <message name="crearPeliculaSerieSolicitudMsg">
+        <part name="parametros" element="tns:crearPeliculaSerieSolicitud"/>
+    </message>
+
+    <message name="crearPeliculaSerieRespuestaMsg">
+        <part name="parametros" element="tns:crearPeliculaSerieRespuesta"/>
+    </message>
+
+    <message name="actualizarPeliculaSerieSolicitudMsg">
+        <part name="parametros" element="tns:actualizarPeliculaSerieSolicitud"/>
+    </message>
+
+    <message name="actualizarPeliculaSerieRespuestaMsg">
+        <part name="parametros" element="tns:actualizarPeliculaSerieRespuesta"/>
+    </message>
+
+    <message name="desactivarPeliculaSerieSolicitudMsg">
+        <part name="parametros" element="tns:desactivarPeliculaSerieSolicitud"/>
+    </message>
+
+    <message name="desactivarPeliculaSerieRespuestaMsg">
+        <part name="parametros" element="tns:desactivarPeliculaSerieRespuesta"/>
+    </message>
+
+    <message name="activarPeliculaSerieSolicitudMsg">
+        <part name="parametros" element="tns:activarPeliculaSerieSolicitud"/>
+    </message>
+
+    <message name="activarPeliculaSerieRespuestaMsg">
+        <part name="parametros" element="tns:activarPeliculaSerieRespuesta"/>
+    </message>
+
+    <message name="datosInicioUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:datosInicioUsuarioSolicitud"/>
+    </message>
+
+    <message name="datosInicioUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:datosInicioUsuarioRespuesta"/>
+    </message>
+
+    <message name="detalleContenidoUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:detalleContenidoUsuarioSolicitud"/>
+    </message>
+
+    <message name="detalleContenidoUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:detalleContenidoUsuarioRespuesta"/>
+    </message>
+
+    <message name="buscarContenidoUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:buscarContenidoUsuarioSolicitud"/>
+    </message>
+
+    <message name="buscarContenidoUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:buscarContenidoUsuarioRespuesta"/>
+    </message>
+
+    <message name="explorarContenidoUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:explorarContenidoUsuarioSolicitud"/>
+    </message>
+
+    <message name="explorarContenidoUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:explorarContenidoUsuarioRespuesta"/>
+    </message>
+
+    <message name="contenidoPorGeneroUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:contenidoPorGeneroUsuarioSolicitud"/>
+    </message>
+
+    <message name="contenidoPorGeneroUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:contenidoPorGeneroUsuarioRespuesta"/>
+    </message>
+
+    <message name="favoritosUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:favoritosUsuarioSolicitud"/>
+    </message>
+
+    <message name="favoritosUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:favoritosUsuarioRespuesta"/>
+    </message>
+
+    <message name="alternarFavoritoUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:alternarFavoritoUsuarioSolicitud"/>
+    </message>
+
+    <message name="alternarFavoritoUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:alternarFavoritoUsuarioRespuesta"/>
+    </message>
+
+    <message name="listarSeriesPadreSolicitudMsg">
+        <part name="parametros" element="tns:listarSeriesPadreSolicitud"/>
+    </message>
+
+    <message name="listarSeriesPadreRespuestaMsg">
+        <part name="parametros" element="tns:listarSeriesPadreRespuesta"/>
+    </message>
+
+    <message name="obtenerHijosPeliculaSerieSolicitudMsg">
+        <part name="parametros" element="tns:obtenerHijosPeliculaSerieSolicitud"/>
+    </message>
+
+    <message name="obtenerHijosPeliculaSerieRespuestaMsg">
+        <part name="parametros" element="tns:obtenerHijosPeliculaSerieRespuesta"/>
+    </message>
+
+    <portType name="ElyraPortType">
+        <operation name="listarGeneros">
+            <input message="tns:listarGenerosSolicitudMsg"/>
+            <output message="tns:listarGenerosRespuestaMsg"/>
+        </operation>
+        <operation name="listarGenerosGestion">
+            <input message="tns:listarGenerosGestionSolicitudMsg"/>
+            <output message="tns:listarGenerosGestionRespuestaMsg"/>
+        </operation>
+        <operation name="crearGenero">
+            <input message="tns:crearGeneroSolicitudMsg"/>
+            <output message="tns:crearGeneroRespuestaMsg"/>
+        </operation>
+        <operation name="actualizarGenero">
+            <input message="tns:actualizarGeneroSolicitudMsg"/>
+            <output message="tns:actualizarGeneroRespuestaMsg"/>
+        </operation>
+        <operation name="desactivarGenero">
+            <input message="tns:desactivarGeneroSolicitudMsg"/>
+            <output message="tns:desactivarGeneroRespuestaMsg"/>
+        </operation>
+        <operation name="activarGenero">
+            <input message="tns:activarGeneroSolicitudMsg"/>
+            <output message="tns:activarGeneroRespuestaMsg"/>
+        </operation>
+        <operation name="registrarUsuario">
+            <input message="tns:registrarUsuarioSolicitudMsg"/>
+            <output message="tns:registrarUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="loginUsuario">
+            <input message="tns:loginUsuarioSolicitudMsg"/>
+            <output message="tns:loginUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="actualizarPreferenciasUsuario">
+            <input message="tns:actualizarPreferenciasUsuarioSolicitudMsg"/>
+            <output message="tns:actualizarPreferenciasUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="actualizarUsuario">
+            <input message="tns:actualizarUsuarioSolicitudMsg"/>
+            <output message="tns:actualizarUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="cambiarContrasenaUsuario">
+            <input message="tns:cambiarContrasenaUsuarioSolicitudMsg"/>
+            <output message="tns:cambiarContrasenaUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="resumenGestionUsuarios">
+            <input message="tns:resumenGestionUsuariosSolicitudMsg"/>
+            <output message="tns:resumenGestionUsuariosRespuestaMsg"/>
+        </operation>
+        <operation name="listarUsuariosGestion">
+            <input message="tns:listarUsuariosGestionSolicitudMsg"/>
+            <output message="tns:listarUsuariosGestionRespuestaMsg"/>
+        </operation>
+        <operation name="obtenerDetalleUsuarioGestion">
+            <input message="tns:obtenerDetalleUsuarioGestionSolicitudMsg"/>
+            <output message="tns:obtenerDetalleUsuarioGestionRespuestaMsg"/>
+        </operation>
+        <operation name="actualizarRolUsuarioGestion">
+            <input message="tns:actualizarRolUsuarioGestionSolicitudMsg"/>
+            <output message="tns:actualizarRolUsuarioGestionRespuestaMsg"/>
+        </operation>
+        <operation name="desactivarUsuarioGestion">
+            <input message="tns:desactivarUsuarioGestionSolicitudMsg"/>
+            <output message="tns:desactivarUsuarioGestionRespuestaMsg"/>
+        </operation>
+        <operation name="activarUsuarioGestion">
+            <input message="tns:activarUsuarioGestionSolicitudMsg"/>
+            <output message="tns:activarUsuarioGestionRespuestaMsg"/>
+        </operation>
+        <operation name="resumenReportesEstadisticas">
+            <input message="tns:resumenReportesEstadisticasSolicitudMsg"/>
+            <output message="tns:resumenReportesEstadisticasRespuestaMsg"/>
+        </operation>
+        <operation name="ultimosUsuariosReportes">
+            <input message="tns:ultimosUsuariosReportesSolicitudMsg"/>
+            <output message="tns:ultimosUsuariosReportesRespuestaMsg"/>
+        </operation>
+        <operation name="ultimoContenidoReportes">
+            <input message="tns:ultimoContenidoReportesSolicitudMsg"/>
+            <output message="tns:ultimoContenidoReportesRespuestaMsg"/>
+        </operation>
+        <operation name="generosMasElegidosReportes">
+            <input message="tns:generosMasElegidosReportesSolicitudMsg"/>
+            <output message="tns:generosMasElegidosReportesRespuestaMsg"/>
+        </operation>
+        <operation name="contenidoPorGeneroReportes">
+            <input message="tns:contenidoPorGeneroReportesSolicitudMsg"/>
+            <output message="tns:contenidoPorGeneroReportesRespuestaMsg"/>
+        </operation>
+        <operation name="distribucionContenidoReportes">
+            <input message="tns:distribucionContenidoReportesSolicitudMsg"/>
+            <output message="tns:distribucionContenidoReportesRespuestaMsg"/>
+        </operation>
+        <operation name="estadoContenidoReportes">
+            <input message="tns:estadoContenidoReportesSolicitudMsg"/>
+            <output message="tns:estadoContenidoReportesRespuestaMsg"/>
+        </operation>
+        <operation name="resumenPanelAdministrador">
+            <input message="tns:resumenPanelAdministradorSolicitudMsg"/>
+            <output message="tns:resumenPanelAdministradorRespuestaMsg"/>
+        </operation>
+        <operation name="actividadRecientePanel">
+            <input message="tns:actividadRecientePanelSolicitudMsg"/>
+            <output message="tns:actividadRecientePanelRespuestaMsg"/>
+        </operation>
+        <operation name="ultimoContenidoAgregadoPanel">
+            <input message="tns:ultimoContenidoAgregadoPanelSolicitudMsg"/>
+            <output message="tns:ultimoContenidoAgregadoPanelRespuestaMsg"/>
+        </operation>
+        <operation name="resumenGestionPeliculasSeries">
+            <input message="tns:resumenGestionPeliculasSeriesSolicitudMsg"/>
+            <output message="tns:resumenGestionPeliculasSeriesRespuestaMsg"/>
+        </operation>
+        <operation name="listarPeliculasSeriesGestion">
+            <input message="tns:listarPeliculasSeriesGestionSolicitudMsg"/>
+            <output message="tns:listarPeliculasSeriesGestionRespuestaMsg"/>
+        </operation>
+        <operation name="obtenerDetallePeliculaSerie">
+            <input message="tns:obtenerDetallePeliculaSerieSolicitudMsg"/>
+            <output message="tns:obtenerDetallePeliculaSerieRespuestaMsg"/>
+        </operation>
+        <operation name="crearPeliculaSerie">
+            <input message="tns:crearPeliculaSerieSolicitudMsg"/>
+            <output message="tns:crearPeliculaSerieRespuestaMsg"/>
+        </operation>
+        <operation name="actualizarPeliculaSerie">
+            <input message="tns:actualizarPeliculaSerieSolicitudMsg"/>
+            <output message="tns:actualizarPeliculaSerieRespuestaMsg"/>
+        </operation>
+        <operation name="desactivarPeliculaSerie">
+            <input message="tns:desactivarPeliculaSerieSolicitudMsg"/>
+            <output message="tns:desactivarPeliculaSerieRespuestaMsg"/>
+        </operation>
+        <operation name="activarPeliculaSerie">
+            <input message="tns:activarPeliculaSerieSolicitudMsg"/>
+            <output message="tns:activarPeliculaSerieRespuestaMsg"/>
+        </operation>
+        <operation name="datosInicioUsuario">
+            <input message="tns:datosInicioUsuarioSolicitudMsg"/>
+            <output message="tns:datosInicioUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="detalleContenidoUsuario">
+            <input message="tns:detalleContenidoUsuarioSolicitudMsg"/>
+            <output message="tns:detalleContenidoUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="buscarContenidoUsuario">
+            <input message="tns:buscarContenidoUsuarioSolicitudMsg"/>
+            <output message="tns:buscarContenidoUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="explorarContenidoUsuario">
+            <input message="tns:explorarContenidoUsuarioSolicitudMsg"/>
+            <output message="tns:explorarContenidoUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="contenidoPorGeneroUsuario">
+            <input message="tns:contenidoPorGeneroUsuarioSolicitudMsg"/>
+            <output message="tns:contenidoPorGeneroUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="favoritosUsuario">
+            <input message="tns:favoritosUsuarioSolicitudMsg"/>
+            <output message="tns:favoritosUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="alternarFavoritoUsuario">
+            <input message="tns:alternarFavoritoUsuarioSolicitudMsg"/>
+            <output message="tns:alternarFavoritoUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="listarSeriesPadre">
+            <input message="tns:listarSeriesPadreSolicitudMsg"/>
+            <output message="tns:listarSeriesPadreRespuestaMsg"/>
+        </operation>
+        <operation name="obtenerHijosPeliculaSerie">
+            <input message="tns:obtenerHijosPeliculaSerieSolicitudMsg"/>
+            <output message="tns:obtenerHijosPeliculaSerieRespuestaMsg"/>
+        </operation>
+    </portType>
+
+    <!-- Binding genérico -->
+    <binding name="ElyraBinding" type="tns:ElyraPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="listarGeneros">
+            <soap:operation soapAction="listarGeneros"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="listarGenerosGestion">
+            <soap:operation soapAction="listarGenerosGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="crearGenero">
+            <soap:operation soapAction="crearGenero"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="actualizarGenero">
+            <soap:operation soapAction="actualizarGenero"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="desactivarGenero">
+            <soap:operation soapAction="desactivarGenero"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="activarGenero">
+            <soap:operation soapAction="activarGenero"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="registrarUsuario">
+            <soap:operation soapAction="registrarUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="loginUsuario">
+            <soap:operation soapAction="loginUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="actualizarPreferenciasUsuario">
+            <soap:operation soapAction="actualizarPreferenciasUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="actualizarUsuario">
+            <soap:operation soapAction="actualizarUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="cambiarContrasenaUsuario">
+            <soap:operation soapAction="cambiarContrasenaUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="resumenGestionUsuarios">
+            <soap:operation soapAction="resumenGestionUsuarios"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="listarUsuariosGestion">
+            <soap:operation soapAction="listarUsuariosGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="obtenerDetalleUsuarioGestion">
+            <soap:operation soapAction="obtenerDetalleUsuarioGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="actualizarRolUsuarioGestion">
+            <soap:operation soapAction="actualizarRolUsuarioGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="desactivarUsuarioGestion">
+            <soap:operation soapAction="desactivarUsuarioGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="activarUsuarioGestion">
+            <soap:operation soapAction="activarUsuarioGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="resumenReportesEstadisticas">
+            <soap:operation soapAction="resumenReportesEstadisticas"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="ultimosUsuariosReportes">
+            <soap:operation soapAction="ultimosUsuariosReportes"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="ultimoContenidoReportes">
+            <soap:operation soapAction="ultimoContenidoReportes"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="generosMasElegidosReportes">
+            <soap:operation soapAction="generosMasElegidosReportes"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="contenidoPorGeneroReportes">
+            <soap:operation soapAction="contenidoPorGeneroReportes"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="distribucionContenidoReportes">
+            <soap:operation soapAction="distribucionContenidoReportes"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="estadoContenidoReportes">
+            <soap:operation soapAction="estadoContenidoReportes"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="resumenPanelAdministrador">
+            <soap:operation soapAction="resumenPanelAdministrador"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="actividadRecientePanel">
+            <soap:operation soapAction="actividadRecientePanel"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="ultimoContenidoAgregadoPanel">
+            <soap:operation soapAction="ultimoContenidoAgregadoPanel"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="resumenGestionPeliculasSeries">
+            <soap:operation soapAction="resumenGestionPeliculasSeries"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="listarPeliculasSeriesGestion">
+            <soap:operation soapAction="listarPeliculasSeriesGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="obtenerDetallePeliculaSerie">
+            <soap:operation soapAction="obtenerDetallePeliculaSerie"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="crearPeliculaSerie">
+            <soap:operation soapAction="crearPeliculaSerie"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="actualizarPeliculaSerie">
+            <soap:operation soapAction="actualizarPeliculaSerie"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="desactivarPeliculaSerie">
+            <soap:operation soapAction="desactivarPeliculaSerie"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="activarPeliculaSerie">
+            <soap:operation soapAction="activarPeliculaSerie"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="datosInicioUsuario">
+            <soap:operation soapAction="datosInicioUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="detalleContenidoUsuario">
+            <soap:operation soapAction="detalleContenidoUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="buscarContenidoUsuario">
+            <soap:operation soapAction="buscarContenidoUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="explorarContenidoUsuario">
+            <soap:operation soapAction="explorarContenidoUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="contenidoPorGeneroUsuario">
+            <soap:operation soapAction="contenidoPorGeneroUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="favoritosUsuario">
+            <soap:operation soapAction="favoritosUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="alternarFavoritoUsuario">
+            <soap:operation soapAction="alternarFavoritoUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="listarSeriesPadre">
+            <soap:operation soapAction="listarSeriesPadre"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="obtenerHijosPeliculaSerie">
+            <soap:operation soapAction="obtenerHijosPeliculaSerie"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+    </binding>
+
+    <!-- Servicio genérico -->
+    <service name="ElyraService">
+        <port name="ElyraPort" binding="tns:ElyraBinding">
+            <soap:address location="http://localhost/Elyra-Web-Anime-Peliculas-Series/Api/soap/server.php"/>
+        </port>
+    </service>
+</definitions>

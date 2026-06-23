@@ -1,0 +1,541 @@
+/* =========================
+   FUENTES
+========================= */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* =========================
+   RESET Y BASE
+========================= */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+
+    /* FONDO */
+    background-image: url('../Images/background/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* =========================
+   SWITCH (modo oscuro/claro)
+========================= */
+.switch {
+    padding: 5px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+/* =========================
+   LOGO
+========================= */
+.logo {
+    width: 100px;
+    height: auto;
+}
+
+/* =========================
+   TEXTOS
+========================= */
+h1 {
+    color: var(--color-acento);
+    font-size: 22px;
+    margin-bottom: 0;
+}
+
+h2 {
+    font-size: 20px;
+    color: var(--color-acento);
+}
+
+p {
+    color: var(--color-acento);
+    font-size: 12px;
+}
+
+/* =========================
+   CONTENEDOR PRINCIPAL (LIQUID GLASS)
+========================= */
+.contenedor-principal {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    width: 400px; 
+    padding: 30px; 
+    border-radius: 10px; 
+    box-sizing: border-box; 
+    background: rgba(255,255,255,0.2); 
+    backdrop-filter: blur(15px) saturate(180%); 
+    -webkit-backdrop-filter: blur(15px) saturate(180%); 
+    border: 1px solid rgba(255,255,255,0.4); position: absolute;
+    top: 50%; left: 50%; 
+    transform: translate(-50%, -50%); 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); 
+}
+
+.contenedor-principal2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    width: min(90%, 700px); /* 👈 responsive */
+    padding: 30px;
+
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255,255,255,0.4);
+
+    margin: 50px auto; /* 👈 en vez de absolute */
+
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================
+   ENCABEZADO
+========================= */
+.encabezado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* =========================
+   FORMULARIO
+========================= */
+.formulario form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.formulario label {
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+
+/* =========================
+   INPUT CON ICONO
+========================= */
+.input-box {
+    position: relative;
+    width: 100%;
+}
+
+.input-box > i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-acento);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px 44px 10px 40px;
+
+    border-radius: 5px;
+    border: none;
+    box-sizing: border-box;
+
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.input-box input:focus {
+    outline: 2px solid var(--color-acento);
+    box-shadow: 0 0 8px var(--color-acento-sombra-2);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 6px;
+    top: 0;
+    width: 38px;
+    height: 100%;
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--color-acento);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.toggle-password i {
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.toggle-password:hover {
+    background: transparent;
+    color: var(--color-acento-hover);
+}
+
+.toggle-password:focus {
+    outline: none;
+}
+
+/* =========================
+   OPCIONES (CHECK + LINK)
+========================= */
+.opciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.recordar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.olvidar a {
+    color: var(--color-acento);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.olvidar a:hover {
+    text-decoration: underline;
+    color: var(--color-acento-hover);
+}
+
+/* =========================
+   BOTONES
+========================= */
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+button:hover {
+    background: var(--color-acento);
+    color: white;
+}
+
+.registro {
+    width: 100%;
+}
+
+/* =========================
+   SEPARADOR
+========================= */
+.separador {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    color: var(--color-acento);
+}
+
+.separador::before,
+.separador::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--color-acento);
+}
+
+.fecha-nacimiento {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.campo label {
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.campo input,
+.campo select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  text-align: center;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-sizing: border-box;
+}
+
+.campo option{
+    background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-sizing: border-box;
+
+}
+
+.generos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* CARD */
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 8px;
+  padding: 10px;
+
+  border-radius: 8px; /* más rectangular */
+  background: rgba(255, 255, 255, 0.15);
+
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+
+  font-size: 11px;
+  color: #000; /* texto negro */
+}
+
+/* CHECKBOX REAL */
+.card input {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid var(--color-acento);
+  border-radius: 3px;
+
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+/* CHECK SELECCIONADO */
+.card input:checked {
+  background: var(--color-acento);
+  border: 2px solid var(--color-acento);
+}
+
+/* ICONO CHECK */
+.card input:checked::after {
+  content: "✔";
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  font-size: 12px;
+  color: white;
+}
+
+/* EFECTO AL SELECCIONAR CARD */
+.card:has(input:checked) {
+  border: 1px solid var(--color-acento);
+  transform: scale(1.03);
+}
+
+/* HOVER */
+.card:hover {
+    transform: scale(1.02);
+    outline: 2px solid var(--color-acento-claro);
+    box-shadow: 0 0 8px rgba(255, 255, 255);
+}
+
+.iniciar-sesion{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.iniciar-sesion a {
+    color: var(--color-acento);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.iniciar-sesion a:hover{
+    text-decoration: underline;
+    color: var(--color-acento-hover);
+}
+
+.mensaje-error {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(255, 0, 0, 0.14);
+    color: #b00020;
+    border: 1px solid rgba(176, 0, 32, 0.45);
+    padding: 16px 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.mensaje-error:empty {
+    display: none;
+}
+
+
+/* =========================
+   MODO OSCURO
+========================= */
+body.dark {
+    background-image: url('../Images/background/background-dark.png');
+}
+
+body.dark .contenedor-principal,
+body.dark .contenedor-principal2 {
+    background: rgba(20,20,20,0.5);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    color: var(--color-acento-claro);
+}
+
+body.dark h1,
+body.dark p,
+body.dark h2,
+body.dark .formulario label,
+body.dark .olvidar a,
+body.dark .iniciar-sesion a,
+body.dark .separador {
+    color: var(--color-acento-claro);
+}
+
+body.dark .iniciar-sesion a:hover {
+    color: white;
+}
+
+body.dark .input-box > i {
+    color: var(--color-acento-claro) !important;
+
+}
+
+body.dark .toggle-password {
+    color: var(--color-acento-claro);
+    background: transparent;
+}
+
+body.dark .toggle-password:hover {
+    background: transparent;
+    color: white;
+}
+
+body.dark .toggle-password:focus {
+    outline: none;
+}
+
+body.dark .input-box input::placeholder {
+    color: var(--color-acento-claro) !important;
+}
+
+body.dark .input-box input,
+body.dark .campo input,
+body.dark .campo select,
+body.dark .card {
+     background: rgba(20,20,20,0.5);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    color:white;
+
+}
+
+body.dark .campo option{
+        background: rgba(20,20,20);
+        color:white;
+}
+
+body.dark .campo select:focus {
+    outline: 2px solid var(--color-acento-claro);
+    box-shadow: 0 0 8px rgba(255, 255, 255);
+}
+
+body.dark .input-box input:focus {
+    outline: 2px solid var(--color-acento-claro);
+    box-shadow: 0 0 8px var(--color-acento-oscuro-sombra);
+}
+
+
+
+body.dark button {
+    background: rgba(40,40,40,0.5);
+    color: var(--color-acento-claro);
+}
+
+body.dark button:hover {
+    background: var(--color-acento);
+    color: white;
+}
+
+body.dark .card input:checked {
+    background: var(--color-acento);
+    border: 2px solid var(--color-acento);
+    outline: 2px solid var(--color-acento-claro);
+    box-shadow: 0 0 8px rgba(255, 255, 255);
+}
+
+
+body.dark .card input:checked::after {
+    color: white;
+}
+
+body.dark .mensaje-error {
+    background: rgba(255, 80, 80, 0.16);
+    color: #ffb3b3;
+    border-color: rgba(255, 128, 128, 0.5);
+}

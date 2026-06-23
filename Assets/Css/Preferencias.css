@@ -1,0 +1,219 @@
+/* =========================
+   PREFERENCIAS
+========================= */
+.preferencias-header {
+    margin-bottom: 22px;
+}
+
+.preferencias-header h2 {
+    font-size: 28px;
+    margin-bottom: 6px;
+    color: #1f1f2e;
+}
+
+.preferencias-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.contenedor-preferencias {
+    max-width: 860px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.58);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.64);
+    backdrop-filter: blur(18px) saturate(175%);
+    -webkit-backdrop-filter: blur(18px) saturate(175%);
+    box-shadow: 0 16px 34px var(--color-acento-sombra);
+}
+
+.contenedor-preferencias h3 {
+    color: #1f1f2e;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.contenedor-preferencias > p {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
+
+.contenedor-preferencias .generos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.contenedor-preferencias .card {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    font-size: 11px;
+    color: #000;
+}
+
+.contenedor-preferencias .card input {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-acento);
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+.contenedor-preferencias .card input:checked {
+    background: var(--color-acento);
+    border: 2px solid var(--color-acento);
+    box-shadow: 0 3px 8px var(--color-acento-sombra-2);
+}
+
+.contenedor-preferencias .card input:checked::after {
+    content: "✔";
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    font-size: 12px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.45);
+}
+
+.contenedor-preferencias .card:has(input:checked) {
+    border: 1px solid var(--color-acento);
+    transform: scale(1.03);
+}
+
+.contenedor-preferencias .card:hover {
+    transform: scale(1.02);
+    outline: 2px solid var(--color-acento-claro);
+    box-shadow: 0 0 8px rgba(255, 255, 255);
+}
+
+.acciones-preferencias {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.acciones-preferencias p {
+    color: #555667;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.acciones-preferencias button {
+    border: none;
+    border-radius: 8px;
+    background: var(--color-acento);
+    color: #fff;
+    padding: 11px 26px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.acciones-preferencias button:hover {
+    background: var(--color-acento-hover);
+    transform: translateY(-1px);
+}
+
+.mensaje-preferencias {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.mensaje-preferencias:empty {
+    display: none;
+}
+
+.mensaje-preferencias.error {
+    background: rgba(255, 0, 0, 0.14);
+    color: #b00020;
+    border: 1px solid rgba(176, 0, 32, 0.45);
+}
+
+.mensaje-preferencias.exito {
+    background: rgba(31, 132, 73, 0.14);
+    color: #1f8449;
+    border: 1px solid rgba(31, 132, 73, 0.35);
+}
+
+body.dark .preferencias-header p,
+body.dark .contenedor-preferencias > p,
+body.dark .acciones-preferencias p {
+    color: rgba(243,243,255,0.72);
+}
+
+body.dark .contenedor-preferencias {
+    background: rgba(24,24,36,0.72);
+    border-color: rgba(255,255,255,0.12);
+    box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+}
+
+body.dark .contenedor-preferencias h3 {
+    color: #f3f3ff;
+}
+
+body.dark .contenedor-preferencias .card {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.14);
+    color: #f3f3ff;
+}
+
+body.dark .contenedor-preferencias .card input {
+    border-color: var(--color-acento-claro);
+}
+
+body.dark .contenedor-preferencias .card input:checked {
+    background: var(--color-acento-claro);
+    border-color: var(--color-acento-claro);
+    box-shadow: 0 3px 8px var(--color-acento-oscuro-sombra);
+}
+
+body.dark .contenedor-preferencias .card input:checked::after {
+    color: #181824;
+    text-shadow: 0 2px 4px rgba(255,255,255,0.3);
+}
+
+body.dark .contenedor-preferencias .card:has(input:checked) {
+    border-color: var(--color-acento-claro);
+}
+
+body.dark .contenedor-preferencias .card:hover {
+    outline-color: var(--color-acento-oscuro-outline);
+    box-shadow: 0 0 8px var(--color-acento-oscuro-suave-3);
+}
+
+body.dark .acciones-preferencias button {
+    background: var(--color-acento-claro);
+    color: #181824;
+}
+
+body.dark .acciones-preferencias button:hover {
+    background: var(--color-acento-claro-hover);
+}

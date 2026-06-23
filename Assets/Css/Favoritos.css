@@ -1,0 +1,303 @@
+.favoritos-usuario {
+    padding-top: 22px;
+}
+
+.encabezado-favoritos {
+    margin-bottom: 16px;
+}
+
+.encabezado-favoritos h1 {
+    color: #17172a;
+    font-size: 26px;
+    line-height: 1.1;
+    font-weight: 900;
+    letter-spacing: 0;
+    margin-bottom: 5px;
+}
+
+.encabezado-favoritos p {
+    color: #6f7488;
+    font-size: 13px;
+    line-height: 1.45;
+    font-weight: 700;
+}
+
+.resumen-favoritos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.resumen-favoritos article,
+.filtros-favoritos,
+.catalogo-favoritos {
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.72);
+    background: rgba(255,255,255,0.68);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    box-shadow: 0 16px 34px rgba(31,31,46,0.08);
+}
+
+.resumen-favoritos article {
+    min-height: 96px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 6px 12px;
+}
+
+.resumen-favoritos i {
+    grid-row: 1 / 3;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-acento);
+    background: var(--color-acento-suave);
+    font-size: 16px;
+}
+
+.resumen-favoritos span {
+    color: #6f7488;
+    font-size: 11px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.resumen-favoritos strong {
+    color: #17172a;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.filtros-favoritos {
+    padding: 16px;
+    margin-bottom: 18px;
+}
+
+.form-filtros-favoritos {
+    display: grid;
+    grid-template-columns: minmax(210px, 1.25fr) minmax(110px, 0.55fr) minmax(170px, 0.9fr) 92px 38px;
+    align-items: end;
+    gap: 12px;
+}
+
+.grupo-tipos-favoritos,
+.campo-filtro-favorito {
+    min-width: 0;
+}
+
+.grupo-tipos-favoritos > span,
+.campo-filtro-favorito label {
+    display: block;
+    color: #5e6579;
+    font-size: 11px;
+    font-weight: 900;
+    margin-bottom: 7px;
+}
+
+.grupo-tipos-favoritos div {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.chip-tipo-favorito {
+    min-height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    color: #686f82;
+    background: rgba(126,87,239,0.08);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.chip-tipo-favorito:hover,
+.chip-tipo-favorito.activo {
+    transform: translateY(-2px);
+    color: #fff;
+    background: var(--color-acento);
+    border-color: var(--color-acento);
+}
+
+.campo-filtro-favorito select {
+    width: 100%;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid rgba(126,87,239,0.16);
+    color: #17172a;
+    background: rgba(255,255,255,0.92);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    outline: none;
+    padding: 0 10px;
+}
+
+.campo-filtro-favorito select:focus {
+    border-color: var(--color-acento);
+    box-shadow: 0 0 0 3px var(--color-acento-suave);
+}
+
+.btn-aplicar-favorito,
+.btn-limpiar-favorito {
+    height: 38px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-aplicar-favorito {
+    border: 1px solid var(--color-acento);
+    color: #fff;
+    background: var(--color-acento);
+}
+
+.btn-limpiar-favorito {
+    border: 1px solid rgba(126,87,239,0.16);
+    color: var(--color-acento);
+    background: var(--color-acento-suave);
+}
+
+.btn-aplicar-favorito:hover,
+.btn-limpiar-favorito:hover {
+    transform: translateY(-2px);
+}
+
+.catalogo-favoritos {
+    padding: 16px;
+    background: rgba(255,255,255,0.58);
+}
+
+.grid-favoritos-contenido {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 18px 14px;
+}
+
+.grid-favoritos-contenido .card-contenido-inicio {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.grid-favoritos-contenido .card-contenido-inicio:hover {
+    transform: translateY(-3px);
+}
+
+.grid-favoritos-contenido .card-contenido-inicio.removiendo {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+.favoritos-vacio {
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #747a8d;
+    text-align: center;
+}
+
+.favoritos-vacio i {
+    width: 58px;
+    height: 58px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef3b73;
+    background: rgba(239,59,115,0.12);
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.favoritos-vacio h2 {
+    color: #17172a;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.favoritos-vacio p {
+    max-width: 360px;
+    font-size: 13px;
+    line-height: 1.45;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.favoritos-vacio a {
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: var(--color-acento);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 900;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.favoritos-vacio a:hover {
+    transform: translateY(-2px);
+    background: var(--color-acento-hover);
+}
+
+body.dark .encabezado-favoritos h1,
+body.dark .resumen-favoritos strong,
+body.dark .favoritos-vacio h2,
+body.dark .campo-filtro-favorito select {
+    color: #f4f0ff;
+}
+
+body.dark .encabezado-favoritos p,
+body.dark .resumen-favoritos span,
+body.dark .grupo-tipos-favoritos > span,
+body.dark .campo-filtro-favorito label,
+body.dark .favoritos-vacio {
+    color: #b8b2c8;
+}
+
+body.dark .resumen-favoritos article,
+body.dark .filtros-favoritos,
+body.dark .catalogo-favoritos {
+    border-color: rgba(255,255,255,0.08);
+    background: rgba(18,18,30,0.74);
+    box-shadow: 0 18px 36px rgba(0,0,0,0.18);
+}
+
+body.dark .chip-tipo-favorito,
+body.dark .campo-filtro-favorito select {
+    border-color: rgba(255,255,255,0.1);
+    color: #d6d0e4;
+    background: rgba(255,255,255,0.08);
+}
+
+body.dark .campo-filtro-favorito select option {
+    color: #f4f0ff;
+    background: #171528;
+}
