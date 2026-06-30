@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 session_start();
 require_once '../../Api/soap/ClienteSOAP.php';
 require_once '../../Models/Sesion.php';
@@ -11,7 +12,7 @@ $clienteSOAP = new ClienteSOAP();
 try {
     $generos = Genero::normalizarListado($clienteSOAP->listarGeneros());
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('Registrarse.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/registro', $_SERVER);
 }
 
 ?>
@@ -20,8 +21,9 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Sesion.css">
+    <base href="/elyra/Views/Usuario/">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Sesion.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico" data-accent-favicon>
@@ -39,7 +41,7 @@ try {
             </div>
 
             <div class="encabezado">
-            <img src="../../Assets/Images/logos/logos/morado.png" alt="Logo" class="logo" data-accent-logo>
+            <img src="../../Assets/Images/logos/logos/morado.webp" alt="Logo" class="logo" data-accent-logo loading="lazy" decoding="async">
 
             <h1>ELYRA</h1>
             <p>Tu Mundo, Tu Historia</p>
@@ -50,6 +52,7 @@ try {
 
         <div class="formulario">
         <form method="POST"  action="../../Controller/ControladorUsuario.php">
+                <?php echo Seguridad::campoCsrf(); ?>
         <!-- Usuario -->
         <label for="usuario">Usuario</label>
         <div class="input-box">
@@ -154,12 +157,12 @@ try {
     </div>
 
     <div class="iniciar-sesion">
-        <a href="IniciarSesion.php">¿Ya tienes una cuenta? Inicia Sesión</a>
+        <a href="/elyra/login">¿Ya tienes una cuenta? Inicia Sesión</a>
     </div>
 </div>
 </div>
 <script src="../../Assets/Js/date.js"></script>
 <script src="../../Assets/Js/password-toggle.js"></script>
-<script src="../../Assets/Js/dark-mode.js"></script>
+<script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

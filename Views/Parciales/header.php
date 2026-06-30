@@ -15,7 +15,7 @@ $mostrarBusquedaUsuario = !Navegacion::esAdministrador($_SESSION);
     </div>
 
     <?php if ($mostrarBusquedaUsuario) { ?>
-        <form class="busqueda" autocomplete="off" data-busqueda-contenido data-endpoint-busqueda="../../Controller/ControladorBusquedaContenido.php">
+        <form class="busqueda" autocomplete="off" data-busqueda-contenido data-endpoint-busqueda="/elyra/Controller/ControladorBusquedaContenido.php">
             <input type="text" name="busqueda" placeholder="Buscar películas o series..." aria-label="Buscar películas o series" data-input-busqueda-contenido>
             <button type="button" class="btn-buscar" aria-label="Buscar">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -32,8 +32,8 @@ $mostrarBusquedaUsuario = !Navegacion::esAdministrador($_SESSION);
         </button>
 
         <ul class="menu-desplegable">
-            <li><a href="../Usuario/perfil.php">Perfil</a></li>
-            <li><a href="../Usuario/CerrarSesion.php">Cerrar Sesión</a></li>
+            <li><a href="<?php echo Navegacion::url('perfil'); ?>">Perfil</a></li>
+            <li><a href="<?php echo Navegacion::url('cerrar-sesion'); ?>">Cerrar Sesión</a></li>
         </ul>
     </div>
 </header>

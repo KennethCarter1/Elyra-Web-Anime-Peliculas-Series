@@ -22,18 +22,7 @@ function obtenerVariableEnv($nombre, $valorPorDefecto)
 
 function obtenerBaseUrlProyecto()
 {
-    $scriptName = '';
-    if (isset($_SERVER['SCRIPT_NAME'])) {
-        $scriptName = $_SERVER['SCRIPT_NAME'];
-    }
-
-    $partes = explode('/', trim($scriptName, '/'));
-
-    if (isset($partes[0]) && $partes[0] !== '') {
-        return '/' . $partes[0];
-    }
-
-    return '';
+    return '/elyra';
 }
 
 function obtenerPaginaIntentada()
@@ -48,8 +37,8 @@ function obtenerPaginaIntentada()
         $paginaIntentada = $_SERVER['REQUEST_URI'];
     }
 
-    if ($paginaIntentada === '' || strpos($paginaIntentada, 'Errorbd.php') !== false) {
-        $paginaIntentada = obtenerBaseUrlProyecto() . '/Index.php';
+    if ($paginaIntentada === '' || strpos($paginaIntentada, 'Errorbd.php') !== false || strpos($paginaIntentada, 'error-bd') !== false) {
+        $paginaIntentada = obtenerBaseUrlProyecto() . '/';
     }
 
     return $paginaIntentada;
@@ -59,7 +48,7 @@ function redirigirErrorBaseDatos()
 {
     $baseUrl = obtenerBaseUrlProyecto();
     $paginaIntentada = obtenerPaginaIntentada();
-    $urlError = $baseUrl . '/Views/Errores/Errorbd.php?retorno=' . urlencode($paginaIntentada);
+    $urlError = $baseUrl . '/error-bd?retorno=' . urlencode($paginaIntentada);
 
     header('Location: ' . $urlError);
     exit;

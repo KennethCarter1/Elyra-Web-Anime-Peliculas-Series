@@ -7,7 +7,7 @@ require_once '../../Models/Sesion.php';
 require_once '../../Api/soap/ClienteSOAP.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
@@ -42,12 +42,12 @@ try {
 
     $aniosGenero = Inicio::aniosExplorar($contenidoBaseGenero);
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Contenido/generos.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/generos', $_SERVER);
 }
 
 $nombreGeneroSeleccionado = Genero::nombreUsuarioPorId($generosUsuario, $filtros['genero']);
 $retornoFavorito = Inicio::retornoFavoritoGenero($filtros);
-$urlDetalleContenido = 'detalle.php';
+$urlDetalleContenido = '/elyra/detalle';
 $tiposGenero = Inicio::tiposExplorar();
 $ordenesGenero = Inicio::ordenesExplorar();
 ?>
@@ -56,12 +56,13 @@ $ordenesGenero = Inicio::ordenesExplorar();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Contenido/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
-    <link rel="stylesheet" href="../../Assets/Css/Inicio.css">
-    <link rel="stylesheet" href="../../Assets/Css/Generos.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Inicio.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Generos.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title>Géneros</title>
 </head>
@@ -171,6 +172,6 @@ $ordenesGenero = Inicio::ordenesExplorar();
         </section>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

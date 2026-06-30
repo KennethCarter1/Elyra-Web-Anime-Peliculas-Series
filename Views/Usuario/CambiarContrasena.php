@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 session_start();
 require_once '../../Models/Sesion.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
@@ -15,10 +16,11 @@ $tipoMensajeCambiarContrasena = Sesion::tomarMensaje('tipo_mensaje_cambiar_contr
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Usuario/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/CambiarContrasena.css">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title>Cambiar Contraseña</title>
@@ -47,6 +49,7 @@ $tipoMensajeCambiarContrasena = Sesion::tomarMensaje('tipo_mensaje_cambiar_contr
             <?php } ?>
 
             <form class="form-cambiar-contrasena" method="POST" action="../../Controller/ControladorUsuario.php">
+                <?php echo Seguridad::campoCsrf(); ?>
                 <div class="campo-contrasena">
                     <label for="contrasena_actual">Contraseña actual</label>
                     <div class="input-contrasena">
@@ -105,6 +108,6 @@ $tipoMensajeCambiarContrasena = Sesion::tomarMensaje('tipo_mensaje_cambiar_contr
 
     <script src="../../Assets/Js/password-toggle.js"></script>
     <script src="../../Assets/Js/password-requisitos.js"></script>
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 session_start();
 require_once '../../Models/Inicio.php';
 require_once '../../Models/Navegacion.php';
@@ -6,7 +7,7 @@ require_once '../../Models/Sesion.php';
 require_once '../../Api/soap/ClienteSOAP.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
@@ -15,6 +16,7 @@ $destacados = Inicio::listaInicial();
 $recomendaciones = Inicio::listaInicial();
 $ultimosAgregados = Inicio::listaInicial();
 $generosInicio = Inicio::listaInicial();
+$panelesPersonalizados = Inicio::listaInicial();
 $mensajeFavorito = Sesion::tomarMensaje('mensaje_favorito');
 $tipoMensajeFavorito = Sesion::tomarMensaje('tipo_mensaje_favorito', 'exito');
 
@@ -26,23 +28,25 @@ try {
     $recomendaciones = Inicio::normalizarListaContenido($datosInicio['recomendaciones']);
     $ultimosAgregados = Inicio::normalizarListaContenido($datosInicio['ultimos']);
     $generosInicio = Inicio::normalizarGeneros($datosInicio['generos']);
+    $panelesPersonalizados = Inicio::normalizarPanelesPersonalizados($datosInicio['paneles']);
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Usuario/inicio.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/inicio', $_SERVER);
 }
 
-$retornoFavorito = '../Views/Usuario/inicio.php';
-$urlDetalleContenido = '../Contenido/detalle.php';
+$retornoFavorito = '/elyra/inicio';
+$urlDetalleContenido = '/elyra/detalle';
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Usuario/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
-    <link rel="stylesheet" href="../../Assets/Css/Inicio.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Inicio.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title>Inicio</title>
 </head>
@@ -76,11 +80,11 @@ $urlDetalleContenido = '../Contenido/detalle.php';
                         <article class="<?php echo $claseSlide; ?>" data-slide-destacado>
                             <div class="fondo-slide-destacado">
                                 <?php if ($destacado['trailerEmbedUrl'] !== '') { ?>
-                                    <iframe data-video-src="<?php echo Inicio::valorSeguro($destacado['trailerEmbedUrl']); ?>" title="<?php echo Inicio::valorSeguro($destacado['titulo']); ?>" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                                    <iframe data-video-src="<?php echo Inicio::valorSeguro($destacado['trailerEmbedUrl']); ?>" title="<?php echo Inicio::valorSeguro($destacado['titulo']); ?>" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" loading="lazy"></iframe>
                                 <?php } elseif ($destacado['imagenBannerUrl'] !== '') { ?>
-                                    <img src="<?php echo Inicio::valorSeguro($destacado['imagenBannerUrl']); ?>" alt="<?php echo Inicio::valorSeguro($destacado['titulo']); ?>">
+                                    <img src="<?php echo Inicio::valorSeguro($destacado['imagenBannerUrl']); ?>" alt="<?php echo Inicio::valorSeguro($destacado['titulo']); ?>" loading="lazy" decoding="async">
                                 <?php } elseif ($destacado['imagenPortadaUrl'] !== '') { ?>
-                                    <img src="<?php echo Inicio::valorSeguro($destacado['imagenPortadaUrl']); ?>" alt="<?php echo Inicio::valorSeguro($destacado['titulo']); ?>">
+                                    <img src="<?php echo Inicio::valorSeguro($destacado['imagenPortadaUrl']); ?>" alt="<?php echo Inicio::valorSeguro($destacado['titulo']); ?>" loading="lazy" decoding="async">
                                 <?php } ?>
                             </div>
 
@@ -95,12 +99,13 @@ $urlDetalleContenido = '../Contenido/detalle.php';
                                 </div>
 
                                 <div class="acciones-destacado">
-                                    <a href="../Contenido/detalle.php?id=<?php echo (int)$destacado['id']; ?>" class="btn-ver-detalle">
+                                    <a href="/elyra/detalle?id=<?php echo (int)$destacado['id']; ?>" class="btn-ver-detalle">
                                         <i class="fa-solid fa-circle-info"></i>
                                         <span>Ver detalles</span>
                                     </a>
 
                                     <form method="POST" action="../../Controller/ControladorFavoritos.php">
+                <?php echo Seguridad::campoCsrf(); ?>
                                         <input type="hidden" name="id_pelicula_serie" value="<?php echo (int)$destacado['id']; ?>">
                                         <input type="hidden" name="retorno" value="<?php echo Inicio::valorSeguro($retornoFavorito); ?>">
                                         <button type="submit" name="AlternarFavorito" value="1" class="btn-favorito-destacado <?php echo Inicio::valorSeguro($destacado['favoritoClase']); ?>" aria-label="<?php echo Inicio::valorSeguro($destacado['favoritoTexto']); ?>">
@@ -173,6 +178,25 @@ $urlDetalleContenido = '../Contenido/detalle.php';
             </div>
         </section>
 
+        <?php foreach ($panelesPersonalizados as $panelInicio) { ?>
+            <section class="seccion-contenido-inicio">
+                <div class="encabezado-seccion-inicio">
+                    <div>
+                        <h3><?php echo Inicio::valorSeguro($panelInicio['titulo']); ?></h3>
+                        <?php if ($panelInicio['descripcion'] !== '') { ?>
+                            <p><?php echo Inicio::valorSeguro($panelInicio['descripcion']); ?></p>
+                        <?php } ?>
+                    </div>
+                </div>
+
+                <div class="grid-contenido-inicio">
+                    <?php foreach ($panelInicio['contenido'] as $contenido) { ?>
+                        <?php include '../Contenido/parcial-card-contenido.php'; ?>
+                    <?php } ?>
+                </div>
+            </section>
+        <?php } ?>
+
         <section class="explorar-generos-inicio">
             <div class="encabezado-seccion-inicio">
                 <h3>Explorar por género</h3>
@@ -180,7 +204,7 @@ $urlDetalleContenido = '../Contenido/detalle.php';
 
             <div class="lista-generos-inicio">
                 <?php foreach ($generosInicio as $generoInicio) { ?>
-                    <a href="../Contenido/generos.php?genero=<?php echo (int)$generoInicio['id']; ?>" class="genero-inicio">
+                    <a href="/elyra/generos?genero=<?php echo (int)$generoInicio['id']; ?>" class="genero-inicio">
                         <i class="<?php echo Inicio::valorSeguro($generoInicio['icono']); ?>"></i>
                         <span><?php echo Inicio::valorSeguro($generoInicio['nombre']); ?></span>
                     </a>
@@ -189,7 +213,7 @@ $urlDetalleContenido = '../Contenido/detalle.php';
         </section>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
     <script src="../../Assets/Js/inicio-carrusel.js"></script>
 </body>
 </html>

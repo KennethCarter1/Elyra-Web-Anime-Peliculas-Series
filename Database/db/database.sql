@@ -85,3 +85,26 @@ CREATE TABLE favoritos_usuario (
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     FOREIGN KEY (id_pelicula_serie) REFERENCES peliculas_series(id_pelicula_serie) ON DELETE CASCADE
 );
+
+-- Paneles personalizados para la página de inicio
+CREATE TABLE paneles_inicio (
+    id_panel_inicio INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(120) NOT NULL,
+    descripcion VARCHAR(255) DEFAULT '',
+    orden INT DEFAULT 0,
+    activo TINYINT(1) DEFAULT 1,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Contenido elegido manualmente para cada panel de inicio
+CREATE TABLE paneles_inicio_contenido (
+    id_panel_inicio_contenido INT AUTO_INCREMENT PRIMARY KEY,
+    id_panel_inicio INT NOT NULL,
+    id_pelicula_serie INT NOT NULL,
+    orden INT DEFAULT 0,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (id_panel_inicio, id_pelicula_serie),
+    FOREIGN KEY (id_panel_inicio) REFERENCES paneles_inicio(id_panel_inicio) ON DELETE CASCADE,
+    FOREIGN KEY (id_pelicula_serie) REFERENCES peliculas_series(id_pelicula_serie) ON DELETE CASCADE
+);

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 session_start();
 require_once '../../Models/Inicio.php';
 require_once '../../Models/Navegacion.php';
@@ -6,7 +7,7 @@ require_once '../../Models/Sesion.php';
 require_once '../../Api/soap/ClienteSOAP.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
@@ -16,7 +17,7 @@ if (isset($_GET['id'])) {
 }
 
 if ($idPeliculaSerie <= 0) {
-    header('Location: ../Errores/Error404.php');
+    header('Location: /elyra/error-404');
     exit;
 }
 
@@ -30,11 +31,11 @@ try {
         $clienteSOAP->detalleContenidoUsuario($idPeliculaSerie, $_SESSION['usuario'])
     );
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Contenido/detalle.php?id=' . $idPeliculaSerie, $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/detalle?id=' . $idPeliculaSerie, $_SERVER);
 }
 
 if (empty($detalleContenido) || (int)$detalleContenido['id'] <= 0) {
-    header('Location: ../Errores/Error404.php');
+    header('Location: /elyra/error-404');
     exit;
 }
 
@@ -51,7 +52,7 @@ try {
     $hijosContenido = [];
 }
 
-$retornoFavorito = '../Views/Contenido/detalle.php?id=' . (int)$detalleContenido['id'];
+$retornoFavorito = '/elyra/detalle?id=' . (int)$detalleContenido['id'];
 $generosDetalle = Inicio::listaGenerosTexto($detalleContenido['generos']);
 ?>
 <!DOCTYPE html>
@@ -59,11 +60,12 @@ $generosDetalle = Inicio::listaGenerosTexto($detalleContenido['generos']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Contenido/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
-    <link rel="stylesheet" href="../../Assets/Css/Inicio.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Inicio.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title><?php echo Inicio::valorSeguro($detalleContenido['titulo']); ?></title>
 </head>
@@ -81,9 +83,9 @@ $generosDetalle = Inicio::listaGenerosTexto($detalleContenido['generos']);
         <section class="banner-detalle-contenido">
             <div class="media-banner-detalle">
                 <?php if ($detalleContenido['imagenBannerUrl'] !== '') { ?>
-                    <img src="<?php echo Inicio::valorSeguro($detalleContenido['imagenBannerUrl']); ?>" alt="<?php echo Inicio::valorSeguro($detalleContenido['titulo']); ?>">
+                    <img src="<?php echo Inicio::valorSeguro($detalleContenido['imagenBannerUrl']); ?>" alt="<?php echo Inicio::valorSeguro($detalleContenido['titulo']); ?>" loading="lazy" decoding="async">
                 <?php } elseif ($detalleContenido['imagenPortadaUrl'] !== '') { ?>
-                    <img src="<?php echo Inicio::valorSeguro($detalleContenido['imagenPortadaUrl']); ?>" alt="<?php echo Inicio::valorSeguro($detalleContenido['titulo']); ?>">
+                    <img src="<?php echo Inicio::valorSeguro($detalleContenido['imagenPortadaUrl']); ?>" alt="<?php echo Inicio::valorSeguro($detalleContenido['titulo']); ?>" loading="lazy" decoding="async">
                 <?php } else { ?>
                     <div class="banner-detalle-vacio">
                         <i class="fa-solid fa-clapperboard"></i>
@@ -91,12 +93,13 @@ $generosDetalle = Inicio::listaGenerosTexto($detalleContenido['generos']);
                 <?php } ?>
             </div>
 
-            <a href="../Usuario/inicio.php" class="volver-detalle">
+            <a href="/elyra/inicio" class="volver-detalle">
                 <i class="fa-solid fa-arrow-left"></i>
                 <span>Volver</span>
             </a>
 
             <form method="POST" action="../../Controller/ControladorFavoritos.php" class="form-favorito-banner-detalle">
+                <?php echo Seguridad::campoCsrf(); ?>
                 <input type="hidden" name="id_pelicula_serie" value="<?php echo (int)$detalleContenido['id']; ?>">
                 <input type="hidden" name="retorno" value="<?php echo Inicio::valorSeguro($retornoFavorito); ?>">
                 <button type="submit" name="AlternarFavorito" value="1" class="btn-favoritos-banner-detalle <?php echo Inicio::valorSeguro($detalleContenido['favoritoClase']); ?>" aria-label="<?php echo Inicio::valorSeguro($detalleContenido['favoritoTexto']); ?>">
@@ -200,9 +203,9 @@ $generosDetalle = Inicio::listaGenerosTexto($detalleContenido['generos']);
 
                 <div class="relacionados-detalle-grid">
                     <?php if ($contenidoRelacionado !== null) { ?>
-                        <a href="detalle.php?id=<?php echo (int)$contenidoRelacionado['seriePadreId']; ?>" class="tarjeta-relacionado">
+                        <a href="/elyra/detalle?id=<?php echo (int)$contenidoRelacionado['seriePadreId']; ?>" class="tarjeta-relacionado">
                             <?php if ($contenidoRelacionado['padreImagenPortadaUrl'] !== '') { ?>
-                                <img src="<?php echo Inicio::valorSeguro($contenidoRelacionado['padreImagenPortadaUrl']); ?>" alt="<?php echo Inicio::valorSeguro($contenidoRelacionado['padreTitulo']); ?>">
+                                <img src="<?php echo Inicio::valorSeguro($contenidoRelacionado['padreImagenPortadaUrl']); ?>" alt="<?php echo Inicio::valorSeguro($contenidoRelacionado['padreTitulo']); ?>" loading="lazy" decoding="async">
                             <?php } else { ?>
                                 <div class="tarjeta-relacionado-sin-imagen">
                                     <i class="fa-solid fa-clapperboard"></i>
@@ -216,7 +219,7 @@ $generosDetalle = Inicio::listaGenerosTexto($detalleContenido['generos']);
                     <?php } ?>
 
                     <?php foreach ($hijosContenido as $hijo) { ?>
-                        <a href="detalle.php?id=<?php echo (int)$hijo->idPeliculaSerie; ?>" class="tarjeta-relacionado">
+                        <a href="/elyra/detalle?id=<?php echo (int)$hijo->idPeliculaSerie; ?>" class="tarjeta-relacionado">
                             <?php
                                 $hijoImagen = '';
                                 if (isset($hijo->imagenPortada) && $hijo->imagenPortada !== '') {
@@ -229,7 +232,7 @@ $generosDetalle = Inicio::listaGenerosTexto($detalleContenido['generos']);
                                 }
                             ?>
                             <?php if ($hijoImagen !== '') { ?>
-                                <img src="<?php echo Inicio::valorSeguro($hijoImagen); ?>" alt="<?php echo Inicio::valorSeguro($hijo->titulo); ?>">
+                                <img src="<?php echo Inicio::valorSeguro($hijoImagen); ?>" alt="<?php echo Inicio::valorSeguro($hijo->titulo); ?>" loading="lazy" decoding="async">
                             <?php } else { ?>
                                 <div class="tarjeta-relacionado-sin-imagen">
                                     <i class="fa-solid fa-clapperboard"></i>
@@ -246,6 +249,6 @@ $generosDetalle = Inicio::listaGenerosTexto($detalleContenido['generos']);
         <?php } ?>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

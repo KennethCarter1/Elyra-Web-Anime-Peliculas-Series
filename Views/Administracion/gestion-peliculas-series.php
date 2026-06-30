@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 session_start();
 require_once '../../Models/PeliculasSeries.php';
 require_once '../../Models/Sesion.php';
@@ -6,12 +7,12 @@ require_once '../../Models/Navegacion.php';
 require_once '../../Api/soap/ClienteSOAP.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header('Location: ../Usuario/inicio.php');
+    header('Location: /elyra/inicio');
     exit;
 }
 
@@ -36,12 +37,14 @@ try {
         $detalleContenido = PeliculasSeries::normalizarDetalle($clienteSOAP->obtenerDetallePeliculaSerie($filtros['id']));
     }
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Administracion/gestion-peliculas-series.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/admin/contenido', $_SERVER);
 }
 
 $tarjetasResumen = PeliculasSeries::tarjetasResumen($resumenGestion);
 $opcionesTipo = PeliculasSeries::opcionesTipo();
 $opcionesEstado = PeliculasSeries::opcionesEstado();
+$opcionesEstadoEmision = PeliculasSeries::opcionesEstadoEmision();
+$opcionesDestacado = PeliculasSeries::opcionesDestacado();
 $aniosGestion = PeliculasSeries::aniosFiltro($contenidoCompleto);
 
 $tipoSidebar = 'administracion';
@@ -51,10 +54,11 @@ $tipoSidebar = 'administracion';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Administracion/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/GestionPeliculasSeries.css">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title>Gestión de Películas y Series</title>
@@ -72,7 +76,7 @@ $tipoSidebar = 'administracion';
                         <p>Administra todo el contenido audiovisual de la plataforma.</p>
                     </div>
 
-                    <a href="agregar-pelicula-serie.php" class="btn-agregar-contenido">
+                    <a href="/elyra/admin/contenido/formulario" class="btn-agregar-contenido">
                         <i class="fa-solid fa-plus"></i>
                         <span>Agregar nueva</span>
                     </a>
@@ -100,66 +104,114 @@ $tipoSidebar = 'administracion';
 
                 <section class="filtros-gestion-contenido">
                     <form method="GET" action="gestion-peliculas-series.php">
-                        <div class="campo-busqueda-contenido">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" name="busqueda" placeholder="Buscar por título..." value="<?php echo PeliculasSeries::valorFiltro($filtros, 'busqueda'); ?>">
-                </div>
+                        <div class="fila-busqueda-filtros">
+                            <div class="campo-busqueda-contenido">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" name="busqueda" placeholder="Buscar por título..." value="<?php echo PeliculasSeries::valorFiltro($filtros, 'busqueda'); ?>">
+                            </div>
+                        </div>
 
-                <div class="campo-filtro-contenido">
-                    <label for="tipo">Tipo</label>
-                    <select id="tipo" name="tipo">
-                        <?php foreach ($opcionesTipo as $opcionTipo) { ?>
-                            <option value="<?php echo htmlspecialchars($opcionTipo['valor'], ENT_QUOTES, 'UTF-8'); ?>"<?php echo PeliculasSeries::seleccionar($filtros['tipo'], $opcionTipo['valor']); ?>>
-                                <?php echo htmlspecialchars($opcionTipo['texto'], ENT_QUOTES, 'UTF-8'); ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+                        <div class="fila-principal-filtros">
+                            <div class="campo-filtro-contenido">
+                                <label for="tipo">Tipo</label>
+                                <select id="tipo" name="tipo">
+                                    <?php foreach ($opcionesTipo as $opcionTipo) { ?>
+                                        <option value="<?php echo htmlspecialchars($opcionTipo['valor'], ENT_QUOTES, 'UTF-8'); ?>"<?php echo PeliculasSeries::seleccionar($filtros['tipo'], $opcionTipo['valor']); ?>>
+                                            <?php echo htmlspecialchars($opcionTipo['texto'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
 
-                <div class="campo-filtro-contenido">
-                    <label for="genero">Género</label>
-                    <select id="genero" name="genero">
-                        <option value="0"<?php echo PeliculasSeries::seleccionar($filtros['idGenero'], 0); ?>>Todos</option>
-                        <?php foreach ($generosGestion as $genero) { ?>
-                            <option value="<?php echo (int)$genero['id']; ?>"<?php echo PeliculasSeries::seleccionar($filtros['idGenero'], $genero['id']); ?>>
-                                <?php echo htmlspecialchars($genero['nombre'], ENT_QUOTES, 'UTF-8'); ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+                            <div class="campo-filtro-contenido">
+                                <label for="genero">Género</label>
+                                <select id="genero" name="genero">
+                                    <option value="0"<?php echo PeliculasSeries::seleccionar($filtros['idGenero'], 0); ?>>Todos</option>
+                                    <?php foreach ($generosGestion as $genero) { ?>
+                                        <option value="<?php echo (int)$genero['id']; ?>"<?php echo PeliculasSeries::seleccionar($filtros['idGenero'], $genero['id']); ?>>
+                                            <?php echo htmlspecialchars($genero['nombre'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
 
-                <div class="campo-filtro-contenido">
-                    <label for="estado">Estado</label>
-                    <select id="estado" name="estado">
-                        <?php foreach ($opcionesEstado as $opcionEstado) { ?>
-                            <option value="<?php echo htmlspecialchars($opcionEstado['valor'], ENT_QUOTES, 'UTF-8'); ?>"<?php echo PeliculasSeries::seleccionar($filtros['estado'], $opcionEstado['valor']); ?>>
-                                <?php echo htmlspecialchars($opcionEstado['texto'], ENT_QUOTES, 'UTF-8'); ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+                            <div class="campo-filtro-contenido">
+                                <label for="estado">Estado</label>
+                                <select id="estado" name="estado">
+                                    <?php foreach ($opcionesEstado as $opcionEstado) { ?>
+                                        <option value="<?php echo htmlspecialchars($opcionEstado['valor'], ENT_QUOTES, 'UTF-8'); ?>"<?php echo PeliculasSeries::seleccionar($filtros['estado'], $opcionEstado['valor']); ?>>
+                                            <?php echo htmlspecialchars($opcionEstado['texto'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
 
-                <div class="campo-filtro-contenido">
-                    <label for="anio">Año</label>
-                    <select id="anio" name="anio">
-                        <option value="0"<?php echo PeliculasSeries::seleccionar($filtros['anio'], 0); ?>>Todos</option>
-                        <?php foreach ($aniosGestion as $anioGestion) { ?>
-                            <option value="<?php echo (int)$anioGestion; ?>"<?php echo PeliculasSeries::seleccionar($filtros['anio'], $anioGestion); ?>>
-                                <?php echo (int)$anioGestion; ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+                            <div class="campo-filtro-contenido">
+                                <label for="anio">Año</label>
+                                <select id="anio" name="anio">
+                                    <option value="0"<?php echo PeliculasSeries::seleccionar($filtros['anio'], 0); ?>>Todos</option>
+                                    <?php foreach ($aniosGestion as $anioGestion) { ?>
+                                        <option value="<?php echo (int)$anioGestion; ?>"<?php echo PeliculasSeries::seleccionar($filtros['anio'], $anioGestion); ?>>
+                                            <?php echo (int)$anioGestion; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
 
-                <button type="submit" class="btn-aplicar-filtros" aria-label="Aplicar filtros">
-                    <i class="fa-solid fa-filter"></i>
-                </button>
+                            <div class="campo-filtro-contenido">
+                                <label for="destacado">Destacado</label>
+                                <select id="destacado" name="destacado">
+                                    <?php foreach ($opcionesDestacado as $opcionDestacado) { ?>
+                                        <option value="<?php echo (int)$opcionDestacado['valor']; ?>"<?php echo PeliculasSeries::seleccionar($filtros['destacado'], $opcionDestacado['valor']); ?>>
+                                            <?php echo htmlspecialchars($opcionDestacado['texto'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
 
-                <a href="gestion-peliculas-series.php" class="btn-limpiar-filtros" aria-label="Reiniciar filtros">
-                    <i class="fa-solid fa-rotate-left"></i>
-                </a>
-            </form>
-        </section>
+                            <div class="campo-filtro-contenido campo-emision-contenido">
+                                <label for="estado_emision">Emisión</label>
+                                <select id="estado_emision" name="estado_emision">
+                                    <?php foreach ($opcionesEstadoEmision as $opcionEstadoEmision) { ?>
+                                        <option value="<?php echo htmlspecialchars($opcionEstadoEmision['valor'], ENT_QUOTES, 'UTF-8'); ?>"<?php echo PeliculasSeries::seleccionar($filtros['estadoEmision'], $opcionEstadoEmision['valor']); ?>>
+                                            <?php echo htmlspecialchars($opcionEstadoEmision['texto'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div class="acciones-filtros-contenido">
+                                <button type="submit" class="btn-aplicar-filtros" aria-label="Aplicar filtros">
+                                    <i class="fa-solid fa-filter"></i>
+                                </button>
+
+                                <a href="gestion-peliculas-series.php" class="btn-limpiar-filtros" aria-label="Reiniciar filtros">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="atajos-filtros-contenido">
+                        <span>Ver rápido</span>
+                        <a href="<?php echo htmlspecialchars(PeliculasSeries::enlaceFiltroRapido($filtros, ['destacado' => 1, 'estado_emision' => 'Todos']), ENT_QUOTES, 'UTF-8'); ?>" class="atajo-filtro-contenido<?php echo PeliculasSeries::claseFiltroRapido((int)$filtros['destacado'] === 1); ?>">
+                            <i class="fa-solid fa-star"></i>
+                            <span>Destacados</span>
+                        </a>
+                        <a href="<?php echo htmlspecialchars(PeliculasSeries::enlaceFiltroRapido($filtros, ['destacado' => 0, 'estado_emision' => 'En emisión']), ENT_QUOTES, 'UTF-8'); ?>" class="atajo-filtro-contenido<?php echo PeliculasSeries::claseFiltroRapido($filtros['estadoEmision'] === 'En emisión'); ?>">
+                            <i class="fa-solid fa-signal"></i>
+                            <span>En emisión</span>
+                        </a>
+                        <a href="<?php echo htmlspecialchars(PeliculasSeries::enlaceFiltroRapido($filtros, ['destacado' => 0, 'estado_emision' => 'Finalizado']), ENT_QUOTES, 'UTF-8'); ?>" class="atajo-filtro-contenido<?php echo PeliculasSeries::claseFiltroRapido($filtros['estadoEmision'] === 'Finalizado'); ?>">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Finalizados</span>
+                        </a>
+                        <a href="<?php echo htmlspecialchars(PeliculasSeries::enlaceFiltroRapido($filtros, ['destacado' => 0, 'estado_emision' => 'Próximamente']), ENT_QUOTES, 'UTF-8'); ?>" class="atajo-filtro-contenido<?php echo PeliculasSeries::claseFiltroRapido($filtros['estadoEmision'] === 'Próximamente'); ?>">
+                            <i class="fa-solid fa-clock"></i>
+                            <span>Próximamente</span>
+                        </a>
+                    </div>
+                </section>
 
                 <article class="lista-gestion-contenido">
                 <div class="encabezado-lista-contenido">
@@ -174,6 +226,7 @@ $tipoSidebar = 'administracion';
                         <span>Géneros</span>
                         <span>Año</span>
                         <span>Estado</span>
+                        <span>Emisión</span>
                         <span>Tráiler</span>
                         <span>Información</span>
                     </div>
@@ -183,7 +236,7 @@ $tipoSidebar = 'administracion';
                             <div class="fila-gestion-contenido">
                                 <div class="titulo-tabla-contenido">
                                     <?php if ($contenido['imagenUrl'] !== '') { ?>
-                                        <img src="<?php echo htmlspecialchars($contenido['imagenUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($contenido['titulo'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <img src="<?php echo htmlspecialchars($contenido['imagenUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($contenido['titulo'], ENT_QUOTES, 'UTF-8'); ?>" loading="lazy" decoding="async">
                                     <?php } else { ?>
                                         <span class="imagen-tabla-vacia">
                                             <i class="fa-solid fa-film"></i>
@@ -191,7 +244,14 @@ $tipoSidebar = 'administracion';
                                     <?php } ?>
 
                                     <div>
-                                        <strong><?php echo htmlspecialchars($contenido['titulo'], ENT_QUOTES, 'UTF-8'); ?></strong>
+                                        <div class="titulo-tabla-linea">
+                                            <strong><?php echo htmlspecialchars($contenido['titulo'], ENT_QUOTES, 'UTF-8'); ?></strong>
+                                            <?php if ((int)$contenido['destacado'] === 1) { ?>
+                                                <span class="insignia-destacado-contenido" title="Destacado">
+                                                    <i class="fa-solid fa-star"></i>
+                                                </span>
+                                            <?php } ?>
+                                        </div>
                                         <small><?php echo htmlspecialchars($contenido['tituloOriginal'], ENT_QUOTES, 'UTF-8'); ?></small>
                                     </div>
                                 </div>
@@ -202,6 +262,11 @@ $tipoSidebar = 'administracion';
                                 <span>
                                     <small class="estado-gestion estado-<?php echo htmlspecialchars($contenido['estadoClase'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <?php echo htmlspecialchars($contenido['estado'], ENT_QUOTES, 'UTF-8'); ?>
+                                    </small>
+                                </span>
+                                <span>
+                                    <small class="estado-emision-gestion estado-emision-<?php echo htmlspecialchars($contenido['estadoEmisionClase'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?php echo htmlspecialchars($contenido['estadoEmision'], ENT_QUOTES, 'UTF-8'); ?>
                                     </small>
                                 </span>
                                 <span>
@@ -238,7 +303,7 @@ $tipoSidebar = 'administracion';
                 <?php if (!empty($detalleContenido) && $detalleContenido['id'] > 0) { ?>
                     <div class="detalle-contenido-superior">
                         <?php if ($detalleContenido['imagenPortadaUrl'] !== '') { ?>
-                            <img src="<?php echo htmlspecialchars($detalleContenido['imagenPortadaUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($detalleContenido['titulo'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <img src="<?php echo htmlspecialchars($detalleContenido['imagenPortadaUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($detalleContenido['titulo'], ENT_QUOTES, 'UTF-8'); ?>" loading="lazy" decoding="async">
                         <?php } else { ?>
                             <span class="imagen-detalle-vacia">
                                 <i class="fa-solid fa-film"></i>
@@ -285,6 +350,7 @@ $tipoSidebar = 'administracion';
 
                     <div class="acciones-detalle-contenido">
                         <form method="POST" action="../../Controller/ControladorContenido.php">
+                <?php echo Seguridad::campoCsrf(); ?>
                             <input type="hidden" name="id_pelicula_serie" value="<?php echo (int)$detalleContenido['id']; ?>">
                             <?php if ((int)$detalleContenido['activo'] === 1) { ?>
                                 <button type="submit" name="DesactivarPeliculaSerie" value="1" class="btn-desactivar-contenido">
@@ -299,7 +365,7 @@ $tipoSidebar = 'administracion';
                             <?php } ?>
                         </form>
 
-                        <a href="agregar-pelicula-serie.php?id=<?php echo (int)$detalleContenido['id']; ?>" class="btn-actualizar-contenido">
+                        <a href="/elyra/admin/contenido/formulario?id=<?php echo (int)$detalleContenido['id']; ?>" class="btn-actualizar-contenido">
                             <i class="fa-solid fa-pen"></i>
                             <span>Actualizar</span>
                         </a>
@@ -315,6 +381,6 @@ $tipoSidebar = 'administracion';
         </section>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

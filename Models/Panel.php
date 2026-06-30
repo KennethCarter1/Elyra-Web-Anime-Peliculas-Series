@@ -129,6 +129,11 @@ class Panel {
                 'icono' => 'fa-solid fa-tags'
             ],
             [
+                'texto' => 'Paneles de Inicio',
+                'url' => '/elyra/admin/paneles-inicio',
+                'icono' => 'fa-solid fa-table-cells-large'
+            ],
+            [
                 'texto' => 'Gestionar Usuarios',
                 'url' => 'gestion-usuarios.php',
                 'icono' => 'fa-solid fa-user-gear'
@@ -154,7 +159,7 @@ class Panel {
 
             $actividadNormalizada[] = [
                 'tipo' => $tipoActividad,
-                'accion' => $accionActividad,
+                'accion' => self::textoAccionActividad($accionActividad, $tipoActividad),
                 'referencia' => $referenciaActividad,
                 'fechaTexto' => self::tiempoActividad($fechaActividad),
                 'imagen' => $imagenActividad,
@@ -193,6 +198,18 @@ class Panel {
         }
 
         return $contenidoNormalizado;
+    }
+
+    private static function textoAccionActividad($accion, $tipo)
+    {
+        $accion = trim((string)$accion);
+        $tipo = trim((string)$tipo);
+
+        if ($tipo === 'contenido' && ($accion === '' || strpos($accion, 'agreg') !== false)) {
+            return 'Contenido agregado';
+        }
+
+        return $accion;
     }
 
     private static function leerCampoContenido($contenido, $campoObjeto, $campoArreglo)

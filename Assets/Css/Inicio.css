@@ -185,8 +185,6 @@
     background: rgba(255,255,255,0.12);
     font-size: 11px;
     font-weight: 800;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
 }
 
 .acciones-destacado {
@@ -349,6 +347,15 @@
     letter-spacing: 0;
 }
 
+.encabezado-seccion-inicio p {
+    color: #666;
+    max-width: 520px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-top: 3px;
+}
+
 .grid-contenido-inicio {
     display: grid;
     grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -470,8 +477,8 @@
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.72);
     background: rgba(255,255,255,0.72);
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(8px) saturate(125%);
+    -webkit-backdrop-filter: blur(8px) saturate(125%);
     color: #22243a;
     box-shadow: 0 12px 26px rgba(31,31,46,0.08);
     display: flex;
@@ -583,8 +590,6 @@
     border: 1px solid rgba(255,255,255,0.16);
     color: #fff;
     background: rgba(15,15,26,0.56);
-    backdrop-filter: blur(14px) saturate(150%);
-    -webkit-backdrop-filter: blur(14px) saturate(150%);
     text-decoration: none;
     font-family: inherit;
     font-size: 12px;
@@ -635,8 +640,8 @@
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.72);
     background: rgba(255,255,255,0.74);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
     box-shadow: 0 16px 34px rgba(31,31,46,0.08);
 }
 
@@ -736,6 +741,7 @@ body.dark .generos-detalle-lista strong {
 }
 
 body.dark .encabezado-inicio p,
+body.dark .encabezado-seccion-inicio p,
 body.dark .card-contenido-inicio small,
 body.dark .contenido-inicio-vacio,
 body.dark .sinopsis-detalle-contenido p,

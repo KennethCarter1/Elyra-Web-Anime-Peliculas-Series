@@ -16,3 +16,403 @@
     --color-acento-oscuro-sombra: rgba(208, 208, 255, 0.32);
     --color-acento-oscuro-outline: rgba(208, 208, 255, 0.44);
 }
+
+body:not(.sin-vidrio) .input-box input,
+body:not(.sin-vidrio) .campo input,
+body:not(.sin-vidrio) .campo select,
+body:not(.sin-vidrio) .card,
+body:not(.sin-vidrio) button,
+body:not(.sin-vidrio) .meta-destacado span,
+body:not(.sin-vidrio) .genero-inicio,
+body:not(.sin-vidrio) .btn-favoritos-banner-detalle,
+body:not(.sin-vidrio) .btn-trailer-banner-detalle,
+body:not(.sin-vidrio) .campo-editar-perfil input,
+body:not(.sin-vidrio) .campo-editar-perfil select,
+body:not(.sin-vidrio) .editar-perfil .campo select,
+body:not(.sin-vidrio) .opcion-tema,
+body:not(.sin-vidrio) .control-vidrio-configuracion {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+body:not(.sin-vidrio):not(.dark) .header-principal,
+body:not(.sin-vidrio):not(.dark) .sidebar-principal,
+body:not(.sin-vidrio):not(.dark) .apariencia-perfil,
+body:not(.sin-vidrio):not(.dark) .seguridad-configuracion,
+body:not(.sin-vidrio):not(.dark) .editar-perfil,
+body:not(.sin-vidrio):not(.dark) .usuario-perfil,
+body:not(.sin-vidrio):not(.dark) .informacion-Perfil,
+body:not(.sin-vidrio):not(.dark) .contenedor-preferencias,
+body:not(.sin-vidrio):not(.dark) .contenedor-cambiar-contrasena,
+body:not(.sin-vidrio):not(.dark) .panel-explorar,
+body:not(.sin-vidrio):not(.dark) .bloque-filtros-explorar,
+body:not(.sin-vidrio):not(.dark) .catalogo-explorar,
+body:not(.sin-vidrio):not(.dark) .panel-generos-usuario,
+body:not(.sin-vidrio):not(.dark) .filtros-genero-usuario,
+body:not(.sin-vidrio):not(.dark) .catalogo-genero-usuario,
+body:not(.sin-vidrio):not(.dark) .resumen-favoritos article,
+body:not(.sin-vidrio):not(.dark) .filtros-favoritos,
+body:not(.sin-vidrio):not(.dark) .catalogo-favoritos,
+body:not(.sin-vidrio):not(.dark) .tarjeta-resumen,
+body:not(.sin-vidrio):not(.dark) .panel-medio-card,
+body:not(.sin-vidrio):not(.dark) .ultimo-contenido-panel,
+body:not(.sin-vidrio):not(.dark) .tarjeta-usuario-resumen,
+body:not(.sin-vidrio):not(.dark) .filtros-gestion-usuarios,
+body:not(.sin-vidrio):not(.dark) .lista-gestion-usuarios,
+body:not(.sin-vidrio):not(.dark) .panel-detalle-usuario,
+body:not(.sin-vidrio):not(.dark) .tarjeta-gestion,
+body:not(.sin-vidrio):not(.dark) .filtros-gestion-contenido,
+body:not(.sin-vidrio):not(.dark) .lista-gestion-contenido,
+body:not(.sin-vidrio):not(.dark) .panel-detalle-contenido,
+body:not(.sin-vidrio):not(.dark) .tarjeta-genero-resumen,
+body:not(.sin-vidrio):not(.dark) .form-nuevo-genero,
+body:not(.sin-vidrio):not(.dark) .form-buscar-genero,
+body:not(.sin-vidrio):not(.dark) .panel-superior-generos,
+body:not(.sin-vidrio):not(.dark) .panel-lista-generos,
+body:not(.sin-vidrio):not(.dark) .panel-formulario-contenido,
+body:not(.sin-vidrio):not(.dark) .panel-imagenes-contenido,
+body:not(.sin-vidrio):not(.dark) .tarjeta-imagen-contenido,
+body:not(.sin-vidrio):not(.dark) .panel-reporte,
+body:not(.sin-vidrio):not(.dark) .tarjeta-reporte,
+body:not(.sin-vidrio):not(.dark) .tarjeta-panel,
+body:not(.sin-vidrio):not(.dark) .panel-admin,
+body:not(.sin-vidrio):not(.dark) .crear-panel-inicio,
+body:not(.sin-vidrio):not(.dark) .lista-paneles-inicio,
+body:not(.sin-vidrio):not(.dark) .detalle-panel-inicio,
+body:not(.sin-vidrio):not(.dark) .resumen-paneles-inicio article,
+body:not(.sin-vidrio):not(.dark) .item-panel-inicio,
+body:not(.sin-vidrio):not(.dark) .toggle-panel-activo,
+body:not(.sin-vidrio):not(.dark) .panel-datos-detalle,
+body:not(.sin-vidrio):not(.dark) .tarjeta-relacionado,
+body:not(.sin-vidrio):not(.dark) .contenido-error-404,
+body:not(.sin-vidrio):not(.dark) .contenido-bd-bd,
+body:not(.sin-vidrio):not(.dark) .contenedor-principal,
+body:not(.sin-vidrio):not(.dark) .contenedor-principal2 {
+    background: linear-gradient(135deg, rgba(255,255,255,0.48), rgba(255,255,255,0.16)) !important;
+    border-color: rgba(255,255,255,0.9) !important;
+    backdrop-filter: blur(38px) saturate(220%) contrast(116%) !important;
+    -webkit-backdrop-filter: blur(38px) saturate(220%) contrast(116%) !important;
+    box-shadow:
+        0 30px 78px rgba(31,31,46,0.24),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        inset 0 0 26px rgba(255,255,255,0.18),
+        inset 0 -1px 0 rgba(255,255,255,0.3) !important;
+}
+
+body:not(.sin-vidrio):not(.dark) .input-box input,
+body:not(.sin-vidrio):not(.dark) .campo input,
+body:not(.sin-vidrio):not(.dark) .campo select,
+body:not(.sin-vidrio):not(.dark) .card,
+body:not(.sin-vidrio):not(.dark) .header-principal input[type="text"],
+body:not(.sin-vidrio):not(.dark) .campo-editar-perfil input,
+body:not(.sin-vidrio):not(.dark) .campo-editar-perfil select,
+body:not(.sin-vidrio):not(.dark) .editar-perfil .campo select {
+    background: rgba(255,255,255,0.28) !important;
+    border-color: rgba(255,255,255,0.72) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.58),
+        0 10px 26px rgba(31,31,46,0.08) !important;
+}
+
+body:not(.sin-vidrio).dark .header-principal,
+body:not(.sin-vidrio).dark .sidebar-principal,
+body:not(.sin-vidrio).dark .apariencia-perfil,
+body:not(.sin-vidrio).dark .seguridad-configuracion,
+body:not(.sin-vidrio).dark .editar-perfil,
+body:not(.sin-vidrio).dark .usuario-perfil,
+body:not(.sin-vidrio).dark .informacion-Perfil,
+body:not(.sin-vidrio).dark .contenedor-preferencias,
+body:not(.sin-vidrio).dark .contenedor-cambiar-contrasena,
+body:not(.sin-vidrio).dark .panel-explorar,
+body:not(.sin-vidrio).dark .bloque-filtros-explorar,
+body:not(.sin-vidrio).dark .catalogo-explorar,
+body:not(.sin-vidrio).dark .panel-generos-usuario,
+body:not(.sin-vidrio).dark .filtros-genero-usuario,
+body:not(.sin-vidrio).dark .catalogo-genero-usuario,
+body:not(.sin-vidrio).dark .resumen-favoritos article,
+body:not(.sin-vidrio).dark .filtros-favoritos,
+body:not(.sin-vidrio).dark .catalogo-favoritos,
+body:not(.sin-vidrio).dark .tarjeta-resumen,
+body:not(.sin-vidrio).dark .panel-medio-card,
+body:not(.sin-vidrio).dark .ultimo-contenido-panel,
+body:not(.sin-vidrio).dark .tarjeta-usuario-resumen,
+body:not(.sin-vidrio).dark .filtros-gestion-usuarios,
+body:not(.sin-vidrio).dark .lista-gestion-usuarios,
+body:not(.sin-vidrio).dark .panel-detalle-usuario,
+body:not(.sin-vidrio).dark .tarjeta-gestion,
+body:not(.sin-vidrio).dark .filtros-gestion-contenido,
+body:not(.sin-vidrio).dark .lista-gestion-contenido,
+body:not(.sin-vidrio).dark .panel-detalle-contenido,
+body:not(.sin-vidrio).dark .tarjeta-genero-resumen,
+body:not(.sin-vidrio).dark .form-nuevo-genero,
+body:not(.sin-vidrio).dark .form-buscar-genero,
+body:not(.sin-vidrio).dark .panel-superior-generos,
+body:not(.sin-vidrio).dark .panel-lista-generos,
+body:not(.sin-vidrio).dark .panel-formulario-contenido,
+body:not(.sin-vidrio).dark .panel-imagenes-contenido,
+body:not(.sin-vidrio).dark .tarjeta-imagen-contenido,
+body:not(.sin-vidrio).dark .panel-reporte,
+body:not(.sin-vidrio).dark .tarjeta-reporte,
+body:not(.sin-vidrio).dark .tarjeta-panel,
+body:not(.sin-vidrio).dark .panel-admin,
+body:not(.sin-vidrio).dark .crear-panel-inicio,
+body:not(.sin-vidrio).dark .lista-paneles-inicio,
+body:not(.sin-vidrio).dark .detalle-panel-inicio,
+body:not(.sin-vidrio).dark .resumen-paneles-inicio article,
+body:not(.sin-vidrio).dark .item-panel-inicio,
+body:not(.sin-vidrio).dark .toggle-panel-activo,
+body:not(.sin-vidrio).dark .panel-datos-detalle,
+body:not(.sin-vidrio).dark .tarjeta-relacionado,
+body:not(.sin-vidrio).dark .contenido-error-404,
+body:not(.sin-vidrio).dark .contenido-bd-bd,
+body:not(.sin-vidrio).dark .contenedor-principal,
+body:not(.sin-vidrio).dark .contenedor-principal2 {
+    background: linear-gradient(135deg, rgba(38,40,64,0.64), rgba(8,10,24,0.24)) !important;
+    border-color: rgba(255,255,255,0.24) !important;
+    backdrop-filter: blur(38px) saturate(205%) contrast(118%) !important;
+    -webkit-backdrop-filter: blur(38px) saturate(205%) contrast(118%) !important;
+    box-shadow:
+        0 30px 78px rgba(0,0,0,0.48),
+        inset 0 1px 0 rgba(255,255,255,0.26),
+        inset 0 0 24px rgba(255,255,255,0.08),
+        inset 0 -1px 0 rgba(255,255,255,0.1) !important;
+}
+
+body:not(.sin-vidrio).dark .input-box input,
+body:not(.sin-vidrio).dark .campo input,
+body:not(.sin-vidrio).dark .campo select,
+body:not(.sin-vidrio).dark .card,
+body:not(.sin-vidrio).dark .header-principal input[type="text"],
+body:not(.sin-vidrio).dark .campo-editar-perfil input,
+body:not(.sin-vidrio).dark .campo-editar-perfil select,
+body:not(.sin-vidrio).dark .editar-perfil .campo select {
+    background: rgba(18,20,34,0.42) !important;
+    border-color: rgba(255,255,255,0.22) !important;
+    color: #f3f3ff !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 10px 26px rgba(0,0,0,0.18) !important;
+}
+
+body.sin-vidrio,
+body.sin-vidrio::before,
+body.sin-vidrio::after,
+body.sin-vidrio * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+body.sin-vidrio {
+    background-attachment: scroll !important;
+}
+
+body.sin-vidrio::before {
+    background:
+        linear-gradient(105deg, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.78) 48%, rgba(255,255,255,0.36) 100%),
+        url('../Images/background/background-home.webp') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+body.sin-vidrio.dark::before {
+    background:
+        linear-gradient(105deg, rgba(8,8,18,0.95) 0%, rgba(18,18,32,0.86) 48%, rgba(26,24,46,0.52) 100%),
+        url('../Images/background/background-home-dark.webp') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+body.sin-vidrio .input-box input,
+body.sin-vidrio .campo input,
+body.sin-vidrio .campo select,
+body.sin-vidrio .card,
+body.sin-vidrio .header-principal input[type="text"],
+body.sin-vidrio .campo-editar-perfil input,
+body.sin-vidrio .campo-editar-perfil select,
+body.sin-vidrio .editar-perfil .campo select,
+body.sin-vidrio .buscador-explorar,
+body.sin-vidrio .campo-filtro-explorar select,
+body.sin-vidrio .campo-filtro-genero select,
+body.sin-vidrio .campo-filtro-favorito select,
+body.sin-vidrio .campo-busqueda-contenido,
+body.sin-vidrio .campo-filtro-contenido select,
+body.sin-vidrio .campo-formulario-contenido input,
+body.sin-vidrio .campo-formulario-contenido textarea,
+body.sin-vidrio .campo-formulario-contenido select,
+body.sin-vidrio .selector-generos-contenido,
+body.sin-vidrio .form-nuevo-genero input,
+body.sin-vidrio .form-buscar-genero input,
+body.sin-vidrio .form-editar-genero input,
+body.sin-vidrio .campo-panel-inicio input,
+body.sin-vidrio .form-buscar-contenido-panel input,
+body.sin-vidrio .form-agregar-contenido-panel input,
+body.sin-vidrio .form-agregar-contenido-panel select {
+    background: #f7f8fc !important;
+    border-color: #d9deea !important;
+    color: #22243a !important;
+    box-shadow: none !important;
+}
+
+body.sin-vidrio.dark .input-box input,
+body.sin-vidrio.dark .campo input,
+body.sin-vidrio.dark .campo select,
+body.sin-vidrio.dark .card,
+body.sin-vidrio.dark .header-principal input[type="text"],
+body.sin-vidrio.dark .campo-editar-perfil input,
+body.sin-vidrio.dark .campo-editar-perfil select,
+body.sin-vidrio.dark .editar-perfil .campo select,
+body.sin-vidrio.dark .buscador-explorar,
+body.sin-vidrio.dark .campo-filtro-explorar select,
+body.sin-vidrio.dark .campo-filtro-genero select,
+body.sin-vidrio.dark .campo-filtro-favorito select,
+body.sin-vidrio.dark .campo-busqueda-contenido,
+body.sin-vidrio.dark .campo-filtro-contenido select,
+body.sin-vidrio.dark .campo-formulario-contenido input,
+body.sin-vidrio.dark .campo-formulario-contenido textarea,
+body.sin-vidrio.dark .campo-formulario-contenido select,
+body.sin-vidrio.dark .selector-generos-contenido,
+body.sin-vidrio.dark .form-nuevo-genero input,
+body.sin-vidrio.dark .form-buscar-genero input,
+body.sin-vidrio.dark .form-editar-genero input,
+body.sin-vidrio.dark .campo-panel-inicio input,
+body.sin-vidrio.dark .form-buscar-contenido-panel input,
+body.sin-vidrio.dark .form-agregar-contenido-panel input,
+body.sin-vidrio.dark .form-agregar-contenido-panel select {
+    background: #111423 !important;
+    border-color: rgba(255,255,255,0.14) !important;
+    color: #f3f3ff !important;
+    box-shadow: none !important;
+}
+
+body.sin-vidrio .header-principal,
+body.sin-vidrio .sidebar-principal,
+body.sin-vidrio .apariencia-perfil,
+body.sin-vidrio .seguridad-configuracion,
+body.sin-vidrio .editar-perfil,
+body.sin-vidrio .usuario-perfil,
+body.sin-vidrio .informacion-Perfil,
+body.sin-vidrio .contenedor-preferencias,
+body.sin-vidrio .contenedor-cambiar-contrasena,
+body.sin-vidrio .panel-explorar,
+body.sin-vidrio .bloque-filtros-explorar,
+body.sin-vidrio .catalogo-explorar,
+body.sin-vidrio .panel-generos-usuario,
+body.sin-vidrio .filtros-genero-usuario,
+body.sin-vidrio .catalogo-genero-usuario,
+body.sin-vidrio .resumen-favoritos article,
+body.sin-vidrio .filtros-favoritos,
+body.sin-vidrio .catalogo-favoritos,
+body.sin-vidrio .tarjeta-resumen,
+body.sin-vidrio .panel-medio-card,
+body.sin-vidrio .ultimo-contenido-panel,
+body.sin-vidrio .tarjeta-usuario-resumen,
+body.sin-vidrio .filtros-gestion-usuarios,
+body.sin-vidrio .lista-gestion-usuarios,
+body.sin-vidrio .panel-detalle-usuario,
+body.sin-vidrio .tarjeta-gestion,
+body.sin-vidrio .filtros-gestion-contenido,
+body.sin-vidrio .lista-gestion-contenido,
+body.sin-vidrio .panel-detalle-contenido,
+body.sin-vidrio .tarjeta-genero-resumen,
+body.sin-vidrio .form-nuevo-genero,
+body.sin-vidrio .form-buscar-genero,
+body.sin-vidrio .panel-superior-generos,
+body.sin-vidrio .panel-lista-generos,
+body.sin-vidrio .panel-formulario-contenido,
+body.sin-vidrio .panel-imagenes-contenido,
+body.sin-vidrio .tarjeta-imagen-contenido,
+body.sin-vidrio .panel-reporte,
+body.sin-vidrio .tarjeta-reporte,
+body.sin-vidrio .tarjeta-panel,
+body.sin-vidrio .panel-admin,
+body.sin-vidrio .crear-panel-inicio,
+body.sin-vidrio .lista-paneles-inicio,
+body.sin-vidrio .detalle-panel-inicio,
+body.sin-vidrio .resumen-paneles-inicio article,
+body.sin-vidrio .item-panel-inicio,
+body.sin-vidrio .toggle-panel-activo,
+body.sin-vidrio .panel-datos-detalle,
+body.sin-vidrio .tarjeta-relacionado,
+body.sin-vidrio .contenido-error-404,
+body.sin-vidrio .contenido-bd-bd,
+body.sin-vidrio .contenedor-principal,
+body.sin-vidrio .contenedor-principal2 {
+    background: #ffffff !important;
+    border-color: rgba(31,31,46,0.09) !important;
+    box-shadow: 0 18px 42px rgba(31,31,46,0.11) !important;
+}
+
+body.sin-vidrio.dark .header-principal,
+body.sin-vidrio.dark .sidebar-principal,
+body.sin-vidrio.dark .apariencia-perfil,
+body.sin-vidrio.dark .seguridad-configuracion,
+body.sin-vidrio.dark .editar-perfil,
+body.sin-vidrio.dark .usuario-perfil,
+body.sin-vidrio.dark .informacion-Perfil,
+body.sin-vidrio.dark .contenedor-preferencias,
+body.sin-vidrio.dark .contenedor-cambiar-contrasena,
+body.sin-vidrio.dark .panel-explorar,
+body.sin-vidrio.dark .bloque-filtros-explorar,
+body.sin-vidrio.dark .catalogo-explorar,
+body.sin-vidrio.dark .panel-generos-usuario,
+body.sin-vidrio.dark .filtros-genero-usuario,
+body.sin-vidrio.dark .catalogo-genero-usuario,
+body.sin-vidrio.dark .resumen-favoritos article,
+body.sin-vidrio.dark .filtros-favoritos,
+body.sin-vidrio.dark .catalogo-favoritos,
+body.sin-vidrio.dark .tarjeta-resumen,
+body.sin-vidrio.dark .panel-medio-card,
+body.sin-vidrio.dark .ultimo-contenido-panel,
+body.sin-vidrio.dark .tarjeta-usuario-resumen,
+body.sin-vidrio.dark .filtros-gestion-usuarios,
+body.sin-vidrio.dark .lista-gestion-usuarios,
+body.sin-vidrio.dark .panel-detalle-usuario,
+body.sin-vidrio.dark .tarjeta-gestion,
+body.sin-vidrio.dark .filtros-gestion-contenido,
+body.sin-vidrio.dark .lista-gestion-contenido,
+body.sin-vidrio.dark .panel-detalle-contenido,
+body.sin-vidrio.dark .tarjeta-genero-resumen,
+body.sin-vidrio.dark .form-nuevo-genero,
+body.sin-vidrio.dark .form-buscar-genero,
+body.sin-vidrio.dark .panel-superior-generos,
+body.sin-vidrio.dark .panel-lista-generos,
+body.sin-vidrio.dark .panel-formulario-contenido,
+body.sin-vidrio.dark .panel-imagenes-contenido,
+body.sin-vidrio.dark .tarjeta-imagen-contenido,
+body.sin-vidrio.dark .panel-reporte,
+body.sin-vidrio.dark .tarjeta-reporte,
+body.sin-vidrio.dark .tarjeta-panel,
+body.sin-vidrio.dark .panel-admin,
+body.sin-vidrio.dark .crear-panel-inicio,
+body.sin-vidrio.dark .lista-paneles-inicio,
+body.sin-vidrio.dark .detalle-panel-inicio,
+body.sin-vidrio.dark .resumen-paneles-inicio article,
+body.sin-vidrio.dark .item-panel-inicio,
+body.sin-vidrio.dark .toggle-panel-activo,
+body.sin-vidrio.dark .panel-datos-detalle,
+body.sin-vidrio.dark .tarjeta-relacionado,
+body.sin-vidrio.dark .contenido-error-404,
+body.sin-vidrio.dark .contenido-bd-bd,
+body.sin-vidrio.dark .contenedor-principal,
+body.sin-vidrio.dark .contenedor-principal2 {
+    background: #151724 !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 18px 44px rgba(0,0,0,0.32) !important;
+}
+
+body.sin-vidrio .control-vidrio-configuracion {
+    background: #f7f8fc !important;
+}
+
+body.sin-vidrio.dark .control-vidrio-configuracion {
+    background: #111423 !important;
+    opacity: 0.78;
+}
+
+body:not(.sin-vidrio).dark .control-vidrio-configuracion {
+    background: rgba(18,20,34,0.42) !important;
+    border-color: rgba(255,255,255,0.22) !important;
+    opacity: 1;
+}

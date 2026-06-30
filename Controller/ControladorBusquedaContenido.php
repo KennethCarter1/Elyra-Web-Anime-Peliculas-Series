@@ -33,7 +33,6 @@ try {
         $clienteSOAP->buscarContenidoUsuario($busqueda)
     );
 
-    $baseUrl = Navegacion::obtenerBaseUrlProyecto($_SERVER);
     $resultados = [];
 
     foreach ($contenido as $item) {
@@ -43,7 +42,7 @@ try {
             'tipo' => $item['tipo'],
             'generos' => $item['generos'],
             'imagen' => $item['imagenPortadaUrl'],
-            'url' => $baseUrl . '/Views/Contenido/detalle.php?id=' . (int)$item['id']
+            'url' => Navegacion::url('detalle') . '?id=' . (int)$item['id']
         ];
     }
 

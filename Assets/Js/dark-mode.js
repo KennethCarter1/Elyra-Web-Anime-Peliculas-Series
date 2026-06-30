@@ -1,32 +1,41 @@
 const toggle = document.getElementById('toggle-theme');
+const toggleVidrio = document.getElementById('toggle-glass-effect');
 const opcionesTema = document.querySelectorAll('[data-theme-option]');
 const opcionesAcento = document.querySelectorAll('[data-accent]');
 const logosPorAcento = {
     morado: {
-        imagen: 'morado.png',
+        imagen: 'morado.webp',
         icono: 'morado.ico'
     },
     azul: {
-        imagen: 'azul.png',
+        imagen: 'azul.webp',
         icono: 'azul.ico'
     },
     verde: {
-        imagen: 'verde.png',
+        imagen: 'verde.webp',
         icono: 'verde.ico'
     },
     rosa: {
-        imagen: 'rosado.png',
+        imagen: 'rosado.webp',
         icono: 'rosado.ico'
     },
     naranja: {
-        imagen: 'naranja.png',
+        imagen: 'naranja.webp',
         icono: 'naranja.ico'
     },
     cian: {
-        imagen: 'cian.png',
+        imagen: 'cian.webp',
         icono: 'cian.ico'
     }
 };
+
+const aliasAcento = {
+    rosado: 'rosa',
+    amarillo: 'naranja',
+    amarilla: 'naranja'
+};
+
+const versionAssets = 'vidrio-global-20260630';
 
 const paletasAcento = {
     morado: {
@@ -139,6 +148,14 @@ const paletasAcento = {
     }
 };
 
+function normalizarAcento(acentoActual) {
+    if (aliasAcento[acentoActual]) {
+        return aliasAcento[acentoActual];
+    }
+
+    return acentoActual;
+}
+
 function actualizarOpcionesAcento(acentoActual) {
     opcionesAcento.forEach(function(opcion) {
         opcion.classList.remove('activo');
@@ -150,6 +167,8 @@ function actualizarOpcionesAcento(acentoActual) {
 }
 
 function aplicarAcento(acentoActual) {
+    acentoActual = normalizarAcento(acentoActual);
+
     if (!paletasAcento[acentoActual]) {
         acentoActual = 'morado';
     }
@@ -163,16 +182,16 @@ function aplicarAcento(acentoActual) {
     actualizarLogoAcento(acentoActual);
 }
 
+function agregarVersion(rutaArchivo) {
+    return rutaArchivo + '?v=' + versionAssets;
+}
+
 function rutaLogo(nombreArchivo) {
-    return '../../Assets/Images/logos/logos/' + nombreArchivo;
+    return agregarVersion('../../Assets/Images/logos/logos/' + nombreArchivo);
 }
 
 function rutaIcono(nombreArchivo) {
-    return '../../Assets/Images/logos/iconos/' + nombreArchivo;
-}
-
-function rutaLogoVersionada(nombreArchivo, acentoActual) {
-    return rutaIcono(nombreArchivo) + '?acento=' + acentoActual;
+    return agregarVersion('../../Assets/Images/logos/iconos/' + nombreArchivo);
 }
 
 function actualizarIconoPagina(logoActual, acentoActual) {
@@ -183,14 +202,14 @@ function actualizarIconoPagina(logoActual, acentoActual) {
     const iconoPagina = document.createElement('link');
     iconoPagina.setAttribute('rel', 'icon');
     iconoPagina.setAttribute('type', 'image/x-icon');
-    iconoPagina.setAttribute('href', rutaLogoVersionada(logoActual.icono, acentoActual));
+    iconoPagina.setAttribute('href', rutaIcono(logoActual.icono));
     iconoPagina.setAttribute('data-accent-favicon', '');
     document.head.appendChild(iconoPagina);
 
     const iconoAccesoRapido = document.createElement('link');
     iconoAccesoRapido.setAttribute('rel', 'shortcut icon');
     iconoAccesoRapido.setAttribute('type', 'image/x-icon');
-    iconoAccesoRapido.setAttribute('href', rutaLogoVersionada(logoActual.icono, acentoActual));
+    iconoAccesoRapido.setAttribute('href', rutaIcono(logoActual.icono));
     iconoAccesoRapido.setAttribute('data-accent-favicon', '');
     document.head.appendChild(iconoAccesoRapido);
 }
@@ -237,11 +256,51 @@ function aplicarTema(modoOscuro) {
     }
 
     actualizarOpcionesTema(modoOscuro);
+    aplicarEstadoVidrio();
+}
+
+function vidrioPreferidoActivo() {
+    if (localStorage.getItem('efectoVidrio') === 'false') {
+        return false;
+    }
+
+    return true;
+}
+
+function aplicarEstadoVidrio() {
+    const vidrioActivo = vidrioPreferidoActivo();
+
+    if (vidrioActivo) {
+        document.body.classList.remove('sin-vidrio');
+    } else {
+        document.body.classList.add('sin-vidrio');
+    }
+
+    if (toggleVidrio) {
+        toggleVidrio.checked = vidrioActivo;
+        toggleVidrio.disabled = false;
+    }
+}
+
+function aplicarVidrio(vidrioActivo) {
+    if (vidrioActivo) {
+        localStorage.setItem('efectoVidrio', 'true');
+    } else {
+        localStorage.setItem('efectoVidrio', 'false');
+    }
+
+    aplicarEstadoVidrio();
 }
 
 if (toggle) {
     toggle.addEventListener('change', function() {
         aplicarTema(toggle.checked);
+    });
+}
+
+if (toggleVidrio) {
+    toggleVidrio.addEventListener('change', function() {
+        aplicarVidrio(toggleVidrio.checked);
     });
 }
 
@@ -268,3 +327,5 @@ if (localStorage.getItem('modoOscuro') === 'true') {
 } else {
     aplicarTema(false);
 }
+
+aplicarEstadoVidrio();

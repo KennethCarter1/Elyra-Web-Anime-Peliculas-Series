@@ -320,6 +320,23 @@ BEGIN
     END IF;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_listar_preferencias_usuario $$
+
+CREATE PROCEDURE sp_listar_preferencias_usuario(
+    IN p_usuario VARCHAR(50)
+)
+BEGIN
+    SELECT
+        g.id_genero,
+        g.nombre_genero
+    FROM preferencias_usuario pu
+    INNER JOIN usuarios u ON pu.id_usuario = u.id_usuario
+    INNER JOIN generos g ON pu.id_genero = g.id_genero
+    WHERE u.usuario = p_usuario
+    AND g.activo = 1
+    ORDER BY g.nombre_genero;
+END $$
+
 DROP PROCEDURE IF EXISTS sp_actualizar_preferencias_usuario $$
 
 CREATE PROCEDURE sp_actualizar_preferencias_usuario(
@@ -778,7 +795,7 @@ BEGIN
 
         SELECT
             'contenido' AS tipo_actividad,
-            'Se agregó contenido' AS accion,
+            'Contenido agregado' AS accion,
             titulo AS referencia,
             COALESCE(imagen_portada, '') AS imagen,
             fecha_creacion AS fecha_actividad
@@ -838,7 +855,9 @@ CREATE PROCEDURE sp_listar_peliculas_series_gestion(
     IN p_tipo VARCHAR(30),
     IN p_id_genero INT,
     IN p_estado VARCHAR(50),
-    IN p_anio INT
+    IN p_anio INT,
+    IN p_estado_emision VARCHAR(30),
+    IN p_destacado TINYINT
 )
 BEGIN
     SELECT
@@ -853,8 +872,10 @@ BEGIN
             WHEN ps.activo = 0 THEN 'Desactivado'
             ELSE ps.estado
         END AS estado,
+        COALESCE(ps.estado_emision, 'Finalizado') AS estado_emision,
         COALESCE(ps.trailer_url, '') AS trailer_url,
-        ps.activo
+        ps.activo,
+        ps.destacado
     FROM peliculas_series ps
     LEFT JOIN peliculas_series_generos psg
         ON ps.id_pelicula_serie = psg.id_pelicula_serie
@@ -907,6 +928,17 @@ BEGIN
             OR p_anio = 0
             OR ps.anio_lanzamiento = p_anio
         )
+        AND (
+            p_estado_emision IS NULL
+            OR TRIM(p_estado_emision) = ''
+            OR LOWER(p_estado_emision) = 'todos'
+            OR LOWER(COALESCE(ps.estado_emision, 'Finalizado')) = LOWER(p_estado_emision)
+        )
+        AND (
+            p_destacado IS NULL
+            OR p_destacado = 0
+            OR ps.destacado = 1
+        )
     GROUP BY
         ps.id_pelicula_serie,
         ps.titulo,
@@ -915,8 +947,10 @@ BEGIN
         ps.tipo,
         ps.anio_lanzamiento,
         ps.estado,
+        ps.estado_emision,
         ps.trailer_url,
         ps.activo,
+        ps.destacado,
         ps.fecha_actualizacion,
         ps.fecha_creacion
     ORDER BY ps.fecha_actualizacion DESC, ps.fecha_creacion DESC;
@@ -1326,6 +1360,386 @@ BEGIN
 END $$
 
 DROP PROCEDURE IF EXISTS sp_inicio_destacados_usuario $$
+
+DROP PROCEDURE IF EXISTS sp_listar_paneles_inicio_gestion $$
+
+CREATE PROCEDURE sp_listar_paneles_inicio_gestion()
+BEGIN
+    SELECT
+        pi.id_panel_inicio,
+        pi.titulo,
+        COALESCE(pi.descripcion, '') AS descripcion,
+        COALESCE(pi.orden, 0) AS orden,
+        COALESCE(pi.activo, 1) AS activo,
+        COALESCE(COUNT(pic.id_panel_inicio_contenido), 0) AS total_contenido,
+        pi.fecha_creacion,
+        pi.fecha_actualizacion
+    FROM paneles_inicio pi
+    LEFT JOIN paneles_inicio_contenido pic
+        ON pi.id_panel_inicio = pic.id_panel_inicio
+    GROUP BY
+        pi.id_panel_inicio,
+        pi.titulo,
+        pi.descripcion,
+        pi.orden,
+        pi.activo,
+        pi.fecha_creacion,
+        pi.fecha_actualizacion
+    ORDER BY pi.orden ASC, pi.fecha_creacion DESC;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_crear_panel_inicio $$
+
+CREATE PROCEDURE sp_crear_panel_inicio(
+    IN p_titulo VARCHAR(120),
+    IN p_descripcion VARCHAR(255),
+    IN p_orden INT,
+    IN p_activo TINYINT
+)
+BEGIN
+    DECLARE v_orden INT DEFAULT 0;
+
+    IF TRIM(COALESCE(p_titulo, '')) = '' THEN
+        SELECT 0 AS exito, 'Escribe un título para el panel' AS mensaje, 0 AS id_panel_inicio;
+    ELSE
+        SET v_orden = COALESCE(p_orden, 0);
+
+        IF v_orden <= 0 THEN
+            SELECT COALESCE(MAX(orden), 0) + 1
+            INTO v_orden
+            FROM paneles_inicio;
+        END IF;
+
+        INSERT INTO paneles_inicio(titulo, descripcion, orden, activo)
+        VALUES (
+            TRIM(p_titulo),
+            TRIM(COALESCE(p_descripcion, '')),
+            v_orden,
+            CASE WHEN p_activo = 1 THEN 1 ELSE 0 END
+        );
+
+        SELECT 1 AS exito, 'Panel creado correctamente' AS mensaje, LAST_INSERT_ID() AS id_panel_inicio;
+    END IF;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_actualizar_panel_inicio $$
+
+CREATE PROCEDURE sp_actualizar_panel_inicio(
+    IN p_id_panel_inicio INT,
+    IN p_titulo VARCHAR(120),
+    IN p_descripcion VARCHAR(255),
+    IN p_orden INT,
+    IN p_activo TINYINT
+)
+BEGIN
+    DECLARE v_existe INT DEFAULT 0;
+    DECLARE v_orden INT DEFAULT 0;
+
+    SELECT COUNT(*)
+    INTO v_existe
+    FROM paneles_inicio
+    WHERE id_panel_inicio = p_id_panel_inicio;
+
+    IF p_id_panel_inicio <= 0 OR v_existe = 0 THEN
+        SELECT 0 AS exito, 'Selecciona un panel válido' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+    ELSEIF TRIM(COALESCE(p_titulo, '')) = '' THEN
+        SELECT 0 AS exito, 'Escribe un título para el panel' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+    ELSE
+        SET v_orden = COALESCE(p_orden, 0);
+
+        IF v_orden <= 0 THEN
+            SET v_orden = 1;
+        END IF;
+
+        UPDATE paneles_inicio
+        SET
+            titulo = TRIM(p_titulo),
+            descripcion = TRIM(COALESCE(p_descripcion, '')),
+            orden = v_orden,
+            activo = CASE WHEN p_activo = 1 THEN 1 ELSE 0 END
+        WHERE id_panel_inicio = p_id_panel_inicio;
+
+        SELECT 1 AS exito, 'Panel actualizado correctamente' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+    END IF;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_eliminar_panel_inicio $$
+
+CREATE PROCEDURE sp_eliminar_panel_inicio(
+    IN p_id_panel_inicio INT
+)
+BEGIN
+    DECLARE v_existe INT DEFAULT 0;
+
+    SELECT COUNT(*)
+    INTO v_existe
+    FROM paneles_inicio
+    WHERE id_panel_inicio = p_id_panel_inicio;
+
+    IF p_id_panel_inicio <= 0 OR v_existe = 0 THEN
+        SELECT 0 AS exito, 'Selecciona un panel válido' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+    ELSE
+        DELETE FROM paneles_inicio
+        WHERE id_panel_inicio = p_id_panel_inicio;
+
+        SELECT 1 AS exito, 'Panel eliminado correctamente' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+    END IF;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_agregar_contenido_panel_inicio $$
+
+CREATE PROCEDURE sp_agregar_contenido_panel_inicio(
+    IN p_id_panel_inicio INT,
+    IN p_id_pelicula_serie INT,
+    IN p_orden INT
+)
+BEGIN
+    DECLARE v_panel_existe INT DEFAULT 0;
+    DECLARE v_contenido_existe INT DEFAULT 0;
+    DECLARE v_orden INT DEFAULT 0;
+
+    SELECT COUNT(*)
+    INTO v_panel_existe
+    FROM paneles_inicio
+    WHERE id_panel_inicio = p_id_panel_inicio;
+
+    SELECT COUNT(*)
+    INTO v_contenido_existe
+    FROM peliculas_series
+    WHERE id_pelicula_serie = p_id_pelicula_serie;
+
+    IF p_id_panel_inicio <= 0 OR v_panel_existe = 0 THEN
+        SELECT 0 AS exito, 'Selecciona un panel válido' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+    ELSEIF p_id_pelicula_serie <= 0 OR v_contenido_existe = 0 THEN
+        SELECT 0 AS exito, 'Selecciona un anime válido' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+    ELSE
+        SET v_orden = COALESCE(p_orden, 0);
+
+        IF v_orden <= 0 THEN
+            SELECT COALESCE(MAX(orden), 0) + 1
+            INTO v_orden
+            FROM paneles_inicio_contenido
+            WHERE id_panel_inicio = p_id_panel_inicio;
+        END IF;
+
+        INSERT INTO paneles_inicio_contenido(id_panel_inicio, id_pelicula_serie, orden)
+        VALUES (p_id_panel_inicio, p_id_pelicula_serie, v_orden)
+        ON DUPLICATE KEY UPDATE orden = VALUES(orden);
+
+        SELECT 1 AS exito, 'Anime agregado al panel' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+    END IF;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_quitar_contenido_panel_inicio $$
+
+CREATE PROCEDURE sp_quitar_contenido_panel_inicio(
+    IN p_id_panel_inicio INT,
+    IN p_id_pelicula_serie INT
+)
+BEGIN
+    DELETE FROM paneles_inicio_contenido
+    WHERE id_panel_inicio = p_id_panel_inicio
+    AND id_pelicula_serie = p_id_pelicula_serie;
+
+    SELECT 1 AS exito, 'Anime quitado del panel' AS mensaje, p_id_panel_inicio AS id_panel_inicio;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_listar_contenido_panel_inicio_gestion $$
+
+CREATE PROCEDURE sp_listar_contenido_panel_inicio_gestion(
+    IN p_id_panel_inicio INT
+)
+BEGIN
+    SELECT
+        pic.id_panel_inicio,
+        ps.id_pelicula_serie,
+        ps.titulo,
+        COALESCE(ps.titulo_original, '') AS titulo_original,
+        ps.tipo,
+        COALESCE(ps.anio_lanzamiento, 0) AS anio_lanzamiento,
+        COALESCE(ps.imagen_portada, '') AS imagen_portada,
+        COALESCE(ps.estado, '') AS estado,
+        COALESCE(ps.estado_emision, '') AS estado_emision,
+        COALESCE(pic.orden, 0) AS orden,
+        COALESCE(GROUP_CONCAT(g.nombre_genero ORDER BY g.nombre_genero SEPARATOR ', '), 'Sin género') AS generos
+    FROM paneles_inicio_contenido pic
+    INNER JOIN peliculas_series ps
+        ON pic.id_pelicula_serie = ps.id_pelicula_serie
+    LEFT JOIN peliculas_series_generos psg
+        ON ps.id_pelicula_serie = psg.id_pelicula_serie
+    LEFT JOIN generos g
+        ON psg.id_genero = g.id_genero
+    WHERE pic.id_panel_inicio = p_id_panel_inicio
+    GROUP BY
+        pic.id_panel_inicio,
+        ps.id_pelicula_serie,
+        ps.titulo,
+        ps.titulo_original,
+        ps.tipo,
+        ps.anio_lanzamiento,
+        ps.imagen_portada,
+        ps.estado,
+        ps.estado_emision,
+        pic.orden
+    ORDER BY pic.orden ASC, ps.titulo ASC;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_buscar_contenido_panel_inicio $$
+
+CREATE PROCEDURE sp_buscar_contenido_panel_inicio(
+    IN p_busqueda VARCHAR(150)
+)
+BEGIN
+    SELECT
+        ps.id_pelicula_serie,
+        ps.titulo,
+        COALESCE(ps.titulo_original, '') AS titulo_original,
+        ps.tipo,
+        COALESCE(ps.anio_lanzamiento, 0) AS anio_lanzamiento,
+        COALESCE(ps.imagen_portada, '') AS imagen_portada,
+        COALESCE(ps.estado, '') AS estado,
+        COALESCE(ps.estado_emision, '') AS estado_emision,
+        COALESCE(GROUP_CONCAT(g.nombre_genero ORDER BY g.nombre_genero SEPARATOR ', '), 'Sin género') AS generos
+    FROM peliculas_series ps
+    LEFT JOIN peliculas_series_generos psg
+        ON ps.id_pelicula_serie = psg.id_pelicula_serie
+    LEFT JOIN generos g
+        ON psg.id_genero = g.id_genero
+    WHERE ps.activo = 1
+    AND LOWER(ps.estado) = 'publicado'
+    AND (
+        TRIM(COALESCE(p_busqueda, '')) = ''
+        OR ps.titulo LIKE CONCAT('%', TRIM(p_busqueda), '%')
+        OR COALESCE(ps.titulo_original, '') LIKE CONCAT('%', TRIM(p_busqueda), '%')
+    )
+    GROUP BY
+        ps.id_pelicula_serie,
+        ps.titulo,
+        ps.titulo_original,
+        ps.tipo,
+        ps.anio_lanzamiento,
+        ps.imagen_portada,
+        ps.estado,
+        ps.estado_emision,
+        ps.fecha_actualizacion
+    ORDER BY ps.fecha_actualizacion DESC, ps.titulo ASC
+    LIMIT 80;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_listar_paneles_inicio_usuario $$
+
+CREATE PROCEDURE sp_listar_paneles_inicio_usuario()
+BEGIN
+    SELECT
+        pi.id_panel_inicio,
+        pi.titulo,
+        COALESCE(pi.descripcion, '') AS descripcion,
+        COALESCE(pi.orden, 0) AS orden,
+        COALESCE(COUNT(ps.id_pelicula_serie), 0) AS total_contenido
+    FROM paneles_inicio pi
+    LEFT JOIN paneles_inicio_contenido pic
+        ON pi.id_panel_inicio = pic.id_panel_inicio
+    LEFT JOIN peliculas_series ps
+        ON pic.id_pelicula_serie = ps.id_pelicula_serie
+        AND ps.activo = 1
+        AND LOWER(ps.estado) = 'publicado'
+    WHERE pi.activo = 1
+    GROUP BY
+        pi.id_panel_inicio,
+        pi.titulo,
+        pi.descripcion,
+        pi.orden
+    HAVING total_contenido > 0
+    ORDER BY pi.orden ASC, pi.fecha_creacion DESC;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_contenido_panel_inicio_usuario $$
+
+CREATE PROCEDURE sp_contenido_panel_inicio_usuario(
+    IN p_id_panel_inicio INT,
+    IN p_usuario VARCHAR(50)
+)
+BEGIN
+    DECLARE v_id_usuario INT DEFAULT 0;
+
+    SELECT COALESCE((
+        SELECT id_usuario
+        FROM usuarios
+        WHERE usuario = p_usuario
+        LIMIT 1
+    ), 0) INTO v_id_usuario;
+
+    SELECT
+        ps.id_pelicula_serie,
+        ps.titulo,
+        COALESCE(ps.titulo_original, '') AS titulo_original,
+        COALESCE(ps.descripcion, '') AS descripcion,
+        ps.tipo,
+        COALESCE(GROUP_CONCAT(g.nombre_genero ORDER BY g.nombre_genero SEPARATOR ', '), 'Sin género') AS generos,
+        COALESCE(ps.imagen_portada, '') AS imagen_portada,
+        COALESCE(ps.imagen_banner, '') AS imagen_banner,
+        COALESCE(ps.trailer_url, '') AS trailer_url,
+        COALESCE(ps.anio_lanzamiento, 0) AS anio_lanzamiento,
+        COALESCE(ps.duracion_minutos, 0) AS duracion_minutos,
+        COALESCE(ps.temporadas, 0) AS temporadas,
+        COALESCE(ps.episodios, 0) AS episodios,
+        COALESCE(ps.estado, '') AS estado,
+        COALESCE(ps.estado_emision, '') AS estado_emision,
+        COALESCE(ps.activo, 1) AS activo,
+        COALESCE(ps.destacado, 0) AS destacado,
+        CASE
+            WHEN EXISTS (
+                SELECT 1
+                FROM favoritos_usuario fu
+                WHERE fu.id_usuario = v_id_usuario
+                AND fu.id_pelicula_serie = ps.id_pelicula_serie
+            ) THEN 1
+            ELSE 0
+        END AS favorito,
+        COALESCE(ps.serie_padre_id, 0) AS serie_padre_id,
+        COALESCE(ps.numero_temporada, 0) AS numero_temporada,
+        COALESCE(ps.tipo_relacion, '') AS tipo_relacion,
+        COALESCE(padre.titulo, '') AS padre_titulo,
+        COALESCE(padre.imagen_portada, '') AS padre_imagen_portada,
+        COALESCE(padre.anio_lanzamiento, 0) AS padre_anio_lanzamiento
+    FROM paneles_inicio_contenido pic
+    INNER JOIN peliculas_series ps
+        ON pic.id_pelicula_serie = ps.id_pelicula_serie
+    LEFT JOIN peliculas_series padre
+        ON ps.serie_padre_id = padre.id_pelicula_serie
+    LEFT JOIN peliculas_series_generos psg
+        ON ps.id_pelicula_serie = psg.id_pelicula_serie
+    LEFT JOIN generos g
+        ON psg.id_genero = g.id_genero
+    WHERE pic.id_panel_inicio = p_id_panel_inicio
+    AND ps.activo = 1
+    AND LOWER(ps.estado) = 'publicado'
+    GROUP BY
+        ps.id_pelicula_serie,
+        ps.titulo,
+        ps.titulo_original,
+        ps.descripcion,
+        ps.tipo,
+        ps.imagen_portada,
+        ps.imagen_banner,
+        ps.trailer_url,
+        ps.anio_lanzamiento,
+        ps.duracion_minutos,
+        ps.temporadas,
+        ps.episodios,
+        ps.estado,
+        ps.estado_emision,
+        ps.activo,
+        ps.destacado,
+        ps.serie_padre_id,
+        ps.numero_temporada,
+        ps.tipo_relacion,
+        padre.titulo,
+        padre.imagen_portada,
+        padre.anio_lanzamiento,
+        pic.orden
+    ORDER BY pic.orden ASC, ps.titulo ASC;
+END $$
 
 CREATE PROCEDURE sp_inicio_destacados_usuario(
     IN p_usuario VARCHAR(50)

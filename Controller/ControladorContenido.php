@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once '../Models/Seguridad.php';
+require_once '../Models/OptimizadorImagen.php';
 require_once '../Api/soap/ClienteSOAP.php';
 
 function redirigirGestionContenido($mensaje, $tipo, $idPeliculaSerie = 0)
@@ -7,7 +9,7 @@ function redirigirGestionContenido($mensaje, $tipo, $idPeliculaSerie = 0)
     $_SESSION['mensaje_contenido'] = $mensaje;
     $_SESSION['tipo_mensaje_contenido'] = $tipo;
 
-    $url = "../Views/Administracion/gestion-peliculas-series.php";
+    $url = "/elyra/admin/contenido";
     if ((int)$idPeliculaSerie > 0) {
         $url .= "?id=" . (int)$idPeliculaSerie;
     }
@@ -18,7 +20,7 @@ function redirigirGestionContenido($mensaje, $tipo, $idPeliculaSerie = 0)
 
 function redirigirErrorBaseDatosContenido()
 {
-    header("Location: ../Views/Errores/Errorbd.php?retorno=" . urlencode('../Views/Administracion/gestion-peliculas-series.php'));
+    header("Location: /elyra/error-bd?retorno=" . urlencode('/elyra/admin/contenido'));
     exit;
 }
 
@@ -27,7 +29,7 @@ function redirigirFormularioContenido($mensaje, $tipo, $idPeliculaSerie = 0)
     $_SESSION['mensaje_formulario_contenido'] = $mensaje;
     $_SESSION['tipo_mensaje_formulario_contenido'] = $tipo;
 
-    $url = "../Views/Administracion/agregar-pelicula-serie.php";
+    $url = "/elyra/admin/contenido/formulario";
     if ((int)$idPeliculaSerie > 0) {
         $url .= "?id=" . (int)$idPeliculaSerie;
     }
@@ -43,6 +45,20 @@ function valorPostContenido($campo)
     }
 
     return '';
+}
+
+function redirigirCsrfContenido()
+{
+    $idPeliculaSerie = 0;
+    if (isset($_POST['id_pelicula_serie'])) {
+        $idPeliculaSerie = (int)$_POST['id_pelicula_serie'];
+    }
+
+    if (isset($_POST['GuardarPeliculaSerie'])) {
+        redirigirFormularioContenido('Solicitud no válida. Recarga la página e inténtalo de nuevo.', 'error', $idPeliculaSerie);
+    }
+
+    redirigirGestionContenido('Solicitud no válida. Recarga la página e inténtalo de nuevo.', 'error', $idPeliculaSerie);
 }
 
 function generosPostContenido()
@@ -228,7 +244,21 @@ function guardarImagenContenido($campo, $subcarpeta, $rutaActual)
     $extension = strtolower(pathinfo($_FILES[$campo]['name'], PATHINFO_EXTENSION));
     $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
 
-    if (!in_array($extension, $extensionesPermitidas)) {
+    if (!in_array($extension, $extensionesPermitidas, true)) {
+        throw new Exception('Solo se permiten imágenes JPG, PNG o WEBP');
+    }
+
+    $datosImagen = getimagesize($_FILES[$campo]['tmp_name']);
+    if ($datosImagen === false || !isset($datosImagen[2])) {
+        throw new Exception('El archivo subido no es una imagen válida');
+    }
+
+    $tiposPermitidos = [IMAGETYPE_JPEG, IMAGETYPE_PNG];
+    if (defined('IMAGETYPE_WEBP')) {
+        $tiposPermitidos[] = IMAGETYPE_WEBP;
+    }
+
+    if (!in_array((int)$datosImagen[2], $tiposPermitidos, true)) {
         throw new Exception('Solo se permiten imágenes JPG, PNG o WEBP');
     }
 
@@ -241,7 +271,7 @@ function guardarImagenContenido($campo, $subcarpeta, $rutaActual)
         $nombreBase = 'contenido';
     }
 
-    $nombreArchivo = $nombreBase . '-' . date('YmdHis') . '-' . mt_rand(1000, 9999) . '.' . $extension;
+    $nombreArchivo = $nombreBase . '-' . date('YmdHis') . '-' . mt_rand(1000, 9999) . '.webp';
     $directorio = __DIR__ . '/../library/contenido/' . $subcarpeta;
 
     if (!is_dir($directorio)) {
@@ -250,21 +280,34 @@ function guardarImagenContenido($campo, $subcarpeta, $rutaActual)
 
     $rutaDestino = $directorio . '/' . $nombreArchivo;
 
-    if (!move_uploaded_file($_FILES[$campo]['tmp_name'], $rutaDestino)) {
-        throw new Exception('No se pudo guardar la imagen');
+    $usoImagen = 'general';
+    if ($subcarpeta === 'portadas') {
+        $usoImagen = 'portada';
     }
+
+    if ($subcarpeta === 'banners') {
+        $usoImagen = 'banner';
+    }
+
+    OptimizadorImagen::guardarWebpOptimizado($_FILES[$campo]['tmp_name'], $rutaDestino, (int)$datosImagen[2], $usoImagen);
 
     return 'library/contenido/' . $subcarpeta . '/' . $nombreArchivo;
 }
 
 if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Views/Usuario/IniciarSesion.php");
+    header("Location: /elyra/login");
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header("Location: ../Views/Usuario/inicio.php");
+    header("Location: /elyra/inicio");
     exit;
+}
+
+Seguridad::requerirPost('/elyra/admin/contenido');
+
+if (!Seguridad::csrfValido($_POST)) {
+    redirigirCsrfContenido();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -369,6 +412,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-header("Location: ../Views/Administracion/gestion-peliculas-series.php");
+header("Location: /elyra/admin/contenido");
 exit;
 ?>

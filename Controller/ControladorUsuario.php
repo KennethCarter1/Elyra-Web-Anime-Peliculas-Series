@@ -1,20 +1,19 @@
 <?php
 session_start();
+require_once '../Models/Seguridad.php';
 require_once '../Api/soap/ClienteSOAP.php';
-
-$clienteSOAP = new ClienteSOAP();
 
 function redirigirRegistro($mensaje)
 {
     $_SESSION['mensaje_error'] = $mensaje;
-    header("Location: ../Views/Usuario/Registrarse.php");
+    header("Location: /elyra/registro");
     exit;
 }
 
 function redirigirLogin($mensaje)
 {
     $_SESSION['mensaje_error_login'] = $mensaje;
-    header("Location: ../Views/Usuario/IniciarSesion.php");
+    header("Location: /elyra/login");
     exit;
 }
 
@@ -22,7 +21,7 @@ function redirigirPreferencias($mensaje, $tipo)
 {
     $_SESSION['mensaje_preferencias'] = $mensaje;
     $_SESSION['tipo_mensaje_preferencias'] = $tipo;
-    header("Location: ../Views/Usuario/Preferencias.php");
+    header("Location: /elyra/preferencias");
     exit;
 }
 
@@ -30,7 +29,7 @@ function redirigirConfiguracion($mensaje, $tipo)
 {
     $_SESSION['mensaje_configuracion'] = $mensaje;
     $_SESSION['tipo_mensaje_configuracion'] = $tipo;
-    header("Location: ../Views/Usuario/Configuracion.php");
+    header("Location: /elyra/configuracion");
     exit;
 }
 
@@ -38,13 +37,13 @@ function redirigirCambiarContrasena($mensaje, $tipo)
 {
     $_SESSION['mensaje_cambiar_contrasena'] = $mensaje;
     $_SESSION['tipo_mensaje_cambiar_contrasena'] = $tipo;
-    header("Location: ../Views/Usuario/CambiarContrasena.php");
+    header("Location: /elyra/cambiar-contrasena");
     exit;
 }
 
 function obtenerRetornoErrorBaseDatos()
 {
-    $retorno = '../Index.php';
+    $retorno = '/elyra/';
 
     if (isset($_SERVER['HTTP_REFERER']) && trim($_SERVER['HTTP_REFERER']) !== '') {
         $retorno = $_SERVER['HTTP_REFERER'];
@@ -56,7 +55,7 @@ function obtenerRetornoErrorBaseDatos()
 function redirigirErrorBaseDatosControlador()
 {
     $retorno = obtenerRetornoErrorBaseDatos();
-    header("Location: ../Views/Errores/Errorbd.php?retorno=" . urlencode($retorno));
+    header("Location: /elyra/error-bd?retorno=" . urlencode($retorno));
     exit;
 }
 
@@ -98,6 +97,35 @@ function usuarioValido($usuario)
     return true;
 }
 
+function redirigirCsrfUsuario()
+{
+    if (isset($_POST['Registrarse'])) {
+        redirigirRegistro('Solicitud no válida. Recarga la página e inténtalo de nuevo.');
+    }
+
+    if (isset($_POST['ActualizarPreferencias'])) {
+        redirigirPreferencias('Solicitud no válida. Recarga la página e inténtalo de nuevo.', 'error');
+    }
+
+    if (isset($_POST['ActualizarUsuario'])) {
+        redirigirConfiguracion('Solicitud no válida. Recarga la página e inténtalo de nuevo.', 'error');
+    }
+
+    if (isset($_POST['CambiarContrasena'])) {
+        redirigirCambiarContrasena('Solicitud no válida. Recarga la página e inténtalo de nuevo.', 'error');
+    }
+
+    redirigirLogin('Solicitud no válida. Recarga la página e inténtalo de nuevo.');
+}
+
+Seguridad::requerirPost('/elyra/login');
+
+if (!Seguridad::csrfValido($_POST)) {
+    redirigirCsrfUsuario();
+}
+
+$clienteSOAP = new ClienteSOAP();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if(isset($_POST['login'])){
@@ -135,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 setcookie('usuario_login', $resultadoLogin['idUsuario'], time() + (86400 * 30), "/");
             }
 
-            header("Location: ../Index.php");
+            header("Location: /elyra/");
             exit;
 
         } catch(Throwable $e){
@@ -282,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['nombre'] = $nombre;
             $_SESSION['genero'] = $genero;
 
-            header("Location: ../Views/Usuario/perfil.php");
+            header("Location: /elyra/perfil");
             exit;
 
         } catch(Throwable $e){
@@ -439,7 +467,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // Redirigir a login
-                header("Location: ../Views/Usuario/IniciarSesion.php?registro=exito");
+                header("Location: /elyra/login?registro=exito");
                 exit;
 
             } catch(Throwable $e){
@@ -448,3 +476,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+header("Location: /elyra/login");
+exit;

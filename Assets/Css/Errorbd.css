@@ -20,7 +20,7 @@ body {
 
 body {
     min-height: 100vh;
-    background-image: url('../Images/background/background-bd.png');
+    background-image: url('../Images/background/background-bd.webp');
     background-size: cover;
     background-position: center 18%;
     background-repeat: no-repeat;
@@ -181,7 +181,7 @@ body.dark::after {
 }
 
 body.dark {
-    background-image: url('../Images/background/background-bd-dark.png');
+    background-image: url('../Images/background/background-bd-dark.webp');
     background-size: cover;
     background-position: center 18%;
     background-repeat: no-repeat;

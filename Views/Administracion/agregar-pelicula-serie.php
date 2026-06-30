@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 session_start();
 require_once '../../Models/PeliculasSeries.php';
 require_once '../../Models/Sesion.php';
@@ -6,12 +7,12 @@ require_once '../../Models/Navegacion.php';
 require_once '../../Api/soap/ClienteSOAP.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header('Location: ../Usuario/inicio.php');
+    header('Location: /elyra/inicio');
     exit;
 }
 
@@ -42,7 +43,7 @@ try {
         }
     }
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Administracion/agregar-pelicula-serie.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/admin/contenido/formulario', $_SERVER);
 }
 
 $tipoSidebar = 'administracion';
@@ -59,10 +60,11 @@ if ($editando) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Administracion/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/AgregarPeliculaSerie.css">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title><?php echo htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8'); ?></title>
@@ -86,6 +88,7 @@ if ($editando) {
         <?php } ?>
 
         <form method="POST" action="../../Controller/ControladorContenido.php" enctype="multipart/form-data" class="formulario-contenido-admin">
+                <?php echo Seguridad::campoCsrf(); ?>
             <input type="hidden" name="GuardarPeliculaSerie" value="1">
             <input type="hidden" name="id_pelicula_serie" value="<?php echo (int)$formularioContenido['id']; ?>">
             <input type="hidden" name="imagen_portada_actual" value="<?php echo PeliculasSeries::valorFormulario($formularioContenido, 'imagenPortada'); ?>">
@@ -260,13 +263,10 @@ if ($editando) {
                         <i class="fa-regular fa-circle-question"></i>
                     </div>
 
-                    <img id="preview-portada" class="preview-imagen-contenido<?php if ($formularioContenido['imagenPortadaUrl'] === '') { ?> oculto<?php } ?>" src="<?php echo htmlspecialchars($formularioContenido['imagenPortadaUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="Vista previa de portada">
+                    <img id="preview-portada" class="preview-imagen-contenido<?php if ($formularioContenido['imagenPortadaUrl'] === '') { ?> oculto<?php } ?>" src="<?php echo htmlspecialchars($formularioContenido['imagenPortadaUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="Vista previa de portada" loading="lazy" decoding="async">
 
                     <label for="imagen_portada" class="zona-subida-contenido">
                         <i class="fa-regular fa-image"></i>
-                        <strong>Arrastra y suelta la imagen de portada</strong>
-                        <span>o haz clic para seleccionar</span>
-                        <small>Recomendado: 1000x1500px. Máx. 5MB (JPG, PNG, WEBP)</small>
                     </label>
                     <input id="imagen_portada" type="file" name="imagen_portada" accept=".jpg,.jpeg,.png,.webp" data-preview="preview-portada">
                 </div>
@@ -277,13 +277,10 @@ if ($editando) {
                         <i class="fa-regular fa-circle-question"></i>
                     </div>
 
-                    <img id="preview-banner" class="preview-imagen-contenido<?php if ($formularioContenido['imagenBannerUrl'] === '') { ?> oculto<?php } ?>" src="<?php echo htmlspecialchars($formularioContenido['imagenBannerUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="Vista previa de banner">
+                    <img id="preview-banner" class="preview-imagen-contenido<?php if ($formularioContenido['imagenBannerUrl'] === '') { ?> oculto<?php } ?>" src="<?php echo htmlspecialchars($formularioContenido['imagenBannerUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="Vista previa de banner" loading="lazy" decoding="async">
 
                     <label for="imagen_banner" class="zona-subida-contenido">
                         <i class="fa-regular fa-image"></i>
-                        <strong>Arrastra y suelta la imagen del banner</strong>
-                        <span>o haz clic para seleccionar</span>
-                        <small>Recomendado: 1920x1080px. Máx. 5MB (JPG, PNG, WEBP)</small>
                     </label>
                     <input id="imagen_banner" type="file" name="imagen_banner" accept=".jpg,.jpeg,.png,.webp" data-preview="preview-banner">
                 </div>
@@ -291,38 +288,8 @@ if ($editando) {
         </form>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
     <script src="../../Assets/Js/preview-contenido.js"></script>
-    <script>
-        var selectPadre = document.getElementById('serie_padre_id');
-        var campoTipoRelacion = document.getElementById('campo-tipo-relacion');
-        var campoNumeroTemp = document.getElementById('campo-numero-temporada');
-        var selectTipoRelacion = document.getElementById('tipo_relacion');
-
-        function actualizarCamposRelacion() {
-            if (selectPadre.value !== '0') {
-                campoTipoRelacion.style.display = '';
-            } else {
-                campoTipoRelacion.style.display = 'none';
-                campoNumeroTemp.style.display = 'none';
-            }
-        }
-
-        function actualizarCampoNumeroTemp() {
-            if (selectTipoRelacion.value === 'temporada') {
-                campoNumeroTemp.style.display = '';
-            } else {
-                campoNumeroTemp.style.display = 'none';
-            }
-        }
-
-        selectPadre.addEventListener('change', function() {
-            actualizarCamposRelacion();
-            actualizarCampoNumeroTemp();
-        });
-        selectTipoRelacion.addEventListener('change', actualizarCampoNumeroTemp);
-        actualizarCamposRelacion();
-        actualizarCampoNumeroTemp();
-    </script>
+    <script src="../../Assets/Js/formulario-contenido-relacion.js"></script>
 </body>
 </html>

@@ -7,14 +7,14 @@ require_once __DIR__ . '/Config/config.php';
 if (isset($_SESSION['id_usuario']) && isset($_SESSION['rol'])) {
   
     if ($_SESSION['rol'] === 'usuario') {
-        header("Location: Views/Usuario/inicio.php");
+        header("Location: /elyra/inicio");
         exit;
     } elseif ($_SESSION['rol'] === 'administrador') {
-        header("Location: Views/Administracion/panel.php");
+        header("Location: /elyra/admin");
         exit;
     }
 } else {
     
-    header("Location: Views/Usuario/IniciarSesion.php");
+    header("Location: /elyra/login");
     exit;
 }

@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once '../Models/Seguridad.php';
 require_once '../Api/soap/ClienteSOAP.php';
 
 function redirigirGestionUsuarios($mensaje, $tipo, $idUsuario = 0)
@@ -7,7 +8,7 @@ function redirigirGestionUsuarios($mensaje, $tipo, $idUsuario = 0)
     $_SESSION['mensaje_gestion_usuario'] = $mensaje;
     $_SESSION['tipo_mensaje_gestion_usuario'] = $tipo;
 
-    $url = "../Views/Administracion/gestion-usuarios.php";
+    $url = "/elyra/admin/usuarios";
 
     if ((int)$idUsuario > 0) {
         $url .= "?id=" . (int)$idUsuario;
@@ -19,7 +20,7 @@ function redirigirGestionUsuarios($mensaje, $tipo, $idUsuario = 0)
 
 function redirigirErrorBaseDatosGestionUsuarios()
 {
-    header("Location: ../Views/Errores/Errorbd.php?retorno=" . urlencode('../Views/Administracion/gestion-usuarios.php'));
+    header("Location: /elyra/error-bd?retorno=" . urlencode('/elyra/admin/usuarios'));
     exit;
 }
 
@@ -55,14 +56,17 @@ function usuarioGestionEsElActual($idUsuario)
 }
 
 if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Views/Usuario/IniciarSesion.php");
+    header("Location: /elyra/login");
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header("Location: ../Views/Usuario/inicio.php");
+    header("Location: /elyra/inicio");
     exit;
 }
+
+Seguridad::requerirPost('/elyra/admin/usuarios');
+Seguridad::validarCsrfPost('/elyra/admin/usuarios', 'mensaje_gestion_usuario', 'tipo_mensaje_gestion_usuario');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -134,6 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-header("Location: ../Views/Administracion/gestion-usuarios.php");
+header("Location: /elyra/admin/usuarios");
 exit;
 ?>

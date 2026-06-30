@@ -5,12 +5,12 @@ require_once '../../Models/Navegacion.php';
 require_once '../../Api/soap/ClienteSOAP.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header('Location: ../Usuario/inicio.php');
+    header('Location: /elyra/inicio');
     exit;
 }
 
@@ -32,7 +32,7 @@ try {
     $distribucionContenido = ReportesEstadisticas::normalizarDistribucion($clienteSOAP->distribucionContenidoReportes());
     $estadoContenido = ReportesEstadisticas::normalizarEstadoContenido($clienteSOAP->estadoContenidoReportes());
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Administracion/reportes-estadisticas.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/admin/reportes', $_SERVER);
 }
 
 $tarjetasResumen = ReportesEstadisticas::tarjetasResumen($resumenReportes);
@@ -43,10 +43,11 @@ $tipoSidebar = 'administracion';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Administracion/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/ReportesEstadisticas.css">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title>Reportes y estadísticas</title>
@@ -139,7 +140,7 @@ $tipoSidebar = 'administracion';
                             <div class="fila-reporte fila-contenido-reporte">
                                 <div class="contenido-reporte-datos">
                                     <?php if ($contenido['imagenUrl'] !== '') { ?>
-                                        <img src="<?php echo ReportesEstadisticas::valorSeguro($contenido['imagenUrl']); ?>" alt="<?php echo ReportesEstadisticas::valorSeguro($contenido['titulo']); ?>">
+                                        <img src="<?php echo ReportesEstadisticas::valorSeguro($contenido['imagenUrl']); ?>" alt="<?php echo ReportesEstadisticas::valorSeguro($contenido['titulo']); ?>" loading="lazy" decoding="async">
                                     <?php } else { ?>
                                         <span class="imagen-reporte-vacia">
                                             <i class="fa-solid fa-film"></i>
@@ -181,7 +182,7 @@ $tipoSidebar = 'administracion';
                                     <span><?php echo ReportesEstadisticas::formatearNumero($genero['total']); ?> usuarios</span>
                                 </div>
                                 <div class="barra-reporte">
-                                    <span style="width: <?php echo ReportesEstadisticas::anchoBarra($genero['porcentaje']); ?>;"></span>
+                                    <progress max="100" value="<?php echo ReportesEstadisticas::valorBarra($genero['porcentaje']); ?>"><?php echo ReportesEstadisticas::valorBarra($genero['porcentaje']); ?>%</progress>
                                 </div>
                             </div>
                         <?php } ?>
@@ -206,7 +207,7 @@ $tipoSidebar = 'administracion';
                                     <span><?php echo ReportesEstadisticas::formatearNumero($generoContenido['total']); ?> contenidos</span>
                                 </div>
                                 <div class="barra-reporte">
-                                    <span style="width: <?php echo ReportesEstadisticas::anchoBarra($generoContenido['porcentaje']); ?>;"></span>
+                                    <progress max="100" value="<?php echo ReportesEstadisticas::valorBarra($generoContenido['porcentaje']); ?>"><?php echo ReportesEstadisticas::valorBarra($generoContenido['porcentaje']); ?>%</progress>
                                 </div>
                             </div>
                         <?php } ?>
@@ -230,7 +231,7 @@ $tipoSidebar = 'administracion';
                                 <span><?php echo ReportesEstadisticas::formatearNumero($distribucion['total']); ?></span>
                             </div>
                             <div class="barra-reporte">
-                                <span style="width: <?php echo ReportesEstadisticas::anchoBarra($distribucion['porcentaje']); ?>;"></span>
+                                <progress max="100" value="<?php echo ReportesEstadisticas::valorBarra($distribucion['porcentaje']); ?>"><?php echo ReportesEstadisticas::valorBarra($distribucion['porcentaje']); ?>%</progress>
                             </div>
                         </div>
                     <?php } ?>
@@ -251,7 +252,7 @@ $tipoSidebar = 'administracion';
                                 <span><?php echo ReportesEstadisticas::formatearNumero($estado['total']); ?></span>
                             </div>
                             <div class="barra-reporte">
-                                <span style="width: <?php echo ReportesEstadisticas::anchoBarra($estado['porcentaje']); ?>;"></span>
+                                <progress max="100" value="<?php echo ReportesEstadisticas::valorBarra($estado['porcentaje']); ?>"><?php echo ReportesEstadisticas::valorBarra($estado['porcentaje']); ?>%</progress>
                             </div>
                         </div>
                     <?php } ?>
@@ -260,6 +261,6 @@ $tipoSidebar = 'administracion';
         </section>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

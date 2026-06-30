@@ -293,6 +293,11 @@ class ReportesEstadisticas {
 
     public static function anchoBarra($porcentaje)
     {
+        return self::valorBarra($porcentaje) . '%';
+    }
+
+    public static function valorBarra($porcentaje)
+    {
         $porcentaje = (int)$porcentaje;
 
         if ($porcentaje < 3) {
@@ -303,7 +308,7 @@ class ReportesEstadisticas {
             $porcentaje = 100;
         }
 
-        return $porcentaje . '%';
+        return $porcentaje;
     }
 
     private static function porcentaje($total, $maximo)

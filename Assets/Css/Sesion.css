@@ -8,20 +8,32 @@
 ========================= */
 html, body {
     height: 100%;
+    min-height: 100%;
     margin: 0;
     padding: 0;
+    background: #08111f;
 }
 
 body {
     font-family: 'Montserrat', sans-serif;
+    display: flow-root;
+    position: relative;
+    isolation: isolate;
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
 
     /* FONDO */
-    background-image: url('../Images/background/background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-color: #08111f;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: url('../Images/background/background.webp') center / cover no-repeat;
 }
 
 /* =========================
@@ -32,6 +44,7 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
+    z-index: 3;
 }
 
 /* =========================
@@ -72,16 +85,17 @@ p {
     padding: 30px; 
     border-radius: 10px; 
     box-sizing: border-box; 
-    background: rgba(255,255,255,0.2); 
-    backdrop-filter: blur(15px) saturate(180%); 
-    -webkit-backdrop-filter: blur(15px) saturate(180%); 
-    border: 1px solid rgba(255,255,255,0.4); position: absolute;
+    background: linear-gradient(135deg, rgba(255,255,255,0.48), rgba(255,255,255,0.16));
+    backdrop-filter: blur(38px) saturate(220%) contrast(116%);
+    -webkit-backdrop-filter: blur(38px) saturate(220%) contrast(116%);
+    border: 1px solid rgba(255,255,255,0.9); position: absolute;
     top: 50%; left: 50%; 
     transform: translate(-50%, -50%); 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); 
+    box-shadow: 0 30px 78px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 0 26px rgba(255,255,255,0.18), inset 0 -1px 0 rgba(255,255,255,0.3);
 }
 
 .contenedor-principal2 {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -92,15 +106,15 @@ p {
     border-radius: 10px;
     box-sizing: border-box;
 
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px);
+    background: linear-gradient(135deg, rgba(255,255,255,0.48), rgba(255,255,255,0.16));
+    backdrop-filter: blur(38px) saturate(220%) contrast(116%);
+    -webkit-backdrop-filter: blur(38px) saturate(220%) contrast(116%);
 
-    border: 1px solid rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.9);
 
     margin: 50px auto; /* 👈 en vez de absolute */
 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 30px 78px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 0 26px rgba(255,255,255,0.18), inset 0 -1px 0 rgba(255,255,255,0.3);
 }
 
 /* =========================
@@ -155,8 +169,6 @@ p {
     box-sizing: border-box;
 
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
 }
 
 .input-box input:focus {
@@ -242,8 +254,6 @@ button {
     cursor: pointer;
     transition: 0.2s ease;
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
 }
 
 button:hover {
@@ -252,7 +262,24 @@ button:hover {
 }
 
 .registro {
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    color: var(--color-acento);
+    font-size: 13px;
+    text-decoration: underline;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.registro:hover {
+    color: var(--color-acento-hover);
+    text-decoration: underline;
+    background: transparent;
 }
 
 /* =========================
@@ -299,15 +326,11 @@ button:hover {
   border: 1px solid #ccc;
   text-align: center;
   background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
   box-sizing: border-box;
 }
 
 .campo option{
     background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
   box-sizing: border-box;
 
 }
@@ -332,8 +355,6 @@ button:hover {
   border-radius: 8px; /* más rectangular */
   background: rgba(255, 255, 255, 0.15);
 
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
 
   border: 1px solid rgba(255, 255, 255, 0.3);
 
@@ -432,16 +453,28 @@ button:hover {
    MODO OSCURO
 ========================= */
 body.dark {
-    background-image: url('../Images/background/background-dark.png');
+    background-color: #070812;
+}
+
+body.dark::before {
+    background: url('../Images/background/background-dark.webp') center / cover no-repeat;
+}
+
+body.sin-vidrio::before {
+    background: url('../Images/background/background.webp') center / cover no-repeat !important;
+}
+
+body.sin-vidrio.dark::before {
+    background: url('../Images/background/background-dark.webp') center / cover no-repeat !important;
 }
 
 body.dark .contenedor-principal,
 body.dark .contenedor-principal2 {
-    background: rgba(20,20,20,0.5);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    background: linear-gradient(135deg, rgba(38,40,64,0.64), rgba(8,10,24,0.24));
+    backdrop-filter: blur(38px) saturate(205%) contrast(118%);
+    -webkit-backdrop-filter: blur(38px) saturate(205%) contrast(118%);
+    border: 1px solid rgba(255,255,255,0.24);
+    box-shadow: 0 30px 78px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.26), inset 0 0 24px rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.1);
     color: var(--color-acento-claro);
 }
 
@@ -487,8 +520,8 @@ body.dark .campo input,
 body.dark .campo select,
 body.dark .card {
      background: rgba(20,20,20,0.5);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(145%);
+    -webkit-backdrop-filter: blur(10px) saturate(145%);
     border: 1px solid rgba(255,255,255,0.2);
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     color:white;
@@ -522,6 +555,16 @@ body.dark button:hover {
     color: white;
 }
 
+body.dark .registro {
+    background: transparent;
+    color: var(--color-acento-claro);
+}
+
+body.dark .registro:hover {
+    color: white;
+    background: transparent;
+}
+
 body.dark .card input:checked {
     background: var(--color-acento);
     border: 2px solid var(--color-acento);
@@ -538,4 +581,53 @@ body.dark .mensaje-error {
     background: rgba(255, 80, 80, 0.16);
     color: #ffb3b3;
     border-color: rgba(255, 128, 128, 0.5);
+}
+
+body.sin-vidrio .contenedor-principal,
+body.sin-vidrio .contenedor-principal2 {
+    background: linear-gradient(145deg, #ffffff 0%, #f4f6fb 100%) !important;
+    border: 1px solid rgba(31,31,46,0.1) !important;
+    box-shadow: 0 24px 60px rgba(20,24,42,0.22) !important;
+}
+
+body.sin-vidrio.dark .contenedor-principal,
+body.sin-vidrio.dark .contenedor-principal2 {
+    background: linear-gradient(145deg, #171928 0%, #10121f 100%) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.48) !important;
+}
+
+body.sin-vidrio .input-box input,
+body.sin-vidrio .campo input,
+body.sin-vidrio .campo select,
+body.sin-vidrio .card {
+    background: #f7f8fc !important;
+    border: 1px solid #d8deec !important;
+    color: #22243a !important;
+}
+
+body.sin-vidrio.dark .input-box input,
+body.sin-vidrio.dark .campo input,
+body.sin-vidrio.dark .campo select,
+body.sin-vidrio.dark .card {
+    background: #0f1220 !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    color: #f3f3ff !important;
+}
+
+body.sin-vidrio .formulario form > button,
+body.sin-vidrio .iniciar-sesion button {
+    background: var(--color-acento) !important;
+    color: #fff !important;
+    box-shadow: 0 12px 26px var(--color-acento-sombra-2) !important;
+}
+
+body.sin-vidrio .formulario form > button:hover,
+body.sin-vidrio .iniciar-sesion button:hover {
+    background: var(--color-acento-hover) !important;
+}
+
+body.sin-vidrio .separador::before,
+body.sin-vidrio .separador::after {
+    background: var(--color-acento-claro);
 }

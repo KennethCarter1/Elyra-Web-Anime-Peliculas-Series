@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 session_start();
 require_once '../../Models/Genero.php';
 require_once '../../Models/Sesion.php';
@@ -6,12 +7,12 @@ require_once '../../Models/Navegacion.php';
 require_once '../../Api/soap/ClienteSOAP.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header('Location: ../Usuario/inicio.php');
+    header('Location: /elyra/inicio');
     exit;
 }
 
@@ -24,7 +25,7 @@ try {
     $clienteSOAP = new ClienteSOAP();
     $generosGestion = Genero::normalizarGestion($clienteSOAP->listarGenerosGestion());
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Administracion/gestion-generos.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/admin/generos', $_SERVER);
 }
 
 $generosFiltrados = Genero::filtrarGestion($generosGestion, $busquedaGenero);
@@ -40,10 +41,11 @@ $tipoSidebar = 'administracion';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Administracion/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/GestionGeneros.css">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title>Gestión de géneros</title>
@@ -102,6 +104,7 @@ $tipoSidebar = 'administracion';
 
         <section class="panel-superior-generos">
             <form method="POST" action="../../Controller/ControladorGenero.php" class="form-nuevo-genero">
+                <?php echo Seguridad::campoCsrf(); ?>
                 <label for="nombre_genero">Agregar género</label>
                 <div>
                     <input id="nombre_genero" type="text" name="nombre_genero" placeholder="Ej: Suspenso">
@@ -146,6 +149,7 @@ $tipoSidebar = 'administracion';
                     <?php foreach ($generosFiltrados as $genero) { ?>
                         <div class="fila-genero">
                             <form method="POST" action="../../Controller/ControladorGenero.php" class="form-editar-genero">
+                <?php echo Seguridad::campoCsrf(); ?>
                                 <input type="hidden" name="id_genero" value="<?php echo (int)$genero['id']; ?>">
                                 <input type="text" name="nombre_genero" value="<?php echo Genero::valorSeguro($genero['nombre']); ?>">
                                 <button type="submit" name="ActualizarGenero" value="1" aria-label="Actualizar género">
@@ -164,6 +168,7 @@ $tipoSidebar = 'administracion';
 
                             <div class="acciones-genero">
                                 <form method="POST" action="../../Controller/ControladorGenero.php">
+                <?php echo Seguridad::campoCsrf(); ?>
                                     <input type="hidden" name="id_genero" value="<?php echo (int)$genero['id']; ?>">
                                     <?php if ((int)$genero['activo'] === 1) { ?>
                                         <button type="submit" name="DesactivarGenero" value="1" class="btn-desactivar-genero">
@@ -187,6 +192,6 @@ $tipoSidebar = 'administracion';
         </section>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

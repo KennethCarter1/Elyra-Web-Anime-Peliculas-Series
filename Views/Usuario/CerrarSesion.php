@@ -4,6 +4,6 @@ require_once '../../Models/Sesion.php';
 
 Sesion::cerrarSesion();
 
-header("Location: IniciarSesion.php");
+header("Location: /elyra/login");
 exit;
 ?>

@@ -27,16 +27,18 @@ class PeliculasSeries {
         ];
     }
 
-    public function listarGestion($busqueda, $tipo, $idGenero, $estado, $anio) {
+    public function listarGestion($busqueda, $tipo, $idGenero, $estado, $anio, $estadoEmision, $destacado) {
         $stmt = $this->conexion->prepare(
-            "CALL sp_listar_peliculas_series_gestion(:busqueda, :tipo, :idGenero, :estado, :anio)"
+            "CALL sp_listar_peliculas_series_gestion(:busqueda, :tipo, :idGenero, :estado, :anio, :estadoEmision, :destacado)"
         );
         $stmt->execute([
             ':busqueda' => $busqueda,
             ':tipo' => $tipo,
             ':idGenero' => $idGenero,
             ':estado' => $estado,
-            ':anio' => $anio
+            ':anio' => $anio,
+            ':estadoEmision' => $estadoEmision,
+            ':destacado' => $destacado
         ]);
         $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -237,6 +239,8 @@ class PeliculasSeries {
             'idGenero' => 0,
             'estado' => 'Todos',
             'anio' => 0,
+            'estadoEmision' => 'Todos',
+            'destacado' => 0,
             'id' => 0
         ];
     }
@@ -387,6 +391,14 @@ class PeliculasSeries {
             $filtros['anio'] = (int)$get['anio'];
         }
 
+        if (isset($get['estado_emision']) && trim($get['estado_emision']) !== '') {
+            $filtros['estadoEmision'] = trim($get['estado_emision']);
+        }
+
+        if (isset($get['destacado'])) {
+            $filtros['destacado'] = (int)$get['destacado'] === 1 ? 1 : 0;
+        }
+
         if (isset($get['id'])) {
             $filtros['id'] = (int)$get['id'];
         }
@@ -448,6 +460,24 @@ class PeliculasSeries {
         ];
     }
 
+    public static function opcionesEstadoEmision()
+    {
+        return [
+            ['valor' => 'Todos', 'texto' => 'Todos'],
+            ['valor' => 'En emisión', 'texto' => 'En emisión'],
+            ['valor' => 'Finalizado', 'texto' => 'Finalizado'],
+            ['valor' => 'Próximamente', 'texto' => 'Próximamente']
+        ];
+    }
+
+    public static function opcionesDestacado()
+    {
+        return [
+            ['valor' => 0, 'texto' => 'Todos'],
+            ['valor' => 1, 'texto' => 'Destacados']
+        ];
+    }
+
     public static function normalizarResumen($resumen)
     {
         $resultado = self::resumenInicial();
@@ -482,6 +512,7 @@ class PeliculasSeries {
             $estadoEmision = self::leerCampo($fila, 'estadoEmision', 'estado_emision');
             $trailerUrl = self::leerCampo($fila, 'trailerUrl', 'trailer_url');
             $activo = self::leerCampo($fila, 'activo', 'activo');
+            $destacado = self::leerCampo($fila, 'destacado', 'destacado');
 
             if ($estadoEmision === '') {
                 $estadoEmision = 'Finalizado';
@@ -499,8 +530,10 @@ class PeliculasSeries {
                 'estado' => $estado,
                 'estadoEmision' => $estadoEmision,
                 'estadoClase' => self::claseEstado($estado),
+                'estadoEmisionClase' => self::claseEstadoEmision($estadoEmision),
                 'trailerUrl' => $trailerUrl,
-                'activo' => (int)$activo
+                'activo' => (int)$activo,
+                'destacado' => (int)$destacado
             ];
         }
 
@@ -637,6 +670,8 @@ class PeliculasSeries {
             'genero' => $filtros['idGenero'],
             'estado' => $filtros['estado'],
             'anio' => $filtros['anio'],
+            'estado_emision' => $filtros['estadoEmision'],
+            'destacado' => $filtros['destacado'],
             'id' => $id
         ];
 
@@ -650,10 +685,40 @@ class PeliculasSeries {
             'tipo' => $filtros['tipo'],
             'genero' => $filtros['idGenero'],
             'estado' => $filtros['estado'],
-            'anio' => $filtros['anio']
+            'anio' => $filtros['anio'],
+            'estado_emision' => $filtros['estadoEmision'],
+            'destacado' => $filtros['destacado']
         ];
 
         return 'gestion-peliculas-series.php?' . http_build_query($parametros);
+    }
+
+    public static function enlaceFiltroRapido($filtros, $cambios)
+    {
+        $parametros = [
+            'busqueda' => $filtros['busqueda'],
+            'tipo' => $filtros['tipo'],
+            'genero' => $filtros['idGenero'],
+            'estado' => $filtros['estado'],
+            'anio' => $filtros['anio'],
+            'estado_emision' => $filtros['estadoEmision'],
+            'destacado' => $filtros['destacado']
+        ];
+
+        foreach ($cambios as $campo => $valor) {
+            $parametros[$campo] = $valor;
+        }
+
+        return 'gestion-peliculas-series.php?' . http_build_query($parametros);
+    }
+
+    public static function claseFiltroRapido($activo)
+    {
+        if ($activo) {
+            return ' activo';
+        }
+
+        return '';
     }
 
     private static function leerCampo($origen, $campoObjeto, $campoArreglo)
@@ -706,6 +771,25 @@ class PeliculasSeries {
 
         if ($estadoNormalizado === 'desactivado') {
             return 'desactivado';
+        }
+
+        return 'general';
+    }
+
+    private static function claseEstadoEmision($estadoEmision)
+    {
+        $estadoNormalizado = strtolower(trim($estadoEmision));
+
+        if ($estadoNormalizado === 'en emisión' || $estadoNormalizado === 'en emision') {
+            return 'emision';
+        }
+
+        if ($estadoNormalizado === 'finalizado') {
+            return 'finalizado';
+        }
+
+        if ($estadoNormalizado === 'próximamente' || $estadoNormalizado === 'proximamente') {
+            return 'proximamente';
         }
 
         return 'general';

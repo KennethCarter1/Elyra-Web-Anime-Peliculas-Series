@@ -5,9 +5,11 @@ require_once __DIR__ . '/../../Models/Genero.php';
 require_once __DIR__ . '/../../Models/Usuario.php';
 require_once __DIR__ . '/../../Models/Preferencias.php';
 require_once __DIR__ . '/../../Models/Panel.php';
+require_once __DIR__ . '/../../Models/PanelInicio.php';
 require_once __DIR__ . '/../../Models/PeliculasSeries.php';
 require_once __DIR__ . '/../../Models/ReportesEstadisticas.php';
 require_once __DIR__ . '/../../Models/Inicio.php';
+require_once __DIR__ . '/../../Models/Seguridad.php';
 // Más modelos se podrán incluir luego (Usuario, Pelicula, Serie, etc.)
 
 /*
@@ -20,6 +22,7 @@ class ElyraService {
     private $modeloUsuario;
     private $modeloPreferencia;
     private $modeloPanel;
+    private $modeloPanelInicio;
     private $modeloPeliculasSeries;
     private $modeloReportesEstadisticas;
     private $modeloInicio;
@@ -29,6 +32,7 @@ class ElyraService {
         $this->modeloUsuario = new Usuario($conexion);
         $this->modeloPreferencia = new Preferencia($conexion);
         $this->modeloPanel = new Panel($conexion);
+        $this->modeloPanelInicio = new PanelInicio($conexion);
         $this->modeloPeliculasSeries = new PeliculasSeries($conexion);
         $this->modeloReportesEstadisticas = new ReportesEstadisticas($conexion);
         $this->modeloInicio = new Inicio($conexion);
@@ -397,6 +401,51 @@ class ElyraService {
                 'exito' => false,
                 'mensaje' => 'No se pudieron actualizar las preferencias',
                 'total' => 0
+            ];
+        }
+    }
+
+    public function preferenciasUsuario($usuario = null)
+    {
+        try {
+            if (is_object($usuario) || is_array($usuario)) {
+                $datos = (array)$usuario;
+
+                $usuario = '';
+                if (isset($datos['usuario'])) {
+                    $usuario = $datos['usuario'];
+                }
+            }
+
+            $lista = $this->modeloPreferencia->listarPorUsuario($usuario);
+            $resultado = [];
+
+            foreach ($lista as $preferencia) {
+                $idGenero = 0;
+                if (isset($preferencia['id_genero'])) {
+                    $idGenero = (int)$preferencia['id_genero'];
+                }
+
+                $nombreGenero = '';
+                if (isset($preferencia['nombre_genero'])) {
+                    $nombreGenero = $preferencia['nombre_genero'];
+                }
+
+                $resultado[] = [
+                    'idGenero' => $idGenero,
+                    'nombreGenero' => $nombreGenero
+                ];
+            }
+
+            return [
+                'genero' => $resultado
+            ];
+
+        } catch (PDOException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            return [
+                'genero' => []
             ];
         }
     }
@@ -1111,7 +1160,7 @@ class ElyraService {
         }
     }
 
-    public function listarPeliculasSeriesGestion($busqueda = null, $tipo = null, $idGenero = null, $estado = null, $anio = null)
+    public function listarPeliculasSeriesGestion($busqueda = null, $tipo = null, $idGenero = null, $estado = null, $anio = null, $estadoEmision = null, $destacado = null)
     {
         try {
             if (is_object($busqueda) || is_array($busqueda)) {
@@ -1135,6 +1184,16 @@ class ElyraService {
                 $anio = 0;
                 if (isset($datos['anio'])) {
                     $anio = (int)$datos['anio'];
+                }
+
+                $estadoEmision = 'Todos';
+                if (isset($datos['estadoEmision'])) {
+                    $estadoEmision = $datos['estadoEmision'];
+                }
+
+                $destacado = 0;
+                if (isset($datos['destacado'])) {
+                    $destacado = (int)$datos['destacado'];
                 }
 
                 $busqueda = '';
@@ -1163,12 +1222,22 @@ class ElyraService {
                 $anio = 0;
             }
 
+            if ($estadoEmision === null) {
+                $estadoEmision = 'Todos';
+            }
+
+            if ($destacado === null) {
+                $destacado = 0;
+            }
+
             $contenido = $this->modeloPeliculasSeries->listarGestion(
                 $busqueda,
                 $tipo,
                 (int)$idGenero,
                 $estado,
-                (int)$anio
+                (int)$anio,
+                $estadoEmision,
+                (int)$destacado
             );
 
             $resultado = [];
@@ -1183,8 +1252,10 @@ class ElyraService {
                     'generos' => $fila['generos'],
                     'anio' => (int)$fila['anio'],
                     'estado' => $fila['estado'],
+                    'estadoEmision' => $fila['estado_emision'],
                     'trailerUrl' => $fila['trailer_url'],
-                    'activo' => (int)$fila['activo']
+                    'activo' => (int)$fila['activo'],
+                    'destacado' => (int)$fila['destacado']
                 ];
             }
 
@@ -1383,6 +1454,189 @@ class ElyraService {
         }
     }
 
+    public function listarPanelesInicioGestion()
+    {
+        try {
+            $paneles = $this->modeloPanelInicio->listarGestion();
+
+            return [
+                'panelInicio' => $this->respuestaPanelesInicioGestion($paneles)
+            ];
+        } catch (Throwable $e) {
+            return [
+                'panelInicio' => []
+            ];
+        }
+    }
+
+    public function buscarContenidoPanelInicio($busqueda = null)
+    {
+        try {
+            if (is_object($busqueda) || is_array($busqueda)) {
+                $datos = (array)$busqueda;
+                $busqueda = '';
+
+                if (isset($datos['busqueda'])) {
+                    $busqueda = $datos['busqueda'];
+                }
+            }
+
+            if ($busqueda === null) {
+                $busqueda = '';
+            }
+
+            $contenido = $this->modeloPanelInicio->buscarContenidoDisponible(trim((string)$busqueda));
+
+            return [
+                'contenidoPanel' => $this->respuestaContenidoPanelInicioGestion($contenido)
+            ];
+        } catch (Throwable $e) {
+            return [
+                'contenidoPanel' => []
+            ];
+        }
+    }
+
+    public function listarContenidoPanelInicioGestion($idPanelInicio = null)
+    {
+        try {
+            if (is_object($idPanelInicio) || is_array($idPanelInicio)) {
+                $datos = (array)$idPanelInicio;
+                $idPanelInicio = 0;
+
+                if (isset($datos['idPanelInicio'])) {
+                    $idPanelInicio = (int)$datos['idPanelInicio'];
+                }
+            }
+
+            $contenido = $this->modeloPanelInicio->listarContenidoGestion((int)$idPanelInicio);
+
+            return [
+                'contenidoPanel' => $this->respuestaContenidoPanelInicioGestion($contenido)
+            ];
+        } catch (Throwable $e) {
+            return [
+                'contenidoPanel' => []
+            ];
+        }
+    }
+
+    public function crearPanelInicio($datosPanel = null)
+    {
+        try {
+            $datos = $this->datosPanelInicioDesdeSolicitud($datosPanel);
+            $resultado = $this->modeloPanelInicio->crear(
+                $datos['titulo'],
+                $datos['descripcion'],
+                $datos['orden'],
+                $datos['activo']
+            );
+
+            return $this->respuestaPanelInicio($resultado, 'No se pudo crear el panel');
+        } catch (PDOException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            return [
+                'exito' => false,
+                'mensaje' => 'No se pudo crear el panel',
+                'idPanelInicio' => 0
+            ];
+        }
+    }
+
+    public function actualizarPanelInicio($datosPanel = null)
+    {
+        try {
+            $datos = $this->datosPanelInicioDesdeSolicitud($datosPanel);
+            $resultado = $this->modeloPanelInicio->actualizar(
+                $datos['idPanelInicio'],
+                $datos['titulo'],
+                $datos['descripcion'],
+                $datos['orden'],
+                $datos['activo']
+            );
+
+            return $this->respuestaPanelInicio($resultado, 'No se pudo actualizar el panel');
+        } catch (PDOException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            return [
+                'exito' => false,
+                'mensaje' => 'No se pudo actualizar el panel',
+                'idPanelInicio' => 0
+            ];
+        }
+    }
+
+    public function eliminarPanelInicio($idPanelInicio = null)
+    {
+        try {
+            if (is_object($idPanelInicio) || is_array($idPanelInicio)) {
+                $datos = (array)$idPanelInicio;
+                $idPanelInicio = 0;
+
+                if (isset($datos['idPanelInicio'])) {
+                    $idPanelInicio = (int)$datos['idPanelInicio'];
+                }
+            }
+
+            $resultado = $this->modeloPanelInicio->eliminar((int)$idPanelInicio);
+
+            return $this->respuestaPanelInicio($resultado, 'No se pudo eliminar el panel');
+        } catch (PDOException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            return [
+                'exito' => false,
+                'mensaje' => 'No se pudo eliminar el panel',
+                'idPanelInicio' => 0
+            ];
+        }
+    }
+
+    public function agregarContenidoPanelInicio($datosContenido = null)
+    {
+        try {
+            $datos = $this->datosContenidoPanelInicioDesdeSolicitud($datosContenido);
+            $resultado = $this->modeloPanelInicio->agregarContenido(
+                $datos['idPanelInicio'],
+                $datos['idPeliculaSerie'],
+                $datos['orden']
+            );
+
+            return $this->respuestaPanelInicio($resultado, 'No se pudo agregar el anime al panel');
+        } catch (PDOException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            return [
+                'exito' => false,
+                'mensaje' => 'No se pudo agregar el anime al panel',
+                'idPanelInicio' => 0
+            ];
+        }
+    }
+
+    public function quitarContenidoPanelInicio($datosContenido = null)
+    {
+        try {
+            $datos = $this->datosContenidoPanelInicioDesdeSolicitud($datosContenido);
+            $resultado = $this->modeloPanelInicio->quitarContenido(
+                $datos['idPanelInicio'],
+                $datos['idPeliculaSerie']
+            );
+
+            return $this->respuestaPanelInicio($resultado, 'No se pudo quitar el anime del panel');
+        } catch (PDOException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            return [
+                'exito' => false,
+                'mensaje' => 'No se pudo quitar el anime del panel',
+                'idPanelInicio' => 0
+            ];
+        }
+    }
+
     public function datosInicioUsuario($usuario = null)
     {
         try {
@@ -1403,6 +1657,7 @@ class ElyraService {
             $recomendaciones = $this->modeloInicio->obtenerRecomendaciones($usuario);
             $ultimosAgregados = $this->modeloInicio->obtenerUltimosAgregados($usuario);
             $generos = $this->modeloInicio->obtenerGenerosInicio();
+            $panelesInicio = $this->modeloPanelInicio->obtenerPanelesInicio();
 
             if (empty($recomendaciones)) {
                 $recomendaciones = $ultimosAgregados;
@@ -1412,7 +1667,8 @@ class ElyraService {
                 'destacado' => $this->respuestaContenidoInicio($destacados),
                 'recomendado' => $this->respuestaContenidoInicio($recomendaciones),
                 'ultimo' => $this->respuestaContenidoInicio($ultimosAgregados),
-                'genero' => $this->respuestaGeneroInicio($generos)
+                'genero' => $this->respuestaGeneroInicio($generos),
+                'panelInicio' => $this->respuestaPanelesInicioUsuario($panelesInicio, $usuario)
             ];
 
         } catch (PDOException $e) {
@@ -1422,7 +1678,8 @@ class ElyraService {
                 'destacado' => [],
                 'recomendado' => [],
                 'ultimo' => [],
-                'genero' => []
+                'genero' => [],
+                'panelInicio' => []
             ];
         }
     }
@@ -1842,6 +2099,185 @@ class ElyraService {
         } catch (Throwable $e) {
             return ['hijo' => []];
         }
+    }
+
+    private function datosPanelInicioDesdeSolicitud($datosPanel)
+    {
+        $datosSolicitud = [];
+
+        if (is_object($datosPanel) || is_array($datosPanel)) {
+            $datosSolicitud = (array)$datosPanel;
+        }
+
+        $idPanelInicio = 0;
+        if (isset($datosSolicitud['idPanelInicio'])) {
+            $idPanelInicio = (int)$datosSolicitud['idPanelInicio'];
+        }
+
+        $titulo = '';
+        if (isset($datosSolicitud['titulo'])) {
+            $titulo = trim((string)$datosSolicitud['titulo']);
+        }
+
+        $descripcion = '';
+        if (isset($datosSolicitud['descripcion'])) {
+            $descripcion = trim((string)$datosSolicitud['descripcion']);
+        }
+
+        $orden = 0;
+        if (isset($datosSolicitud['orden'])) {
+            $orden = (int)$datosSolicitud['orden'];
+        }
+
+        $activo = 0;
+        if (isset($datosSolicitud['activo'])) {
+            $activo = (int)$datosSolicitud['activo'];
+        }
+
+        return [
+            'idPanelInicio' => $idPanelInicio,
+            'titulo' => $titulo,
+            'descripcion' => $descripcion,
+            'orden' => $orden,
+            'activo' => $activo
+        ];
+    }
+
+    private function datosContenidoPanelInicioDesdeSolicitud($datosContenido)
+    {
+        $datosSolicitud = [];
+
+        if (is_object($datosContenido) || is_array($datosContenido)) {
+            $datosSolicitud = (array)$datosContenido;
+        }
+
+        $idPanelInicio = 0;
+        if (isset($datosSolicitud['idPanelInicio'])) {
+            $idPanelInicio = (int)$datosSolicitud['idPanelInicio'];
+        }
+
+        $idPeliculaSerie = 0;
+        if (isset($datosSolicitud['idPeliculaSerie'])) {
+            $idPeliculaSerie = (int)$datosSolicitud['idPeliculaSerie'];
+        }
+
+        $orden = 0;
+        if (isset($datosSolicitud['orden'])) {
+            $orden = (int)$datosSolicitud['orden'];
+        }
+
+        return [
+            'idPanelInicio' => $idPanelInicio,
+            'idPeliculaSerie' => $idPeliculaSerie,
+            'orden' => $orden
+        ];
+    }
+
+    private function respuestaPanelInicio($resultado, $mensajeDefecto)
+    {
+        $exito = false;
+        if (isset($resultado['exito'])) {
+            $exito = (bool)$resultado['exito'];
+        }
+
+        $mensaje = $mensajeDefecto;
+        if (isset($resultado['mensaje'])) {
+            $mensaje = $resultado['mensaje'];
+        }
+
+        $idPanelInicio = 0;
+        if (isset($resultado['id_panel_inicio'])) {
+            $idPanelInicio = (int)$resultado['id_panel_inicio'];
+        }
+
+        if (isset($resultado['idPanelInicio'])) {
+            $idPanelInicio = (int)$resultado['idPanelInicio'];
+        }
+
+        return [
+            'exito' => $exito,
+            'mensaje' => $mensaje,
+            'idPanelInicio' => $idPanelInicio
+        ];
+    }
+
+    private function respuestaPanelesInicioGestion($paneles)
+    {
+        $resultado = [];
+
+        foreach ($paneles as $panel) {
+            $resultado[] = [
+                'idPanelInicio' => (int)$panel['id_panel_inicio'],
+                'titulo' => $panel['titulo'],
+                'descripcion' => $panel['descripcion'],
+                'orden' => (int)$panel['orden'],
+                'activo' => (int)$panel['activo'],
+                'totalContenido' => (int)$panel['total_contenido']
+            ];
+        }
+
+        return $resultado;
+    }
+
+    private function respuestaContenidoPanelInicioGestion($contenido)
+    {
+        $resultado = [];
+
+        foreach ($contenido as $fila) {
+            $orden = 0;
+            if (isset($fila['orden'])) {
+                $orden = (int)$fila['orden'];
+            }
+
+            $resultado[] = [
+                'idPanelInicio' => (int)$this->campoArreglo($fila, 'id_panel_inicio'),
+                'idPeliculaSerie' => (int)$fila['id_pelicula_serie'],
+                'titulo' => $fila['titulo'],
+                'tituloOriginal' => $fila['titulo_original'],
+                'tipo' => $fila['tipo'],
+                'anioLanzamiento' => (int)$fila['anio_lanzamiento'],
+                'imagenPortada' => $fila['imagen_portada'],
+                'estado' => $fila['estado'],
+                'estadoEmision' => $fila['estado_emision'],
+                'generos' => $fila['generos'],
+                'orden' => $orden
+            ];
+        }
+
+        return $resultado;
+    }
+
+    private function respuestaPanelesInicioUsuario($paneles, $usuario)
+    {
+        $resultado = [];
+
+        foreach ($paneles as $panel) {
+            $idPanelInicio = (int)$panel['id_panel_inicio'];
+            $contenido = $this->modeloPanelInicio->obtenerContenidoInicio($idPanelInicio, $usuario);
+            $contenidoInicio = $this->respuestaContenidoInicio($contenido);
+
+            if (!empty($contenidoInicio)) {
+                $resultado[] = [
+                    'idPanelInicio' => $idPanelInicio,
+                    'titulo' => $panel['titulo'],
+                    'descripcion' => $panel['descripcion'],
+                    'orden' => (int)$panel['orden'],
+                    'totalContenido' => (int)$panel['total_contenido'],
+                    'contenidosJson' => json_encode($contenidoInicio, JSON_UNESCAPED_UNICODE)
+                ];
+            }
+        }
+
+        return $resultado;
+    }
+
+    private function campoArreglo($fila, $campo)
+    {
+        if (isset($fila[$campo])) {
+            return $fila[$campo];
+        }
+
+        return '';
     }
 
     private function detalleUsuarioGestionVacio()
@@ -2317,8 +2753,13 @@ class ElyraService {
 }
 
 // Configuración del servidor SOAP
+if (!Seguridad::soapInternoValido($_SERVER)) {
+    http_response_code(403);
+    exit;
+}
+
 $options = [
-    'uri' => 'http://localhost/Elyra-Web-Anime-Peliculas-Series/Api/soap'
+    'uri' => 'http://localhost/elyra/Api/soap'
 ];
 
 try {

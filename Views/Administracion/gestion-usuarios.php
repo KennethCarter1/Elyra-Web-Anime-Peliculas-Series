@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 session_start();
 require_once '../../Models/Usuario.php';
 require_once '../../Models/Sesion.php';
@@ -6,12 +7,12 @@ require_once '../../Models/Navegacion.php';
 require_once '../../Api/soap/ClienteSOAP.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header('Location: ../Usuario/inicio.php');
+    header('Location: /elyra/inicio');
     exit;
 }
 
@@ -32,7 +33,7 @@ try {
         $detalleUsuario = Usuario::normalizarDetalleGestion($clienteSOAP->obtenerDetalleUsuarioGestion($filtros['id']));
     }
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Administracion/gestion-usuarios.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/admin/usuarios', $_SERVER);
 }
 
 $tarjetasResumen = Usuario::tarjetasResumenGestion($resumenGestion);
@@ -47,10 +48,11 @@ $tipoSidebar = 'administracion';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Administracion/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/GestionUsuarios.css">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title>Gestión de usuarios</title>
@@ -222,6 +224,7 @@ $tipoSidebar = 'administracion';
                     </div>
 
                     <form method="POST" action="../../Controller/ControladorGestionUsuario.php" class="form-rol-usuario">
+                <?php echo Seguridad::campoCsrf(); ?>
                         <input type="hidden" name="id_usuario" value="<?php echo (int)$detalleUsuario['id']; ?>">
                         <label for="rol_detalle">Rol</label>
                         <select id="rol_detalle" name="rol">
@@ -239,6 +242,7 @@ $tipoSidebar = 'administracion';
 
                     <div class="acciones-detalle-usuario">
                         <form method="POST" action="../../Controller/ControladorGestionUsuario.php">
+                <?php echo Seguridad::campoCsrf(); ?>
                             <input type="hidden" name="id_usuario" value="<?php echo (int)$detalleUsuario['id']; ?>">
                             <?php if ((int)$detalleUsuario['activo'] === 1) { ?>
                                 <button type="submit" name="DesactivarUsuarioGestion" value="1" class="btn-desactivar-usuario">
@@ -264,6 +268,6 @@ $tipoSidebar = 'administracion';
         </section>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

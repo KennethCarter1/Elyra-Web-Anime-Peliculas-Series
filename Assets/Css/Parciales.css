@@ -10,12 +10,14 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+html {
+    min-height: 100%;
+    background: #edf2f8;
+}
+
 body {
     min-height: 100vh;
-    background-image: url('../Images/background/background-home.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background: #edf2f8;
     color: #1f1f2e;
 }
 
@@ -26,9 +28,12 @@ body::before {
     top: 0;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(105deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.64) 42%, rgba(255,255,255,0.28) 68%, rgba(255,255,255,0.02) 100%);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    background:
+        linear-gradient(105deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.64) 42%, rgba(255,255,255,0.28) 68%, rgba(255,255,255,0.02) 100%),
+        url('../Images/background/background-home.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     pointer-events: none;
     z-index: 0;
 }
@@ -55,8 +60,8 @@ body::after {
     height: 72px;
     padding: 14px 28px;
     background: rgba(255,255,255,0.46);
-    backdrop-filter: blur(22px) saturate(180%);
-    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(12px) saturate(145%);
+    -webkit-backdrop-filter: blur(12px) saturate(145%);
     position: fixed;
     top: 0;
     left: 220px;
@@ -139,8 +144,8 @@ body::after {
     border: 1px solid rgba(255,255,255,0.7);
     background: rgba(255,255,255,0.96);
     box-shadow: 0 16px 34px rgba(31,31,46,0.16);
-    backdrop-filter: blur(18px) saturate(170%);
-    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    backdrop-filter: blur(8px) saturate(130%);
+    -webkit-backdrop-filter: blur(8px) saturate(130%);
     z-index: 140;
 }
 
@@ -295,8 +300,8 @@ body::after {
     top: 0;
     left: 0;
     background: rgba(255,255,255,0.46);
-    backdrop-filter: blur(26px) saturate(190%);
-    -webkit-backdrop-filter: blur(26px) saturate(190%);
+    backdrop-filter: blur(14px) saturate(145%);
+    -webkit-backdrop-filter: blur(14px) saturate(145%);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -395,14 +400,17 @@ body::after {
    MODO OSCURO
 ========================= */
 body.dark {
-    background-image: url('../Images/background/background-home-dark.png');
+    background: #080812;
     color: #f3f3ff;
 }
 
 body.dark::before {
-    background: linear-gradient(105deg, rgba(8,8,18,0.92) 0%, rgba(18,18,32,0.74) 44%, rgba(26,24,46,0.38) 70%, rgba(26,24,46,0.08) 100%);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    background:
+        linear-gradient(105deg, rgba(8,8,18,0.92) 0%, rgba(18,18,32,0.74) 44%, rgba(26,24,46,0.38) 70%, rgba(26,24,46,0.08) 100%),
+        url('../Images/background/background-home-dark.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 body.dark::after {

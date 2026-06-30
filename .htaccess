@@ -1,4 +1,115 @@
 Options -Indexes
 
-ErrorDocument 403 /Elyra-Web-Anime-Peliculas-Series/Views/Errores/Error404.php
-ErrorDocument 404 /Elyra-Web-Anime-Peliculas-Series/Views/Errores/Error404.php
+RewriteEngine On
+RewriteBase /elyra/
+
+ErrorDocument 403 /elyra/error-404
+ErrorDocument 404 /elyra/error-404
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com data:; img-src 'self' data: blob:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+</IfModule>
+
+RewriteRule ^(?:Config|Models|Database|\.git|\.agents|\.codex)(?:/|$) - [F,L]
+RewriteRule ^(?:\.env|README\.md)$ - [F,L]
+RewriteRule ^Views/Parciales/ - [F,L]
+RewriteRule ^Views/Contenido/parcial-card-contenido\.php$ - [F,L]
+RewriteRule ^Api/soap/servicioElyra\.wsdl$ - [F,L]
+
+RewriteCond %{THE_REQUEST} \s/+Elyra-Web-Anime-Peliculas-Series/?(?:\s|\?) [NC]
+RewriteRule ^$ /elyra/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Index\.php(?:\s|\?) [NC]
+RewriteRule ^Index\.php$ /elyra/ [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Usuario/IniciarSesion\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Usuario/IniciarSesion\.php$ /elyra/login [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Usuario/Registrarse\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Usuario/Registrarse\.php$ /elyra/registro [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Usuario/inicio\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Usuario/inicio\.php$ /elyra/inicio [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Usuario/perfil\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Usuario/perfil\.php$ /elyra/perfil [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Usuario/Preferencias\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Usuario/Preferencias\.php$ /elyra/preferencias [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Usuario/Configuracion\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Usuario/Configuracion\.php$ /elyra/configuracion [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Usuario/CambiarContrasena\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Usuario/CambiarContrasena\.php$ /elyra/cambiar-contrasena [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Usuario/CerrarSesion\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Usuario/CerrarSesion\.php$ /elyra/cerrar-sesion [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Contenido/explorar\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Contenido/explorar\.php$ /elyra/explorar [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Contenido/generos\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Contenido/generos\.php$ /elyra/generos [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Contenido/favoritos\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Contenido/favoritos\.php$ /elyra/favoritos [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Contenido/detalle\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Contenido/detalle\.php$ /elyra/detalle [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Administracion/panel\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Administracion/panel\.php$ /elyra/admin [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Administracion/gestion-peliculas-series\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Administracion/gestion-peliculas-series\.php$ /elyra/admin/contenido [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Administracion/agregar-pelicula-serie\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Administracion/agregar-pelicula-serie\.php$ /elyra/admin/contenido/formulario [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Administracion/gestion-generos\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Administracion/gestion-generos\.php$ /elyra/admin/generos [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Administracion/gestion-paneles-inicio\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Administracion/gestion-paneles-inicio\.php$ /elyra/admin/paneles-inicio [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Administracion/gestion-usuarios\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Administracion/gestion-usuarios\.php$ /elyra/admin/usuarios [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Administracion/reportes-estadisticas\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Administracion/reportes-estadisticas\.php$ /elyra/admin/reportes [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Errores/Error404\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Errores/Error404\.php$ /elyra/error-404 [R=302,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?Views/Errores/Errorbd\.php(?:\s|\?) [NC]
+RewriteRule ^Views/Errores/Errorbd\.php$ /elyra/error-bd [R=302,L]
+
+RewriteRule ^$ Index.php [L]
+RewriteRule ^login/?$ Views/Usuario/IniciarSesion.php [L,QSA]
+RewriteRule ^registro/?$ Views/Usuario/Registrarse.php [L,QSA]
+RewriteRule ^inicio/?$ Views/Usuario/inicio.php [L,QSA]
+RewriteRule ^perfil/?$ Views/Usuario/perfil.php [L,QSA]
+RewriteRule ^preferencias/?$ Views/Usuario/Preferencias.php [L,QSA]
+RewriteRule ^configuracion/?$ Views/Usuario/Configuracion.php [L,QSA]
+RewriteRule ^cambiar-contrasena/?$ Views/Usuario/CambiarContrasena.php [L,QSA]
+RewriteRule ^cerrar-sesion/?$ Views/Usuario/CerrarSesion.php [L,QSA]
+
+RewriteRule ^explorar/?$ Views/Contenido/explorar.php [L,QSA]
+RewriteRule ^generos/?$ Views/Contenido/generos.php [L,QSA]
+RewriteRule ^favoritos/?$ Views/Contenido/favoritos.php [L,QSA]
+RewriteRule ^detalle/?$ Views/Contenido/detalle.php [L,QSA]
+
+RewriteRule ^admin/?$ Views/Administracion/panel.php [L,QSA]
+RewriteRule ^admin/contenido/?$ Views/Administracion/gestion-peliculas-series.php [L,QSA]
+RewriteRule ^admin/contenido/formulario/?$ Views/Administracion/agregar-pelicula-serie.php [L,QSA]
+RewriteRule ^admin/generos/?$ Views/Administracion/gestion-generos.php [L,QSA]
+RewriteRule ^admin/paneles-inicio/?$ Views/Administracion/gestion-paneles-inicio.php [L,QSA]
+RewriteRule ^admin/usuarios/?$ Views/Administracion/gestion-usuarios.php [L,QSA]
+RewriteRule ^admin/reportes/?$ Views/Administracion/reportes-estadisticas.php [L,QSA]
+
+RewriteRule ^error-404/?$ Views/Errores/Error404.php [L,QSA]
+RewriteRule ^error-bd/?$ Views/Errores/Errorbd.php [L,QSA]

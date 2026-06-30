@@ -1,0 +1,12 @@
+Options -Indexes
+
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .phar .cgi .pl
+RemoveType .php .phtml .php3 .php4 .php5 .php7 .phar .cgi .pl
+
+RewriteEngine On
+
+RewriteRule \.(?:php|phtml|php3|php4|php5|php7|phar|cgi|pl|asp|aspx|jsp|sh|bat|cmd|exe|dll)$ - [F,L,NC]
+
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_URI} !\.(?:webp|jpe?g|png|gif|avif|ico)$ [NC]
+RewriteRule ^ - [F,L]

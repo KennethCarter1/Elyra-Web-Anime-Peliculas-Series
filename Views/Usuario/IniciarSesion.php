@@ -1,20 +1,18 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
 require_once '../../Models/Sesion.php';
 
-$mensaje = '';
-
-if (isset($_COOKIE[session_name()])) {
-    session_start();
-    $mensaje = Sesion::tomarMensaje('mensaje_error_login');
-}
+session_start();
+$mensaje = Sesion::tomarMensaje('mensaje_error_login');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Sesion.css">
+    <base href="/elyra/Views/Usuario/">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Sesion.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico" data-accent-favicon>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -34,7 +32,7 @@ if (isset($_COOKIE[session_name()])) {
         
     
         <div class="encabezado">
-            <img src="../../Assets/Images/logos/logos/morado.png" alt="Logo" class="logo" data-accent-logo>
+            <img src="../../Assets/Images/logos/logos/morado.webp" alt="Logo" class="logo" data-accent-logo loading="lazy" decoding="async">
 
             <h1>ELYRA</h1>
             <p>Tu Mundo, Tu Historia</p>
@@ -45,6 +43,7 @@ if (isset($_COOKIE[session_name()])) {
 
     <div class="formulario">
     <form method="POST" action="../../Controller/ControladorUsuario.php">
+                <?php echo Seguridad::campoCsrf(); ?>
 
         <!-- Usuario -->
         <label for="usuario">Usuario</label>
@@ -84,9 +83,9 @@ if (isset($_COOKIE[session_name()])) {
     </div>
 
     <!-- Registro -->
-    <button class="registro" type="button" onclick="location.href='Registrarse.php'">Registrarse</button>
+    <a class="registro" href="/elyra/registro">Registrarse</a>
 </div>
 <script src="../../Assets/Js/password-toggle.js"></script>
-<script src="../../Assets/Js/dark-mode.js"></script>
+<script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
 </body>
 </html>

@@ -367,9 +367,28 @@
     overflow: hidden;
 }
 
-.barra-reporte span {
+.barra-reporte progress {
+    appearance: none;
+    -webkit-appearance: none;
     display: block;
+    width: 100%;
     height: 100%;
+    border: none;
+    border-radius: inherit;
+    background: transparent;
+}
+
+.barra-reporte progress::-webkit-progress-bar {
+    border-radius: inherit;
+    background: transparent;
+}
+
+.barra-reporte progress::-webkit-progress-value {
+    border-radius: inherit;
+    background: var(--color-acento);
+}
+
+.barra-reporte progress::-moz-progress-bar {
     border-radius: inherit;
     background: var(--color-acento);
 }

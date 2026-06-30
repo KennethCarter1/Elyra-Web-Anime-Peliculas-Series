@@ -1,18 +1,19 @@
 <?php
 session_start();
+require_once '../Models/Seguridad.php';
 require_once '../Api/soap/ClienteSOAP.php';
 
 function redirigirGestionGeneros($mensaje, $tipo)
 {
     $_SESSION['mensaje_genero'] = $mensaje;
     $_SESSION['tipo_mensaje_genero'] = $tipo;
-    header("Location: ../Views/Administracion/gestion-generos.php");
+    header("Location: /elyra/admin/generos");
     exit;
 }
 
 function redirigirErrorBaseDatosGenero()
 {
-    header("Location: ../Views/Errores/Errorbd.php?retorno=" . urlencode('../Views/Administracion/gestion-generos.php'));
+    header("Location: /elyra/error-bd?retorno=" . urlencode('/elyra/admin/generos'));
     exit;
 }
 
@@ -35,14 +36,17 @@ function idGeneroPost()
 }
 
 if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Views/Usuario/IniciarSesion.php");
+    header("Location: /elyra/login");
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header("Location: ../Views/Usuario/inicio.php");
+    header("Location: /elyra/inicio");
     exit;
 }
+
+Seguridad::requerirPost('/elyra/admin/generos');
+Seguridad::validarCsrfPost('/elyra/admin/generos', 'mensaje_genero', 'tipo_mensaje_genero');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -113,6 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-header("Location: ../Views/Administracion/gestion-generos.php");
+header("Location: /elyra/admin/generos");
 exit;
 ?>

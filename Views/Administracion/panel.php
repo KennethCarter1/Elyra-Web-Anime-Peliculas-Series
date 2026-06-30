@@ -4,12 +4,12 @@ require_once '../../Models/Panel.php';
 require_once '../../Models/Navegacion.php';
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: ../Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
 }
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
-    header('Location: ../Usuario/inicio.php');
+    header('Location: /elyra/inicio');
     exit;
 }
 
@@ -26,7 +26,7 @@ try {
     $actividadPanel = Panel::normalizarActividad($clienteSOAP->actividadRecientePanel());
     $ultimoContenidoPanel = Panel::normalizarUltimoContenido($clienteSOAP->ultimoContenidoAgregadoPanel());
 } catch (Exception $e) {
-    Navegacion::redirigirErrorBaseDatosVista('../Administracion/panel.php', $_SERVER);
+    Navegacion::redirigirErrorBaseDatosVista('/elyra/admin', $_SERVER);
 }
 
 $tarjetasResumen = Panel::tarjetasResumen($resumenPanel);
@@ -39,10 +39,11 @@ $tipoSidebar = 'administracion';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/elyra/Views/Administracion/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../../Assets/Images/logos/iconos/morado.ico">
-    <link rel="stylesheet" href="../../Assets/Css/Variables.css">
-    <link rel="stylesheet" href="../../Assets/Css/Parciales.css">
+    <link rel="stylesheet" href="../../Assets/Css/Variables.css?v=vidrio-global-20260630">
+    <link rel="stylesheet" href="../../Assets/Css/Parciales.css?v=vidrio-global-20260630">
     <link rel="stylesheet" href="../../Assets/Css/Panel.css">
     <link rel="stylesheet" href="../../Assets/Css/switch.css">
     <title>Panel</title>
@@ -106,7 +107,7 @@ $tipoSidebar = 'administracion';
                             <div class="item-actividad">
                                 <span class="icono-actividad">
                                     <?php if ($actividad['imagenUrl'] !== '') { ?>
-                                        <img src="<?php echo htmlspecialchars($actividad['imagenUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($actividad['referencia'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <img src="<?php echo htmlspecialchars($actividad['imagenUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($actividad['referencia'], ENT_QUOTES, 'UTF-8'); ?>" loading="lazy" decoding="async">
                                     <?php } else { ?>
                                         <strong><?php echo htmlspecialchars($actividad['inicial'], ENT_QUOTES, 'UTF-8'); ?></strong>
                                     <?php } ?>
@@ -147,7 +148,7 @@ $tipoSidebar = 'administracion';
                         <div class="fila-contenido">
                             <div class="titulo-contenido-panel">
                                 <?php if ($contenido['imagenUrl'] !== '') { ?>
-                                    <img src="<?php echo htmlspecialchars($contenido['imagenUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($contenido['titulo'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    <img src="<?php echo htmlspecialchars($contenido['imagenUrl'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($contenido['titulo'], ENT_QUOTES, 'UTF-8'); ?>" loading="lazy" decoding="async">
                                 <?php } else { ?>
                                     <span class="imagen-contenido-vacia">
                                         <i class="fa-solid fa-film"></i>
@@ -174,7 +175,7 @@ $tipoSidebar = 'administracion';
         </section>
     </main>
 
-    <script src="../../Assets/Js/dark-mode.js"></script>
+    <script src="../../Assets/Js/dark-mode.js?v=vidrio-global-20260630"></script>
     
 </body>
 </html>

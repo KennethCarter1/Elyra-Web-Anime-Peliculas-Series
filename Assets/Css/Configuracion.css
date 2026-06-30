@@ -45,8 +45,8 @@
     border: 1px solid rgba(255,255,255,0.58);
     border-radius: 8px;
     background: rgba(255,255,255,0.64);
-    backdrop-filter: blur(18px) saturate(175%);
-    -webkit-backdrop-filter: blur(18px) saturate(175%);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
     box-shadow: 0 16px 34px var(--color-acento-sombra);
 }
 
@@ -80,14 +80,16 @@
 }
 
 .tema-configuracion > p,
-.acento-configuracion > p {
+.acento-configuracion > p,
+.vidrio-configuracion > p {
     color: #303044;
     font-size: 12px;
     font-weight: 700;
     margin-bottom: 10px;
 }
 
-.acento-configuracion {
+.acento-configuracion,
+.vidrio-configuracion {
     margin-top: 24px;
 }
 
@@ -189,6 +191,75 @@
     --color-muestra: #00A6A6;
 }
 
+.control-vidrio-configuracion {
+    min-height: 62px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(31,31,46,0.1);
+    background: rgba(255,255,255,0.66);
+    display: grid;
+    grid-template-columns: 1fr 52px;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+}
+
+.texto-vidrio-configuracion {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.texto-vidrio-configuracion strong {
+    color: #303044;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.texto-vidrio-configuracion small {
+    color: #6f7488;
+    font-size: 11px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
+.control-vidrio-configuracion input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.switch-vidrio-configuracion {
+    width: 52px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(31,31,46,0.16);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s ease;
+}
+
+.switch-vidrio-configuracion span {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(31,31,46,0.18);
+    transform: translateX(0);
+    transition: transform 0.2s ease;
+}
+
+.control-vidrio-configuracion input:checked + .switch-vidrio-configuracion {
+    background: var(--color-acento);
+}
+
+.control-vidrio-configuracion input:checked + .switch-vidrio-configuracion span {
+    transform: translateX(22px);
+}
+
 .seguridad-configuracion {
     max-width: 860px;
     margin-top: 22px;
@@ -196,8 +267,8 @@
     border: 1px solid rgba(255,255,255,0.58);
     border-radius: 8px;
     background: rgba(255,255,255,0.64);
-    backdrop-filter: blur(18px) saturate(175%);
-    -webkit-backdrop-filter: blur(18px) saturate(175%);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
     box-shadow: 0 16px 34px var(--color-acento-sombra);
     overflow: hidden;
 }
@@ -293,8 +364,8 @@
     border: 1px solid rgba(255,255,255,0.58);
     border-radius: 8px;
     background: rgba(255,255,255,0.64);
-    backdrop-filter: blur(18px) saturate(175%);
-    -webkit-backdrop-filter: blur(18px) saturate(175%);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
     box-shadow: 0 16px 34px var(--color-acento-sombra);
 }
 
@@ -466,6 +537,7 @@ body.dark .titulo-editar-perfil p,
 body.dark .texto-accion-seguridad p,
 body.dark .tema-configuracion > p,
 body.dark .acento-configuracion > p,
+body.dark .vidrio-configuracion > p,
 body.dark .campo-editar-perfil label,
 body.dark .editar-perfil .campo label {
     color: rgba(243,243,255,0.72);
@@ -557,8 +629,6 @@ body.dark .editar-perfil .campo select:focus {
 body.dark .campo-editar-perfil select,
 body.dark .editar-perfil .campo select {
     background: rgba(20,20,20,0.5);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
     border: 1px solid rgba(255,255,255,0.2);
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     color: white;
@@ -611,4 +681,25 @@ body.dark .mensaje-exito {
     background: rgba(34, 160, 107, 0.18);
     color: #9ff0ca;
     border-color: rgba(34, 160, 107, 0.46);
+}
+
+body.dark .control-vidrio-configuracion {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+}
+
+body.dark .texto-vidrio-configuracion strong {
+    color: #f3f3ff;
+}
+
+body.dark .texto-vidrio-configuracion small {
+    color: rgba(243,243,255,0.68);
+}
+
+body.dark .switch-vidrio-configuracion {
+    background: rgba(255,255,255,0.16);
+}
+
+body.dark .control-vidrio-configuracion input:checked + .switch-vidrio-configuracion {
+    background: var(--color-acento);
 }

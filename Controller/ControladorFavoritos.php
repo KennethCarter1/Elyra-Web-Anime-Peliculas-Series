@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../Models/Seguridad.php';
 require_once __DIR__ . '/../Api/soap/ClienteSOAP.php';
 
 function esSolicitudAjaxFavorito()
@@ -25,7 +26,7 @@ function responderJsonFavorito($datos, $codigo = 200)
 
 function retornoFavorito()
 {
-    $retorno = '../Views/Usuario/inicio.php';
+    $retorno = '/elyra/inicio';
 
     if (isset($_POST['retorno']) && trim($_POST['retorno']) !== '') {
         $retornoPost = trim($_POST['retorno']);
@@ -64,7 +65,23 @@ function redirigirErrorBaseDatosFavorito()
         ], 500);
     }
 
-    header('Location: ../Views/Errores/Errorbd.php?retorno=' . urlencode(retornoFavorito()));
+    header('Location: /elyra/error-bd?retorno=' . urlencode(retornoFavorito()));
+    exit;
+}
+
+function redirigirCsrfFavorito()
+{
+    if (esSolicitudAjaxFavorito()) {
+        responderJsonFavorito([
+            'exito' => false,
+            'mensaje' => 'Solicitud no válida. Recarga la página e inténtalo de nuevo.',
+            'favorito' => 0
+        ], 403);
+    }
+
+    $_SESSION['mensaje_favorito'] = 'Solicitud no válida. Recarga la página e inténtalo de nuevo.';
+    $_SESSION['tipo_mensaje_favorito'] = 'error';
+    header('Location: ' . retornoFavorito());
     exit;
 }
 
@@ -74,12 +91,18 @@ if (!isset($_SESSION['usuario'])) {
             'exito' => false,
             'mensaje' => 'Debes iniciar sesión',
             'favorito' => 0,
-            'redirigir' => '../Views/Usuario/IniciarSesion.php'
+            'redirigir' => '/elyra/login'
         ], 401);
     }
 
-    header('Location: ../Views/Usuario/IniciarSesion.php');
+    header('Location: /elyra/login');
     exit;
+}
+
+Seguridad::requerirPost('/elyra/inicio');
+
+if (!Seguridad::csrfValido($_POST)) {
+    redirigirCsrfFavorito();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -116,6 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-header('Location: ../Views/Usuario/inicio.php');
+header('Location: /elyra/inicio');
 exit;
 ?>

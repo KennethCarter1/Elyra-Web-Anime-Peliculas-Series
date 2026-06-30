@@ -1,5 +1,18 @@
 <?php
 class Navegacion {
+    const BASE_URL = '/elyra';
+
+    public static function url($ruta)
+    {
+        $ruta = trim($ruta, '/');
+
+        if ($ruta === '') {
+            return self::BASE_URL . '/';
+        }
+
+        return self::BASE_URL . '/' . $ruta;
+    }
+
     public static function nombreUsuario($sesion)
     {
         if (isset($sesion['nombre']) && $sesion['nombre'] !== '') {
@@ -72,31 +85,37 @@ class Navegacion {
     {
         return [
             [
-                'url' => '../Administracion/panel.php',
+                'url' => self::url('admin'),
                 'pagina' => 'panel.php',
                 'icono' => 'fa-solid fa-house',
                 'texto' => 'Panel'
             ],
             [
-                'url' => '../Administracion/gestion-peliculas-series.php',
+                'url' => self::url('admin/contenido'),
                 'pagina' => 'gestion-peliculas-series.php',
                 'icono' => 'fa-solid fa-clapperboard',
                 'texto' => 'Gestión películas/series'
             ],
             [
-                'url' => '../Administracion/gestion-generos.php',
+                'url' => self::url('admin/generos'),
                 'pagina' => 'gestion-generos.php',
                 'icono' => 'fa-solid fa-layer-group',
                 'texto' => 'Gestión de géneros'
             ],
             [
-                'url' => '../Administracion/gestion-usuarios.php',
+                'url' => self::url('admin/paneles-inicio'),
+                'pagina' => 'gestion-paneles-inicio.php',
+                'icono' => 'fa-solid fa-table-cells-large',
+                'texto' => 'Paneles de inicio'
+            ],
+            [
+                'url' => self::url('admin/usuarios'),
                 'pagina' => 'gestion-usuarios.php',
                 'icono' => 'fa-solid fa-users',
                 'texto' => 'Gestión de usuarios'
             ],
             [
-                'url' => '../Administracion/reportes-estadisticas.php',
+                'url' => self::url('admin/reportes'),
                 'pagina' => 'reportes-estadisticas.php',
                 'icono' => 'fa-solid fa-chart-line',
                 'texto' => 'Reportes y estadísticas'
@@ -108,25 +127,25 @@ class Navegacion {
     {
         return [
             [
-                'url' => '../Usuario/inicio.php',
+                'url' => self::url('inicio'),
                 'pagina' => 'inicio.php',
                 'icono' => 'fa-solid fa-house',
                 'texto' => 'Inicio'
             ],
             [
-                'url' => '../Contenido/explorar.php',
+                'url' => self::url('explorar'),
                 'pagina' => 'explorar.php',
                 'icono' => 'fa-solid fa-compass',
                 'texto' => 'Explorar'
             ],
             [
-                'url' => '../Contenido/generos.php',
+                'url' => self::url('generos'),
                 'pagina' => 'generos.php',
                 'icono' => 'fa-solid fa-layer-group',
                 'texto' => 'Géneros'
             ],
             [
-                'url' => '../Contenido/favoritos.php',
+                'url' => self::url('favoritos'),
                 'pagina' => 'favoritos.php',
                 'icono' => 'fa-solid fa-heart',
                 'texto' => 'Favoritos'
@@ -136,18 +155,7 @@ class Navegacion {
 
     public static function obtenerBaseUrlProyecto($servidor)
     {
-        $scriptName = '';
-        if (isset($servidor['SCRIPT_NAME'])) {
-            $scriptName = $servidor['SCRIPT_NAME'];
-        }
-
-        $partes = explode('/', trim($scriptName, '/'));
-
-        if (isset($partes[0]) && $partes[0] !== '') {
-            return '/' . $partes[0];
-        }
-
-        return '';
+        return self::BASE_URL;
     }
 
     public static function retornoErrorBaseDatosVista($archivo, $servidor)
@@ -164,22 +172,22 @@ class Navegacion {
     public static function redirigirErrorBaseDatosVista($archivo, $servidor)
     {
         $retorno = self::retornoErrorBaseDatosVista($archivo, $servidor);
-        header('Location: ../Errores/Errorbd.php?retorno=' . urlencode($retorno));
+        header('Location: ' . self::url('error-bd') . '?retorno=' . urlencode($retorno));
         exit;
     }
 
     public static function datosErrorBaseDatos($sesion, $get, $servidor)
     {
         $usuarioAutenticado = self::usuarioAutenticado($sesion);
-        $urlInicio = '../Usuario/IniciarSesion.php';
+        $urlInicio = self::url('login');
         $claseMain = 'pagina-bd-bd pagina-bd-publica';
 
         if ($usuarioAutenticado) {
-            $urlInicio = '../Usuario/inicio.php';
+            $urlInicio = self::url('inicio');
             $claseMain = 'contenido-principal pagina-bd-bd';
 
             if (self::esAdministrador($sesion)) {
-                $urlInicio = '../Administracion/panel.php';
+                $urlInicio = self::url('admin');
             }
         }
 
@@ -193,7 +201,7 @@ class Navegacion {
 
     public static function urlReintentoBaseDatos($get, $servidor)
     {
-        $urlReintento = '../Usuario/IniciarSesion.php';
+        $urlReintento = self::url('login');
 
         if (!isset($get['retorno']) || trim($get['retorno']) === '') {
             return $urlReintento;
@@ -234,24 +242,23 @@ class Navegacion {
     public static function datosError404($sesion, $servidor)
     {
         $usuarioAutenticado = self::usuarioAutenticado($sesion);
-        $baseUrl = self::obtenerBaseUrlProyecto($servidor);
-        $baseHref = $baseUrl . '/Views/Errores/';
-        $urlInicio = '../Usuario/IniciarSesion.php';
+        $baseHref = self::BASE_URL . '/Views/Errores/';
+        $urlInicio = self::url('login');
         $textoInicio = 'Volver al inicio';
-        $urlSecundario = '../Usuario/Registrarse.php';
+        $urlSecundario = self::url('registro');
         $textoSecundario = 'Registrarse';
         $iconoSecundario = 'fa-solid fa-user-plus';
         $claseMain = 'pagina-error-404 pagina-error-publica';
 
         if ($usuarioAutenticado) {
-            $urlInicio = '../Usuario/inicio.php';
-            $urlSecundario = '../Contenido/explorar.php';
+            $urlInicio = self::url('inicio');
+            $urlSecundario = self::url('explorar');
             $textoSecundario = 'Explorar';
             $iconoSecundario = 'fa-regular fa-compass';
             $claseMain = 'contenido-principal pagina-error-404';
 
             if (self::esAdministrador($sesion)) {
-                $urlInicio = '../Administracion/panel.php';
+                $urlInicio = self::url('admin');
             }
         }
 

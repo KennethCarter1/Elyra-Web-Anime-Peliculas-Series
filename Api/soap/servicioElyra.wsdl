@@ -170,6 +170,29 @@
                 </xsd:complexType>
             </xsd:element>
 
+            <xsd:element name="preferenciasUsuarioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="usuario" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="preferenciasUsuarioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="genero" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="idGenero" type="xsd:int"/>
+                                    <xsd:element name="nombreGenero" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
             <xsd:element name="actualizarUsuarioSolicitud">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -551,6 +574,8 @@
                         <xsd:element name="idGenero" type="xsd:int"/>
                         <xsd:element name="estado" type="xsd:string"/>
                         <xsd:element name="anio" type="xsd:int"/>
+                        <xsd:element name="estadoEmision" type="xsd:string"/>
+                        <xsd:element name="destacado" type="xsd:int"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -569,8 +594,10 @@
                                     <xsd:element name="generos" type="xsd:string"/>
                                     <xsd:element name="anio" type="xsd:int"/>
                                     <xsd:element name="estado" type="xsd:string"/>
+                                    <xsd:element name="estadoEmision" type="xsd:string"/>
                                     <xsd:element name="trailerUrl" type="xsd:string"/>
                                     <xsd:element name="activo" type="xsd:int"/>
+                                    <xsd:element name="destacado" type="xsd:int"/>
                                 </xsd:sequence>
                             </xsd:complexType>
                         </xsd:element>
@@ -778,6 +805,146 @@
                         <xsd:element name="recomendado" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
                         <xsd:element name="ultimo" type="tns:contenidoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
                         <xsd:element name="genero" type="tns:generoInicioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                        <xsd:element name="panelInicio" type="tns:panelInicioUsuarioTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="panelInicioGestionTipo">
+                <xsd:sequence>
+                    <xsd:element name="idPanelInicio" type="xsd:int"/>
+                    <xsd:element name="titulo" type="xsd:string"/>
+                    <xsd:element name="descripcion" type="xsd:string"/>
+                    <xsd:element name="orden" type="xsd:int"/>
+                    <xsd:element name="activo" type="xsd:int"/>
+                    <xsd:element name="totalContenido" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="contenidoPanelInicioGestionTipo">
+                <xsd:sequence>
+                    <xsd:element name="idPanelInicio" type="xsd:int"/>
+                    <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    <xsd:element name="titulo" type="xsd:string"/>
+                    <xsd:element name="tituloOriginal" type="xsd:string"/>
+                    <xsd:element name="tipo" type="xsd:string"/>
+                    <xsd:element name="anioLanzamiento" type="xsd:int"/>
+                    <xsd:element name="imagenPortada" type="xsd:string"/>
+                    <xsd:element name="estado" type="xsd:string"/>
+                    <xsd:element name="estadoEmision" type="xsd:string"/>
+                    <xsd:element name="generos" type="xsd:string"/>
+                    <xsd:element name="orden" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="panelInicioUsuarioTipo">
+                <xsd:sequence>
+                    <xsd:element name="idPanelInicio" type="xsd:int"/>
+                    <xsd:element name="titulo" type="xsd:string"/>
+                    <xsd:element name="descripcion" type="xsd:string"/>
+                    <xsd:element name="orden" type="xsd:int"/>
+                    <xsd:element name="totalContenido" type="xsd:int"/>
+                    <xsd:element name="contenidosJson" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:element name="listarPanelesInicioGestionSolicitud"/>
+            <xsd:element name="listarPanelesInicioGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="panelInicio" type="tns:panelInicioGestionTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="buscarContenidoPanelInicioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="busqueda" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="buscarContenidoPanelInicioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenidoPanel" type="tns:contenidoPanelInicioGestionTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarContenidoPanelInicioGestionSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPanelInicio" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="listarContenidoPanelInicioGestionRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contenidoPanel" type="tns:contenidoPanelInicioGestionTipo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="crearPanelInicioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="titulo" type="xsd:string"/>
+                        <xsd:element name="descripcion" type="xsd:string"/>
+                        <xsd:element name="orden" type="xsd:int"/>
+                        <xsd:element name="activo" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="actualizarPanelInicioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPanelInicio" type="xsd:int"/>
+                        <xsd:element name="titulo" type="xsd:string"/>
+                        <xsd:element name="descripcion" type="xsd:string"/>
+                        <xsd:element name="orden" type="xsd:int"/>
+                        <xsd:element name="activo" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="eliminarPanelInicioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPanelInicio" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="agregarContenidoPanelInicioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPanelInicio" type="xsd:int"/>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                        <xsd:element name="orden" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="quitarContenidoPanelInicioSolicitud">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="idPanelInicio" type="xsd:int"/>
+                        <xsd:element name="idPeliculaSerie" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="panelInicioRespuesta">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="exito" type="xsd:boolean"/>
+                        <xsd:element name="mensaje" type="xsd:string"/>
+                        <xsd:element name="idPanelInicio" type="xsd:int"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -1014,6 +1181,14 @@
         <part name="parametros" element="tns:actualizarPreferenciasUsuarioRespuesta"/>
     </message>
 
+    <message name="preferenciasUsuarioSolicitudMsg">
+        <part name="parametros" element="tns:preferenciasUsuarioSolicitud"/>
+    </message>
+
+    <message name="preferenciasUsuarioRespuestaMsg">
+        <part name="parametros" element="tns:preferenciasUsuarioRespuesta"/>
+    </message>
+
     <message name="actualizarUsuarioSolicitudMsg">
         <part name="parametros" element="tns:actualizarUsuarioSolicitud"/>
     </message>
@@ -1222,6 +1397,70 @@
         <part name="parametros" element="tns:datosInicioUsuarioRespuesta"/>
     </message>
 
+    <message name="listarPanelesInicioGestionSolicitudMsg">
+        <part name="parametros" element="tns:listarPanelesInicioGestionSolicitud"/>
+    </message>
+
+    <message name="listarPanelesInicioGestionRespuestaMsg">
+        <part name="parametros" element="tns:listarPanelesInicioGestionRespuesta"/>
+    </message>
+
+    <message name="buscarContenidoPanelInicioSolicitudMsg">
+        <part name="parametros" element="tns:buscarContenidoPanelInicioSolicitud"/>
+    </message>
+
+    <message name="buscarContenidoPanelInicioRespuestaMsg">
+        <part name="parametros" element="tns:buscarContenidoPanelInicioRespuesta"/>
+    </message>
+
+    <message name="listarContenidoPanelInicioGestionSolicitudMsg">
+        <part name="parametros" element="tns:listarContenidoPanelInicioGestionSolicitud"/>
+    </message>
+
+    <message name="listarContenidoPanelInicioGestionRespuestaMsg">
+        <part name="parametros" element="tns:listarContenidoPanelInicioGestionRespuesta"/>
+    </message>
+
+    <message name="crearPanelInicioSolicitudMsg">
+        <part name="parametros" element="tns:crearPanelInicioSolicitud"/>
+    </message>
+
+    <message name="crearPanelInicioRespuestaMsg">
+        <part name="parametros" element="tns:panelInicioRespuesta"/>
+    </message>
+
+    <message name="actualizarPanelInicioSolicitudMsg">
+        <part name="parametros" element="tns:actualizarPanelInicioSolicitud"/>
+    </message>
+
+    <message name="actualizarPanelInicioRespuestaMsg">
+        <part name="parametros" element="tns:panelInicioRespuesta"/>
+    </message>
+
+    <message name="eliminarPanelInicioSolicitudMsg">
+        <part name="parametros" element="tns:eliminarPanelInicioSolicitud"/>
+    </message>
+
+    <message name="eliminarPanelInicioRespuestaMsg">
+        <part name="parametros" element="tns:panelInicioRespuesta"/>
+    </message>
+
+    <message name="agregarContenidoPanelInicioSolicitudMsg">
+        <part name="parametros" element="tns:agregarContenidoPanelInicioSolicitud"/>
+    </message>
+
+    <message name="agregarContenidoPanelInicioRespuestaMsg">
+        <part name="parametros" element="tns:panelInicioRespuesta"/>
+    </message>
+
+    <message name="quitarContenidoPanelInicioSolicitudMsg">
+        <part name="parametros" element="tns:quitarContenidoPanelInicioSolicitud"/>
+    </message>
+
+    <message name="quitarContenidoPanelInicioRespuestaMsg">
+        <part name="parametros" element="tns:panelInicioRespuesta"/>
+    </message>
+
     <message name="detalleContenidoUsuarioSolicitudMsg">
         <part name="parametros" element="tns:detalleContenidoUsuarioSolicitud"/>
     </message>
@@ -1322,6 +1561,10 @@
         <operation name="actualizarPreferenciasUsuario">
             <input message="tns:actualizarPreferenciasUsuarioSolicitudMsg"/>
             <output message="tns:actualizarPreferenciasUsuarioRespuestaMsg"/>
+        </operation>
+        <operation name="preferenciasUsuario">
+            <input message="tns:preferenciasUsuarioSolicitudMsg"/>
+            <output message="tns:preferenciasUsuarioRespuestaMsg"/>
         </operation>
         <operation name="actualizarUsuario">
             <input message="tns:actualizarUsuarioSolicitudMsg"/>
@@ -1427,6 +1670,38 @@
             <input message="tns:datosInicioUsuarioSolicitudMsg"/>
             <output message="tns:datosInicioUsuarioRespuestaMsg"/>
         </operation>
+        <operation name="listarPanelesInicioGestion">
+            <input message="tns:listarPanelesInicioGestionSolicitudMsg"/>
+            <output message="tns:listarPanelesInicioGestionRespuestaMsg"/>
+        </operation>
+        <operation name="buscarContenidoPanelInicio">
+            <input message="tns:buscarContenidoPanelInicioSolicitudMsg"/>
+            <output message="tns:buscarContenidoPanelInicioRespuestaMsg"/>
+        </operation>
+        <operation name="listarContenidoPanelInicioGestion">
+            <input message="tns:listarContenidoPanelInicioGestionSolicitudMsg"/>
+            <output message="tns:listarContenidoPanelInicioGestionRespuestaMsg"/>
+        </operation>
+        <operation name="crearPanelInicio">
+            <input message="tns:crearPanelInicioSolicitudMsg"/>
+            <output message="tns:crearPanelInicioRespuestaMsg"/>
+        </operation>
+        <operation name="actualizarPanelInicio">
+            <input message="tns:actualizarPanelInicioSolicitudMsg"/>
+            <output message="tns:actualizarPanelInicioRespuestaMsg"/>
+        </operation>
+        <operation name="eliminarPanelInicio">
+            <input message="tns:eliminarPanelInicioSolicitudMsg"/>
+            <output message="tns:eliminarPanelInicioRespuestaMsg"/>
+        </operation>
+        <operation name="agregarContenidoPanelInicio">
+            <input message="tns:agregarContenidoPanelInicioSolicitudMsg"/>
+            <output message="tns:agregarContenidoPanelInicioRespuestaMsg"/>
+        </operation>
+        <operation name="quitarContenidoPanelInicio">
+            <input message="tns:quitarContenidoPanelInicioSolicitudMsg"/>
+            <output message="tns:quitarContenidoPanelInicioRespuestaMsg"/>
+        </operation>
         <operation name="detalleContenidoUsuario">
             <input message="tns:detalleContenidoUsuarioSolicitudMsg"/>
             <output message="tns:detalleContenidoUsuarioRespuestaMsg"/>
@@ -1506,6 +1781,11 @@
         </operation>
         <operation name="actualizarPreferenciasUsuario">
             <soap:operation soapAction="actualizarPreferenciasUsuario"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="preferenciasUsuario">
+            <soap:operation soapAction="preferenciasUsuario"/>
             <input><soap:body use="literal"/></input>
             <output><soap:body use="literal"/></output>
         </operation>
@@ -1639,6 +1919,46 @@
             <input><soap:body use="literal"/></input>
             <output><soap:body use="literal"/></output>
         </operation>
+        <operation name="listarPanelesInicioGestion">
+            <soap:operation soapAction="listarPanelesInicioGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="buscarContenidoPanelInicio">
+            <soap:operation soapAction="buscarContenidoPanelInicio"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="listarContenidoPanelInicioGestion">
+            <soap:operation soapAction="listarContenidoPanelInicioGestion"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="crearPanelInicio">
+            <soap:operation soapAction="crearPanelInicio"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="actualizarPanelInicio">
+            <soap:operation soapAction="actualizarPanelInicio"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="eliminarPanelInicio">
+            <soap:operation soapAction="eliminarPanelInicio"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="agregarContenidoPanelInicio">
+            <soap:operation soapAction="agregarContenidoPanelInicio"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="quitarContenidoPanelInicio">
+            <soap:operation soapAction="quitarContenidoPanelInicio"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
         <operation name="detalleContenidoUsuario">
             <soap:operation soapAction="detalleContenidoUsuario"/>
             <input><soap:body use="literal"/></input>
@@ -1684,7 +2004,7 @@
     <!-- Servicio genérico -->
     <service name="ElyraService">
         <port name="ElyraPort" binding="tns:ElyraBinding">
-            <soap:address location="http://localhost/Elyra-Web-Anime-Peliculas-Series/Api/soap/server.php"/>
+            <soap:address location="http://localhost/elyra/Api/soap/server.php"/>
         </port>
     </service>
 </definitions>

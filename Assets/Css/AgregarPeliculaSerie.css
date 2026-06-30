@@ -418,6 +418,10 @@
     display: none;
 }
 
+.campo-formulario-contenido.oculto {
+    display: none;
+}
+
 body.dark .encabezado-formulario-contenido h1,
 body.dark .campo-formulario-contenido label,
 body.dark .estado-formulario-contenido legend,

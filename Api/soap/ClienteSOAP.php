@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../Models/Seguridad.php';
+
 class ClienteSOAP {
     private $cliente;
 
@@ -6,9 +8,16 @@ class ClienteSOAP {
         if ($wsdl === null) {
             $wsdl = __DIR__ . '/servicioElyra.wsdl';
         }
+        $contexto = stream_context_create([
+            'http' => [
+                'header' => 'X-Elyra-Soap-Token: ' . Seguridad::tokenSoapInterno()
+            ]
+        ]);
+
         $this->cliente = new SoapClient($wsdl, [
             'cache_wsdl' => WSDL_CACHE_NONE,
-            'exceptions' => true
+            'exceptions' => true,
+            'stream_context' => $contexto
         ]);
     }
 
@@ -178,6 +187,22 @@ class ClienteSOAP {
         }
 
         return $resultado;
+    }
+
+    public function preferenciasUsuario($usuario) {
+        $respuesta = $this->llamar('preferenciasUsuario', [
+            'usuario' => $usuario
+        ]);
+
+        if (!isset($respuesta->genero)) {
+            return [];
+        }
+
+        if (is_array($respuesta->genero)) {
+            return $respuesta->genero;
+        }
+
+        return [$respuesta->genero];
     }
 
     public function actualizarUsuario($usuarioActual, $nombre, $usuario, $correo, $fechaNacimiento, $genero) {
@@ -494,7 +519,9 @@ class ClienteSOAP {
             'tipo' => $filtros['tipo'],
             'idGenero' => $filtros['idGenero'],
             'estado' => $filtros['estado'],
-            'anio' => $filtros['anio']
+            'anio' => $filtros['anio'],
+            'estadoEmision' => $filtros['estadoEmision'],
+            'destacado' => $filtros['destacado']
         ]);
 
         if (!isset($respuesta->contenido)) {
@@ -623,6 +650,67 @@ class ClienteSOAP {
         return [$respuesta->hijo];
     }
 
+    public function listarPanelesInicioGestion() {
+        $respuesta = $this->llamar('listarPanelesInicioGestion');
+
+        return $this->normalizarListaPanelInicio($respuesta);
+    }
+
+    public function buscarContenidoPanelInicio($busqueda) {
+        $respuesta = $this->llamar('buscarContenidoPanelInicio', [
+            'busqueda' => $busqueda
+        ]);
+
+        return $this->normalizarListaContenidoPanelInicio($respuesta);
+    }
+
+    public function listarContenidoPanelInicioGestion($idPanelInicio) {
+        $respuesta = $this->llamar('listarContenidoPanelInicioGestion', [
+            'idPanelInicio' => $idPanelInicio
+        ]);
+
+        return $this->normalizarListaContenidoPanelInicio($respuesta);
+    }
+
+    public function crearPanelInicio($datos) {
+        $respuesta = $this->llamar('crearPanelInicio', $datos);
+
+        return $this->normalizarRespuestaPanelInicio($respuesta, 'No se pudo crear el panel');
+    }
+
+    public function actualizarPanelInicio($datos) {
+        $respuesta = $this->llamar('actualizarPanelInicio', $datos);
+
+        return $this->normalizarRespuestaPanelInicio($respuesta, 'No se pudo actualizar el panel');
+    }
+
+    public function eliminarPanelInicio($idPanelInicio) {
+        $respuesta = $this->llamar('eliminarPanelInicio', [
+            'idPanelInicio' => $idPanelInicio
+        ]);
+
+        return $this->normalizarRespuestaPanelInicio($respuesta, 'No se pudo eliminar el panel');
+    }
+
+    public function agregarContenidoPanelInicio($idPanelInicio, $idPeliculaSerie, $orden) {
+        $respuesta = $this->llamar('agregarContenidoPanelInicio', [
+            'idPanelInicio' => $idPanelInicio,
+            'idPeliculaSerie' => $idPeliculaSerie,
+            'orden' => $orden
+        ]);
+
+        return $this->normalizarRespuestaPanelInicio($respuesta, 'No se pudo agregar el anime al panel');
+    }
+
+    public function quitarContenidoPanelInicio($idPanelInicio, $idPeliculaSerie) {
+        $respuesta = $this->llamar('quitarContenidoPanelInicio', [
+            'idPanelInicio' => $idPanelInicio,
+            'idPeliculaSerie' => $idPeliculaSerie
+        ]);
+
+        return $this->normalizarRespuestaPanelInicio($respuesta, 'No se pudo quitar el anime del panel');
+    }
+
     public function datosInicioUsuario($usuario) {
         $respuesta = $this->llamar('datosInicioUsuario', [
             'usuario' => $usuario
@@ -632,7 +720,8 @@ class ClienteSOAP {
             'destacados' => $this->normalizarListaInicio($respuesta, 'destacado'),
             'recomendaciones' => $this->normalizarListaInicio($respuesta, 'recomendado'),
             'ultimos' => $this->normalizarListaInicio($respuesta, 'ultimo'),
-            'generos' => $this->normalizarGenerosInicio($respuesta)
+            'generos' => $this->normalizarGenerosInicio($respuesta),
+            'paneles' => $this->normalizarPanelesInicioUsuario($respuesta)
         ];
     }
 
@@ -780,6 +869,52 @@ class ClienteSOAP {
         return $resultado;
     }
 
+    private function normalizarRespuestaPanelInicio($respuesta, $mensajeDefecto) {
+        $resultado = [
+            'exito' => false,
+            'mensaje' => $mensajeDefecto,
+            'idPanelInicio' => 0
+        ];
+
+        if (isset($respuesta->exito)) {
+            $resultado['exito'] = (bool)$respuesta->exito;
+        }
+
+        if (isset($respuesta->mensaje)) {
+            $resultado['mensaje'] = $respuesta->mensaje;
+        }
+
+        if (isset($respuesta->idPanelInicio)) {
+            $resultado['idPanelInicio'] = (int)$respuesta->idPanelInicio;
+        }
+
+        return $resultado;
+    }
+
+    private function normalizarListaPanelInicio($respuesta) {
+        if (!isset($respuesta->panelInicio)) {
+            return [];
+        }
+
+        if (is_array($respuesta->panelInicio)) {
+            return $respuesta->panelInicio;
+        }
+
+        return [$respuesta->panelInicio];
+    }
+
+    private function normalizarListaContenidoPanelInicio($respuesta) {
+        if (!isset($respuesta->contenidoPanel)) {
+            return [];
+        }
+
+        if (is_array($respuesta->contenidoPanel)) {
+            return $respuesta->contenidoPanel;
+        }
+
+        return [$respuesta->contenidoPanel];
+    }
+
     private function normalizarListaGeneroReporte($respuesta) {
         if (!isset($respuesta->generoReporte)) {
             return [];
@@ -826,6 +961,72 @@ class ClienteSOAP {
         }
 
         return [$respuesta->genero];
+    }
+
+    private function normalizarPanelesInicioUsuario($respuesta) {
+        if (!isset($respuesta->panelInicio)) {
+            return [];
+        }
+
+        if (is_array($respuesta->panelInicio)) {
+            $paneles = $respuesta->panelInicio;
+        } else {
+            $paneles = [$respuesta->panelInicio];
+        }
+
+        $resultado = [];
+
+        foreach ($paneles as $panel) {
+            $contenidosJson = '';
+            if (isset($panel->contenidosJson)) {
+                $contenidosJson = (string)$panel->contenidosJson;
+            }
+
+            $contenido = [];
+            if ($contenidosJson !== '') {
+                $contenidoDecodificado = json_decode($contenidosJson, true);
+
+                if (is_array($contenidoDecodificado)) {
+                    $contenido = $contenidoDecodificado;
+                }
+            }
+
+            $idPanelInicio = 0;
+            if (isset($panel->idPanelInicio)) {
+                $idPanelInicio = (int)$panel->idPanelInicio;
+            }
+
+            $titulo = '';
+            if (isset($panel->titulo)) {
+                $titulo = $panel->titulo;
+            }
+
+            $descripcion = '';
+            if (isset($panel->descripcion)) {
+                $descripcion = $panel->descripcion;
+            }
+
+            $orden = 0;
+            if (isset($panel->orden)) {
+                $orden = (int)$panel->orden;
+            }
+
+            $totalContenido = count($contenido);
+            if (isset($panel->totalContenido)) {
+                $totalContenido = (int)$panel->totalContenido;
+            }
+
+            $resultado[] = [
+                'idPanelInicio' => $idPanelInicio,
+                'titulo' => $titulo,
+                'descripcion' => $descripcion,
+                'orden' => $orden,
+                'totalContenido' => $totalContenido,
+                'contenido' => $contenido
+            ];
+        }
+
+        return $resultado;
     }
 
     // Futuras funciones: login, listarPeliculas, listarSeries, etc.

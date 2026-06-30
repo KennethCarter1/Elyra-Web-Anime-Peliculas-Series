@@ -176,6 +176,43 @@ class Inicio {
         return $resultado;
     }
 
+    public static function normalizarPanelesPersonalizados($paneles)
+    {
+        $resultado = [];
+
+        foreach ($paneles as $panel) {
+            $contenido = self::leerCampoFlexible($panel, 'contenido');
+            $contenidosJson = self::leerCampoFlexible($panel, 'contenidosJson');
+
+            if (empty($contenido) && $contenidosJson !== '') {
+                $contenidoDecodificado = json_decode((string)$contenidosJson, true);
+
+                if (is_array($contenidoDecodificado)) {
+                    $contenido = $contenidoDecodificado;
+                }
+            }
+
+            if (!is_array($contenido)) {
+                $contenido = [];
+            }
+
+            $contenidoNormalizado = self::normalizarListaContenido($contenido);
+
+            if (!empty($contenidoNormalizado)) {
+                $resultado[] = [
+                    'id' => (int)self::leerCampoFlexible($panel, 'idPanelInicio'),
+                    'titulo' => self::leerCampoFlexible($panel, 'titulo'),
+                    'descripcion' => self::leerCampoFlexible($panel, 'descripcion'),
+                    'orden' => (int)self::leerCampoFlexible($panel, 'orden'),
+                    'totalContenido' => (int)self::leerCampoFlexible($panel, 'totalContenido'),
+                    'contenido' => $contenidoNormalizado
+                ];
+            }
+        }
+
+        return $resultado;
+    }
+
     public static function normalizarRespuestaFavorito($respuesta)
     {
         $resultado = [
@@ -448,7 +485,7 @@ class Inicio {
             $parametros['orden'] = $filtros['orden'];
         }
 
-        $retorno = '../Views/Contenido/explorar.php';
+        $retorno = '/elyra/explorar';
 
         if (!empty($parametros)) {
             $retorno .= '?' . http_build_query($parametros);
@@ -477,7 +514,7 @@ class Inicio {
             $parametros['orden'] = $filtros['orden'];
         }
 
-        $retorno = '../Views/Contenido/generos.php';
+        $retorno = '/elyra/generos';
 
         if (!empty($parametros)) {
             $retorno .= '?' . http_build_query($parametros);
@@ -502,7 +539,7 @@ class Inicio {
             $parametros['orden'] = $filtros['orden'];
         }
 
-        $retorno = '../Views/Contenido/favoritos.php';
+        $retorno = '/elyra/favoritos';
 
         if (!empty($parametros)) {
             $retorno .= '?' . http_build_query($parametros);
@@ -726,6 +763,19 @@ class Inicio {
 
         if (is_array($origen) && isset($origen[$campoObjeto])) {
             return $origen[$campoObjeto];
+        }
+
+        return '';
+    }
+
+    private static function leerCampoFlexible($origen, $campo)
+    {
+        if (is_object($origen) && isset($origen->$campo)) {
+            return $origen->$campo;
+        }
+
+        if (is_array($origen) && isset($origen[$campo])) {
+            return $origen[$campo];
         }
 
         return '';
